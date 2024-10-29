@@ -21,6 +21,10 @@ public class User {
   @Column(nullable = false)
   private boolean groupMgr;
 
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "calendar_id")
+  private Calendar calendar;
+
   @Builder
   public User(boolean groupMgr, String userName) {
     this.groupMgr = groupMgr;

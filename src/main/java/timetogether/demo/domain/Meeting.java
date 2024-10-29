@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,6 +33,9 @@ public class Meeting {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "calendar_id")
   private Calendar calendar;
+
+  @OneToOne(fetch = FetchType.LAZY)
+  private Where2meet wher2meet;
 
   @Builder
   public Meeting(String meetDTstart, MeetType meetType, String meetDTend, String meetTitle, String meetContent, String groupName) {
