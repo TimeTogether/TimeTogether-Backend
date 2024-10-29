@@ -2,6 +2,7 @@ package timetogether.demo.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +26,7 @@ public class When2meet {
   @JoinColumn(name = "group_id")
   private Group group;
 
+  @Builder
   public When2meet(String date, String day, MeetType type, User user, Group group) {
     this.date = date;
     this.day = day;

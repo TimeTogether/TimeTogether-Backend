@@ -1,10 +1,14 @@
 package timetogether.demo.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,10 +19,11 @@ public class User {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @NotNull
+  @Column(unique = true)
   private String userName;
 
-  @Column(nullable = false)
+  @NotNull
   private boolean groupMgr;
 
   @OneToOne(fetch = FetchType.LAZY)

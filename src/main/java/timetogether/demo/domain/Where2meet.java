@@ -1,6 +1,7 @@
 package timetogether.demo.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +16,10 @@ public class Where2meet {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @NotNull
   private String locationName;
 
-  @Column(nullable = false)
+  @NotNull
   private String locationUrl;
 
   public Where2meet(String locationName, String locationUrl) {

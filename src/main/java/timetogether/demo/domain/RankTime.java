@@ -22,7 +22,7 @@ public class RankTime {
   private String time;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "date_id")
+  @JoinColumn(name = "date")
   private When2meet when2meet;
 
   @ManyToOne(fetch = FetchType.LAZY)
