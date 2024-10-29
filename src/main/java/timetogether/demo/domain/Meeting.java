@@ -1,6 +1,7 @@
 package timetogether.demo.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,10 +17,12 @@ public class Meeting {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @NotNull
+  @Column(unique = true)
   private String meetDTstart;
 
-  @Column(nullable = false, unique = true)
+  @NotNull
+  @Column(unique = true)
   private String meetDTend;
 
   private MeetType meetType;
@@ -28,6 +31,7 @@ public class Meeting {
 
   private String meetContent;
 
+  @NotNull
   private String groupName;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -38,12 +42,14 @@ public class Meeting {
   private Where2meet where2meet;
 
   @Builder
-  public Meeting(String meetDTstart, MeetType meetType, String meetDTend, String meetTitle, String meetContent, String groupName) {
+  public Meeting(String meetDTstart, String meetDTend, MeetType meetType, String meetTitle, String meetContent, String groupName, Calendar calendar, Where2meet where2meet) {
     this.meetDTstart = meetDTstart;
     this.meetDTend = meetDTend;
     this.meetType = meetType;
     this.meetTitle = meetTitle;
     this.meetContent = meetContent;
     this.groupName = groupName;
+    this.calendar = calendar;
+    this.where2meet = where2meet;
   }
 }
