@@ -15,6 +15,9 @@ public class RankTime {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  private String rank;
+  private String time;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "date_id")
   private When2meet when2meet;
@@ -26,9 +29,6 @@ public class RankTime {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   private User user;
-
-  private String rank;
-  private String time;
 
   @Builder
   public RankTime(When2meet when2meet, Group group, User user, String rank, String time) {

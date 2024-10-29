@@ -5,21 +5,19 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Calendar {
-
+public class Login {
+  @Column(name = "login_id")
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "calendar_id")
   private Long id;
 
+  @JoinColumn(name = "user_id")
+  @OneToOne(fetch = FetchType.LAZY)
+  private User user;
 
-  @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
-  private List<Meeting> meetings = new ArrayList<>();
-
+  private String accessToken;
+  private String refreshToken;
 }

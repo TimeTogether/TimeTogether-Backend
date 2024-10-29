@@ -15,7 +15,14 @@ public class Where2meet {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(nullable = false)
   private String locationName;
+
+  @Column(nullable = false)
   private String locationUrl;
 
+  public Where2meet(String locationName, String locationUrl) {
+    this.locationName = locationName;
+    this.locationUrl = locationUrl;
+  }
 }
