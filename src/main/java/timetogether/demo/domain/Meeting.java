@@ -35,7 +35,7 @@ public class Meeting {
   private Calendar calendar;
 
   @OneToOne(fetch = FetchType.LAZY)
-  private Where2meet wher2meet;
+  private Where2meet where2meet;
 
   @Builder
   public Meeting(String meetDTstart, MeetType meetType, String meetDTend, String meetTitle, String meetContent, String groupName) {

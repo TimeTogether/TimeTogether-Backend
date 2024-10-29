@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(name = "rank_table")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RankTime {
   @Column(name = "time_id")
@@ -15,7 +16,9 @@ public class RankTime {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(name = "rank_value")
   private String rank;
+  @Column(name = "time_value")
   private String time;
 
   @ManyToOne(fetch = FetchType.LAZY)

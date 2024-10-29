@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(name = "group_table")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Group {
   @Column(name = "group_id")
@@ -17,12 +18,14 @@ public class Group {
 
   private String groupName;
   private String groupImg;
-  private int groupMgrId;
+
+  @Column(nullable = false)
+  private Long groupMgrId;
   private String groupTimes;
   private String groupUrl;
 
   @Builder
-  public Group(String groupName, String groupImg, int groupMgrId, String groupTimes, String groupUrl) {
+  public Group(String groupName, String groupImg, Long groupMgrId, String groupTimes, String groupUrl) {
     this.groupName = groupName;
     this.groupImg = groupImg;
     this.groupMgrId = groupMgrId;
