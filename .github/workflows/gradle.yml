@@ -7,12 +7,9 @@ on:
   pull_request:
     branches: [ "master" ]
 
-permissions:
-  contents: read
-
 jobs:
   # Spring Boot 애플리케이션을 빌드하여 도커허브에 푸시하는 과정
-  build-docker-image:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -30,21 +27,26 @@ jobs:
 
     # 2. Spring Boot 애플리케이션 빌드
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      run: ./gradlew clean build -x test
+
+    # 3. 디렉토리 생성
+    - name: Make directory
+      run: mkdir -p deploy
+
+    # 4. jar 파일 복사
+    - name: Copy jar
+      run:  cp ./build/libs/*.jar ./deploy
+
+    - name: Make zip file
+      run: zip -r ./timetogether.zip ./deploy
+      shell: bash
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        arguments: clean bootJar
+        aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+        aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+        aws-region: ap-northeast-2
 
-    # 3. Docker 이미지 빌드
-    - name: docker image build
-      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/timetogether .
-
-    # 4. DockerHub 로그인
-    - name: docker login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-    # 5. Docker Hub 이미지 푸시
-    - name: docker Hub push
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/timetogether
+    - name: Upload to S3
+      run: aws s3 cp --region ap-northeast-2 ./timetogether.zip s3://timetogether
