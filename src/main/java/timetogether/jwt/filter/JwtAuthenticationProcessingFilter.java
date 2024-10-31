@@ -20,6 +20,7 @@ import timetogether.oauth2.entity.User;
 import timetogether.oauth2.repository.UserRepository;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -32,6 +33,15 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        // 요청 정보를 로그에 출력
+        log.info("Incoming request: {} {}", request.getMethod(), request.getRequestURI());
+
+        // 요청 헤더 출력 (예: Authorization 헤더)
+        String authorizationHeader = request.getHeader("Authorization");
+        log.info("Authorization Header: {}", authorizationHeader);
+
+        log.info("Request parameters: {}", request.getParameterMap());
 
         // 사용자 요청 헤더에서 RefreshToken 추출
         // -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
@@ -96,11 +106,33 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentication() 호출");
-        jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
-                .ifPresent(accessToken -> jwtService.extractId(accessToken)
-                        .ifPresent(socialId -> userRepository.findBySocialId(socialId)
-                                .ifPresent(this::saveAuthentication)));
+
+        Optional<String> s = jwtService.extractAccessToken(request);
+        log.info("extractAccessToken = {}", s);
+        Optional<String> s1 = s.filter(jwtService::isTokenValid);
+        log.info("isTokenValid = {}", s1);
+        if (s1.isPresent()) {
+            String accessToken = s1.get();
+            log.info("accessToken = {}", accessToken);
+            Optional<String> socialIdOptional = jwtService.extractId(accessToken);
+            log.info("socialIdOptional = {}", socialIdOptional);
+            if (socialIdOptional.isPresent()) {
+                String socialId = socialIdOptional.get();
+                log.info("socialId = {}", socialId);
+                Optional<User> userOptional = userRepository.findBySocialId(socialId);
+                if (userOptional.isPresent()) {
+                    User user = userOptional.get();
+                    log.info("socialId = {}", user);
+                    saveAuthentication(user);
+                }
+            }
+        }
+
+//        jwtService.extractAccessToken(request)
+//                .filter(jwtService::isTokenValid)
+//                .ifPresent(accessToken -> jwtService.extractId(accessToken)
+//                        .ifPresent(socialId -> userRepository.findBySocialId(socialId)
+//                                .ifPresent(this::saveAuthentication)));
 
         filterChain.doFilter(request, response);
     }

@@ -2,10 +2,7 @@ package timetogether.oauth2.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import timetogether.demo.domain.Calendar;
 
@@ -15,14 +12,15 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class User {
 
-  @Column(name = "social_id")
+  @Column(name = "social_id", unique = true)
   @Id
   private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
 
   @NotNull
-  @Column(unique = true)
   private String userName;
 
   @NotNull
@@ -49,12 +47,12 @@ public class User {
     this.refreshToken = updateRefreshToken;
   }
 
-  @Builder
-  public User(String socialId, boolean groupMgr, String userName, SocialType socialType, Role role) {
-    this.socialId = socialId; // social Id 고유 식별자
-    this.userName = userName;
-    this.socialType = socialType;
-    this.role = role;
-    this.groupMgr = groupMgr;
-  }
+//  @Builder
+//  public User(String socialId, boolean groupMgr, String userName, SocialType socialType, Role role) {
+//    this.socialId = socialId; // social Id 고유 식별자
+//    this.userName = userName;
+//    this.socialType = socialType;
+//    this.role = role;
+//    this.groupMgr = groupMgr;
+//  }
 }

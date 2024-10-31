@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import timetogether.oauth2.entity.User;
 import timetogether.oauth2.repository.UserRepository;
 
 import java.util.Date;
@@ -50,6 +51,7 @@ public class JwtService {
      * AccessToken 생성 메소드
      */
     public String createAccessToken(String socialId) {
+        log.info("createAccessToken()");
         Date now = new Date();
         return JWT.create() // JWT 토큰을 생성하는 빌더 반환
                 .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
@@ -63,6 +65,7 @@ public class JwtService {
      * RefreshToken은 Claim에 email도 넣지 않으므로 withClaim() X
      */
     public String createRefreshToken() {
+        log.info("createRefreshToken()");
         Date now = new Date();
         return JWT.create()
                 .withSubject(REFRESH_TOKEN_SUBJECT)
@@ -108,9 +111,21 @@ public class JwtService {
      * 헤더를 가져온 후 "Bearer"를 삭제(""로 replace)
      */
     public Optional<String> extractAccessToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(accessHeader))
-                .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+        Optional<String> header = Optional.ofNullable(request.getHeader(accessHeader));
+        log.info("header = {}", header);
+        if (header.isPresent()) {
+            String refreshToken = header.get();
+            log.info("header = {}", refreshToken);
+            if (refreshToken.startsWith(BEARER)) {
+                return Optional.of(refreshToken.replace(BEARER, ""));
+            }
+        }
+
+        return Optional.empty();
+
+//        return Optional.ofNullable(request.getHeader(accessHeader))
+//                .filter(refreshToken -> refreshToken.startsWith(BEARER))
+//                .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
     /**
@@ -121,6 +136,7 @@ public class JwtService {
      * 유효하지 않다면 빈 Optional 객체 반환
      */
     public Optional<String> extractId(String accessToken) {
+        log.info("extractId() 호출");
         try {
             // 토큰 유효성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
@@ -152,11 +168,23 @@ public class JwtService {
      * RefreshToken DB 저장(업데이트)
      */
     public void updateRefreshToken(String socialId, String refreshToken) {
-        userRepository.findById(socialId)
-                .ifPresentOrElse(
-                        user -> user.updateRefreshToken(refreshToken),
-                        () -> new Exception("일치하는 회원이 없습니다.")
-                );
+        Optional<User> userOptional = userRepository.findBySocialId(socialId);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.updateRefreshToken(refreshToken);
+            log.info("user = {}", user.getRefreshToken());
+            userRepository.save(user);
+            log.info("Refresh token updated for user with social ID: {}", socialId);
+        } else {
+            log.error("No matching user found for social ID: {}", socialId);
+            throw new IllegalArgumentException("일치하는 회원이 없습니다.");
+        }
+//        userRepository.findBySocialId(socialId)
+//                .ifPresentOrElse(
+//                        user -> user.updateRefreshToken(refreshToken),
+//                        () -> new Exception("일치하는 회원이 없습니다.")
+//                );
     }
 
     public boolean isTokenValid(String token) {

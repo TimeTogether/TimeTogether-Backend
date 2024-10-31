@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import timetogether.jwt.service.JwtService;
 import timetogether.oauth2.CustomOAuth2User;
 import timetogether.oauth2.entity.Role;
+import timetogether.oauth2.entity.SocialType;
 import timetogether.oauth2.repository.UserRepository;
 
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             // 처음 요청하든, 두번째 요청하든 로그인이 가능하도록
             loginSuccess(response, socialId); // 로그인에 성공한 경우 access, refresh 토큰 생성
-
+            response.sendRedirect("/"); // redirect
         } catch (Exception e) {
             throw e;
         }
@@ -47,24 +48,24 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private String extractSocialId(CustomOAuth2User oAuth2User) {
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        String registrationId = oAuth2User.getName(); // OAuth2 제공자 (google, naver, kakao 등)
+        //String registrationId = oAuth2User.getName(); // OAuth2 제공자 (google, naver, kakao의 고유소셜 ID 등)
+        log.info("attributes={}", attributes);
+        SocialType socialType = oAuth2User.getSocialType();
 
-        log.info("registrationId={}, {}",registrationId, attributes);
-
-        switch (registrationId) {
-            case "google":
-                return (String) attributes.get("sub"); // Google의 고유 ID
-
-            case "kakao":
-                return String.valueOf(attributes.get("id")); // Kakao의 고유 ID
-
-            case "naver":
-                Map<String, Object> response = (Map<String, Object>) attributes.get("response");
-                return (String) response.get("id"); // Naver의 고유 ID
-
-            default:
-                return null; // 알 수 없는 제공자일 경우 null 반환
+        String userId = null;
+        if(socialType == SocialType.NAVER) {
+            // "response" 키에서 또 다른 맵을 가져온다.
+            Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+            // "id" 값을 추출한다.
+            userId = (String) response.get("id");
+        }else if (socialType == SocialType.GOOGLE){
+            userId = (String) attributes.get("sub");
+        }else if(socialType == SocialType.KAKAO){
+            Long id = (Long) attributes.get("id"); // social type을 제네릭으로
+            userId = String.valueOf(id);
         }
+
+        return userId;
     }
 
 
@@ -76,7 +77,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken); // 헤더에 넣어요
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken); // 보냅니다
-        jwtService.updateRefreshToken(socialId, refreshToken); // 소셜 아이디와 리프레시 토큰으로 업데이트해요
+        log.info("socialId={}", socialId);
+        jwtService.updateRefreshToken(socialId, refreshToken); // 소셜 아이디와 리프레시 토큰으로 업데이트해
     }
 
 

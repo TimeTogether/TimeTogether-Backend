@@ -48,7 +48,7 @@ public class SecurityConfig {
                 );
 
         http.addFilterAfter(jwtAuthenticationProcessingFilter(), LogoutFilter.class); // JWT 필터 추가
-
+        // 필터가 세워지는 순서 확인하기
         // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
         // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
 //        http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
