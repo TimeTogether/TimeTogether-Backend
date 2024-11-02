@@ -3,7 +3,7 @@ package timetogether.oauth2.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import timetogether.domain.Calendar;
+import timetogether.domain.calendar.Calendar;
 
 @Entity
 @Getter
@@ -41,6 +41,10 @@ public class User {
 
   public void updateRefreshToken(String updateRefreshToken) {
     this.refreshToken = updateRefreshToken;
+  }
+
+  public void updateCalendarId(Calendar calendar) {
+    this.calendar = calendar;
   }
 
 //  @Builder
