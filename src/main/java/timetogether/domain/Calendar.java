@@ -1,4 +1,4 @@
-package timetogether.demo.domain;
+package timetogether.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
