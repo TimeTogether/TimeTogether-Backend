@@ -2,36 +2,37 @@ package timetogether.domain.calendar.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import timetogether.domain.Meeting;
 import timetogether.domain.calendar.dto.CalendarViewDto;
 
 import java.util.List;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @Transactional
+@Repository
 public class CalendarRepositoryCustomImpl implements CalendarRepositoryCustom{
   @PersistenceContext
   private EntityManager em;
 
   @Override
   public CalendarViewDto findMeetings(Long calendarId, int year, int month) {
-    //해당 월의 미팅 목록을 조회
+
+    log.info("Repository - Starting findMeetings query execution");
     List<Meeting> meetings = em.createQuery(
-            "SELECT m FROM Meeting m " +
-                    "JOIN m.calendar c " +
-                    "WHERE c.id = :calendarId " +
-                    "AND YEAR(m.meetDTstart) = :yearNow " +
-                    "AND MONTH(m.meetDTstart) = :monthNow " +
-                    "ORDER BY m.meetDTstart", Meeting.class)
+                    "SELECT m FROM Meeting m " +
+                            "JOIN FETCH m.calendar c " +
+                            "WHERE c.id = :calendarId " +
+                            "ORDER BY m.meetDTstart", Meeting.class)
             .setParameter("calendarId", calendarId)
-            .setParameter("yearNow", year)
-            .setParameter("monthNow", month)
             .getResultList();
-
-    // CalendarViewDto 생성 및 반환
-    return new CalendarViewDto(year, month, -1, meetings); //date 가 필요없는 경우 -1로 설정
-
+    log.info("Query executed successfully. Found " + meetings.size() + " meetings");
+    return new CalendarViewDto(year, month, -1, meetings.isEmpty() ? List.of() : meetings);
   }
+
+
 
   public CalendarViewDto findMeetings(Long calendarId, int year, int month, int date) {
     //해당 일의 미팅 목록을 조회

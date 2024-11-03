@@ -1,5 +1,6 @@
 package timetogether.domain.calendar.repository;
 
+import org.springframework.stereotype.Repository;
 import timetogether.domain.calendar.dto.CalendarViewDto;
 
 import java.util.List;

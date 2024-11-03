@@ -20,6 +20,6 @@ public class CalendarNotExist extends BaseException {
 
   @Override
   public String getMessage() {
-    return "유효한 사용자가 아니라서 캘린더를 불러오지 못했습니다.";
+    return BaseResponseStatus.NOT_VALID_USER.getMessage();
   }
 }
