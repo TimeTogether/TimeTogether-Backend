@@ -113,7 +113,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         log.info("isTokenValid = {}", s1);
         if (s1.isPresent()) {
             String accessToken = s1.get();
-            log.info("accessToken = {}", accessToken);
+            log.info("accessToken =~! {}", accessToken);
             Optional<String> socialIdOptional = jwtService.extractId(accessToken);
             log.info("socialIdOptional = {}", socialIdOptional);
             if (socialIdOptional.isPresent()) {

@@ -1,5 +1,6 @@
 package timetogether.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -35,6 +36,7 @@ public class Meeting {
   @NotNull
   private String groupName;
 
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "calendar_id")
   private Calendar calendar;
