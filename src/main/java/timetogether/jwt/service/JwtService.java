@@ -146,6 +146,7 @@ public class JwtService {
                     .verify(accessToken) // accessToken을 검증하고 유효하지 않다면 예외 발생
                     .getClaim(ID_CLAIM) // claim(id) 가져오기
                     .asString();
+            log.info("id : {}",id);
             return Optional.ofNullable(id);
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");

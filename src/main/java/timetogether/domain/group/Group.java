@@ -1,4 +1,4 @@
-package timetogether.domain;
+package timetogether.domain.group;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogether.domain.When2meet;
 
 import java.util.ArrayList;
 import java.util.List;
