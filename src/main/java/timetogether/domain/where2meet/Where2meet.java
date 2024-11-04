@@ -1,4 +1,4 @@
-package timetogether.domain;
+package timetogether.domain.where2meet;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

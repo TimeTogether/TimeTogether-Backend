@@ -8,6 +8,7 @@ import timetogether.domain.calendar.dto.request.CalendarUpdateRequestDto;
 import timetogether.domain.calendar.dto.response.CalendarCreateResponseDto;
 import timetogether.domain.calendar.dto.response.CalendarUpdateResponseDto;
 import timetogether.domain.calendar.exception.CalendarNotExist;
+import timetogether.domain.calendar.exception.CalendarValidateFail;
 import timetogether.domain.calendar.service.CalendarService;
 import timetogether.domain.calendar.service.CalendarViewService;
 import timetogether.global.response.BaseResponse;
@@ -23,7 +24,7 @@ public class CalendarController {
   private final CalendarService calendarService;
 
   /**
-   * 캘린더 개인 일정 생성
+   * 캘린더 일정 생성
    *
    * @param socialId
    * @param year
@@ -39,16 +40,9 @@ public class CalendarController {
           @PathVariable(value = "month") int month,
           @PathVariable(value = "date") int date,
           @RequestBody CalendarCreateRequestDto request
-  ) {
-    try {
-      Long calendarId = calendarViewService.putandGetCalendarId(socialId);
-      CalendarCreateResponseDto calendarCreateResponseDto = calendarService.createMeeting(socialId, request);
-      return baseResponseService.getSuccessResponse(calendarCreateResponseDto);
-    } catch (CalendarNotExist e) {
-      return baseResponseService.getFailureResponse(e.getStatus());
-    } catch (Exception e) {
-      return baseResponseService.getFailureResponse(BaseResponseStatus.INTERNAL_SERVER_ERROR);
-    }
+  ) throws CalendarNotExist, CalendarValidateFail {
+    CalendarCreateResponseDto calendarCreateResponseDto = calendarService.createMeeting(socialId, request);
+    return baseResponseService.getSuccessResponse(calendarCreateResponseDto);
   }
 
   @PatchMapping("/update/{meetId}") //수정중!!!
@@ -56,15 +50,15 @@ public class CalendarController {
           @RequestParam(value = "socialId") String socialId, //임시
           @PathVariable(value = "meetingId") int meetingId,
           @RequestBody CalendarUpdateRequestDto request
-  ) {
+  ) throws Exception {
     try {
       Long calendarId = calendarViewService.putandGetCalendarId(socialId);
       CalendarUpdateResponseDto calendarUpdateResponseDto = calendarService.updateMeeting(socialId,request);
       return baseResponseService.getSuccessResponse(calendarUpdateResponseDto);
     } catch (CalendarNotExist e) {
-      return baseResponseService.getFailureResponse(e.getStatus());
+      throw new CalendarNotExist(e.getStatus());
     } catch (Exception e) {
-      return baseResponseService.getFailureResponse(BaseResponseStatus.INTERNAL_SERVER_ERROR);
+      throw new Exception();
     }
   }
 }

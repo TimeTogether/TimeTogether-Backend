@@ -18,6 +18,8 @@ public enum BaseResponseStatus {
    * Calendar
    */
   NOT_FOUND_MEETINGS_IN_CALENDAR(HttpStatus.NOT_FOUND, "등록된 일정이 없습니다."),
+  NOT_VALID_CALENDAR_STARTTIME_AFTER_ENDTIME(HttpStatus.BAD_REQUEST, "일정 종료 시각이 일정 시각 시각보다 빠릅니다."),
+  NOT_VALID_CALENDAR_TIME_NULL(HttpStatus.BAD_REQUEST,"일정 종료 시각이나 시작 시각 값이 비어있습니다." ),
   /**
    * User
    */

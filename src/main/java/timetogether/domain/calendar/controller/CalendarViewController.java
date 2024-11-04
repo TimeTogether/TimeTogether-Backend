@@ -32,16 +32,16 @@ public class CalendarViewController {
           @RequestParam(value = "socialId") String socialId, //임시
           @PathVariable(value = "year") int year,
           @PathVariable(value = "month") int month
-  ){
+  ) throws Exception {
     try{
       Long calendarId = calendarViewService.putandGetCalendarId(socialId);
       CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonth(calendarId,year,month);
       return baseResponseService.getSuccessResponse(calendarViewResponseDto);
     }catch (CalendarNotExist e){
-      return baseResponseService.getFailureResponse(e.getStatus());
+      throw new CalendarNotExist(e.getStatus());
     }
     catch (Exception e){
-      return baseResponseService.getFailureResponse(BaseResponseStatus.INTERNAL_SERVER_ERROR);
+      throw new Exception();
     }
   }
   /**
@@ -56,16 +56,16 @@ public class CalendarViewController {
           @PathVariable(value = "year") int year,
           @PathVariable(value = "month") int month,
           @PathVariable(value = "date") int date
-  ){
+  ) throws Exception {
     try{
       Long calendarId = calendarViewService.putandGetCalendarId(socialId);
       CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonthDate(calendarId,year,month,date);
       return baseResponseService.getSuccessResponse(calendarViewResponseDto);
     }catch (CalendarNotExist e){
-      return baseResponseService.getFailureResponse(e.getStatus());
+      throw new CalendarNotExist(e.getStatus());
     }
     catch (Exception e){
-      return baseResponseService.getFailureResponse(BaseResponseStatus.INTERNAL_SERVER_ERROR);
+      throw new Exception();
     }
   }
 
@@ -80,16 +80,16 @@ public class CalendarViewController {
   public BaseResponse<Object> viewSpecificMeeting(
           @RequestParam(value = "socialId") String socialId,//임시
           @PathVariable(value = "meetingId") Long meetingId
-  ){
+  ) throws Exception {
     try{
       Long calendarId = calendarViewService.putandGetCalendarId(socialId);
       CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeeting(calendarId,meetingId);
       return baseResponseService.getSuccessResponse(calendarViewResponseDto);
     }catch (CalendarNotExist e){
-      return baseResponseService.getFailureResponse(e.getStatus());
+      throw new CalendarNotExist(e.getStatus());
     }
     catch (Exception e){
-      return baseResponseService.getFailureResponse(BaseResponseStatus.INTERNAL_SERVER_ERROR);
+      throw new Exception();
     }
   }
 
