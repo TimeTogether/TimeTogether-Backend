@@ -29,7 +29,7 @@ public class CalendarViewController {
    */
   @GetMapping("/view/{year}/{month}")
   public BaseResponse<Object> viewAllSpecificMonthMeetings(
-          @PathParam(value = "socialId") String socialId, //임시
+          @RequestParam(value = "socialId") String socialId, //임시
           @PathVariable(value = "year") int year,
           @PathVariable(value = "month") int month
   ){
@@ -52,7 +52,7 @@ public class CalendarViewController {
    */
   @GetMapping("/view/{year}/{month}/{date}")
   public BaseResponse<Object> viewAllSpecificDateMeetings(
-          @PathParam(value = "socialId") String socialId,
+          @RequestParam(value = "socialId") String socialId,
           @PathVariable(value = "year") int year,
           @PathVariable(value = "month") int month,
           @PathVariable(value = "date") int date
@@ -78,7 +78,7 @@ public class CalendarViewController {
    */
   @GetMapping("/view/{meetingId}")
   public BaseResponse<Object> viewSpecificMeeting(
-          @PathParam(value = "socialId") String socialId,//임시
+          @RequestParam(value = "socialId") String socialId,//임시
           @PathVariable(value = "meetingId") Long meetingId
   ){
     try{

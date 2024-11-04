@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import timetogether.domain.MeetType;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 public class CalendarCreateRequestDto {
@@ -12,20 +14,21 @@ public class CalendarCreateRequestDto {
   private String meetTitle;
   private String meetContent;
   private MeetType meetType;
-  private String meetDTend;
+  private LocalDateTime meetDTstart;
+  private LocalDateTime meetDTend;
   private String groupName;
   private String locationName;
   private String locationUrl;
 
   @Builder
-  public CalendarCreateRequestDto(String meetTitle, String meetContent, MeetType meetType, String meetDTend, String groupName, String locationName, String locationUrl) {
+  public CalendarCreateRequestDto(String meetTitle, String meetContent, MeetType meetType, LocalDateTime meetDTstart, LocalDateTime meetDTend, String groupName, String locationName, String locationUrl) {
     this.meetTitle = meetTitle;
     this.meetContent = meetContent;
     this.meetType = meetType;
+    this.meetDTstart = meetDTstart;
     this.meetDTend = meetDTend;
     this.groupName = groupName;
     this.locationName = locationName;
     this.locationUrl = locationUrl;
-    //Meeting 클래스의 meetDTstart 값은 service단에서 정의
   }
 }

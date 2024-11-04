@@ -10,6 +10,8 @@ import timetogether.domain.MeetType;
 import timetogether.domain.Where2meet;
 import timetogether.domain.calendar.Calendar;
 
+import java.time.LocalDateTime;
+
 
 @Entity
 @Getter
@@ -22,11 +24,11 @@ public class Meeting {
 
   @NotNull
   @Column
-  private String meetDTstart; //2024-07-04 형식
+  private LocalDateTime meetDTstart;
 
   @NotNull
   @Column
-  private String meetDTend;
+  private LocalDateTime meetDTend;
 
   private MeetType meetType;
 
@@ -44,7 +46,7 @@ public class Meeting {
   private Where2meet where2meet;
 
   @Builder
-  public Meeting(String meetDTstart, String meetDTend, MeetType meetType, String meetTitle, String meetContent, String groupName, Calendar calendar) {
+  public Meeting(LocalDateTime meetDTstart, LocalDateTime meetDTend, MeetType meetType, String meetTitle, String meetContent, String groupName, Calendar calendar) {
     this.meetDTstart = meetDTstart;
     this.meetDTend = meetDTend;
     this.meetType = meetType;
@@ -52,7 +54,6 @@ public class Meeting {
     this.meetContent = meetContent;
     this.groupName = groupName;
     this.calendar = calendar;
-
     //where2meet을 저장하는 비즈니스 로직 필요
 
   }

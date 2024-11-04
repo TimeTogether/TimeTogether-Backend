@@ -1,4 +1,4 @@
-package timetogether.domain.calendar.dto.response;
+package timetogether.domain.calendar.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class CalendarCreateResponseDto {
+public class CalendarUpdateRequestDto {
 
   private String meetTitle;
   private String meetContent;
@@ -21,7 +21,7 @@ public class CalendarCreateResponseDto {
   private String locationUrl;
 
   @Builder
-  public CalendarCreateResponseDto(String meetTitle, String meetContent, MeetType meetType, LocalDateTime meetDTstart, LocalDateTime meetDTend, String groupName, String locationName, String locationUrl) {
+  public CalendarUpdateRequestDto(String meetTitle, String meetContent, MeetType meetType, LocalDateTime meetDTstart, LocalDateTime meetDTend, String groupName, String locationName, String locationUrl) {
     this.meetTitle = meetTitle;
     this.meetContent = meetContent;
     this.meetType = meetType;
