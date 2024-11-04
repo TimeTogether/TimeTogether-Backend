@@ -9,6 +9,7 @@ import timetogether.domain.calendar.dto.response.CalendarCreateResponseDto;
 import timetogether.domain.calendar.dto.response.CalendarUpdateResponseDto;
 import timetogether.domain.calendar.exception.CalendarNotExist;
 import timetogether.domain.calendar.exception.CalendarValidateFail;
+import timetogether.domain.calendar.exception.InCalendarMeetingIdNotExist;
 import timetogether.domain.calendar.service.CalendarService;
 import timetogether.domain.calendar.service.CalendarViewService;
 import timetogether.global.response.BaseResponse;
@@ -34,7 +35,7 @@ public class CalendarController {
    * @return
    */
   @PostMapping("/create/{year}/{month}/{date}")
-  public BaseResponse<Object> createMeeting(
+  public BaseResponse<Object> createCalendarMeeting(
           @RequestParam(value = "socialId") String socialId, //임시
           @PathVariable(value = "year") int year,
           @PathVariable(value = "month") int month,
@@ -45,20 +46,24 @@ public class CalendarController {
     return baseResponseService.getSuccessResponse(calendarCreateResponseDto);
   }
 
-  @PatchMapping("/update/{meetId}") //수정중!!!
-  public BaseResponse<Object> updateMeeting(
+  @PatchMapping("/update/{meetingId}")
+  public BaseResponse<Object> updateCalendarMeeting(
           @RequestParam(value = "socialId") String socialId, //임시
-          @PathVariable(value = "meetingId") int meetingId,
+          @PathVariable(value = "meetingId") Long meetingId,
           @RequestBody CalendarUpdateRequestDto request
-  ) throws Exception {
-    try {
-      Long calendarId = calendarViewService.putandGetCalendarId(socialId);
-      CalendarUpdateResponseDto calendarUpdateResponseDto = calendarService.updateMeeting(socialId,request);
-      return baseResponseService.getSuccessResponse(calendarUpdateResponseDto);
-    } catch (CalendarNotExist e) {
-      throw new CalendarNotExist(e.getStatus());
-    } catch (Exception e) {
-      throw new Exception();
-    }
+  ) throws CalendarNotExist, CalendarValidateFail, InCalendarMeetingIdNotExist {
+
+    CalendarUpdateResponseDto calendarUpdateResponseDto = calendarService.updateMeeting(socialId,meetingId,request);
+    return baseResponseService.getSuccessResponse(calendarUpdateResponseDto);
+
+  }
+
+  @DeleteMapping("/delete/{meetingId}")
+  public BaseResponse<Object> deleteCalendarMeeting(
+          @RequestParam(value = "socialId") String socialId, //임시
+          @PathVariable(value = "meetingId") Long meetingId
+  ) throws CalendarNotExist, InCalendarMeetingIdNotExist {
+    calendarService.deleteMeeting(meetingId);
+    return baseResponseService.getSuccessResponse(BaseResponseStatus.SUCCESS);
   }
 }

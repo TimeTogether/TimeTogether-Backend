@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import timetogether.domain.MeetType;
+import timetogether.domain.calendar.dto.request.CalendarUpdateRequestDto;
 import timetogether.domain.where2meet.Where2meet;
 import timetogether.domain.calendar.Calendar;
 
@@ -34,6 +35,7 @@ public class Meeting {
 
   private String meetContent;
 
+  @NotNull
   private String groupName;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -53,7 +55,16 @@ public class Meeting {
     this.groupName = groupName;
     this.calendar = calendar;
     this.where2meet = where2meet;
-    //where2meet을 저장하는 비즈니스 로직 필요
 
+  }
+
+  //updateDto를 Meeting으로 변환하는 메소드
+  public void update(CalendarUpdateRequestDto request, Where2meet newWhere) {
+    this.meetTitle = request.getMeetTitle();
+    this.meetContent = request.getMeetContent();
+    this.meetType = request.getMeetType();
+    this.meetDTstart = request.getMeetDTstart();
+    this.meetDTend = request.getMeetDTend();
+    this.where2meet = newWhere;
   }
 }

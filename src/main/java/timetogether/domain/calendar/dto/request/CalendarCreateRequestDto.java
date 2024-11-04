@@ -33,7 +33,6 @@ public class CalendarCreateRequestDto {
     this.groupName = groupName;
     this.locationName = locationName;
     this.locationUrl = locationUrl;
-
   }
 
 }
