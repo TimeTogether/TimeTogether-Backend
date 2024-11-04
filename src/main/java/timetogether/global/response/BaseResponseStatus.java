@@ -1,36 +1,36 @@
 package timetogether.global.response;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public enum BaseResponseStatus {
   // -------- 성공 코드 시작 -------- //
-  SUCCESS(100, "요청에 성공했습니다."),
+  SUCCESS(HttpStatus.OK, "요청에 성공했습니다."),
   // -------- 성공 코드 종료 -------- //
 
   // -------- 실패 코드 시작 -------- //
-  // -------- 필요한 에러 코드 추가 => code 만들 때 안겹치게 몇번대 쓸지 적기 -------- //
   /**
    * 서버 내부 오류
-   * Code: 200번대
    */
-  INTERNAL_SERVER_ERROR(200, "서버 내부 오류입니다."),
+  INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다."),
   /**
    * Calendar
-   * Code: 300번대
    */
-  NOT_FOUND_MEETINGS_IN_CALENDAR(300, "등록된 일정이 없습니다."),
+  NOT_FOUND_MEETINGS_IN_CALENDAR(HttpStatus.NOT_FOUND, "등록된 일정이 없습니다."),
   /**
    * User
-   * Code: 400번대
    */
-  NOT_VALID_USER(400, "유효한 유저가 아닙니다.");
+  NOT_VALID_USER(HttpStatus.NOT_FOUND, "유효한 유저가 아닙니다.");
   // -------- 실패 코드 종료 -------- //
-  private int code; //코드
+  private HttpStatus httpStatus; //상태
   private String message; //메시지
 
-  BaseResponseStatus(int code, String message) {
-    this.code = code;
+  BaseResponseStatus(HttpStatus httpStatus, String message) {
+    this.httpStatus = httpStatus;
     this.message = message;
+  }
+  BaseResponseStatus(HttpStatus httpStatus) {
+    this.httpStatus = httpStatus;
   }
 }

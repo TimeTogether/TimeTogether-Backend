@@ -20,11 +20,11 @@ public class Meeting {
   private Long id;
 
   @NotNull
-  @Column(unique = true)
-  private String meetDTstart;
+  @Column
+  private String meetDTstart; //2024-07-04 형식
 
   @NotNull
-  @Column(unique = true)
+  @Column
   private String meetDTend;
 
   private MeetType meetType;

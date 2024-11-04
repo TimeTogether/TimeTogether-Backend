@@ -14,7 +14,7 @@ public class BaseResponseServiceImpl implements BaseResponseService {
   @Override
   public <T> BaseResponse<Object> getSuccessResponse(T data) {
     return BaseResponse.builder()
-            .code(BaseResponseStatus.SUCCESS.getCode())
+            .httpStatus(BaseResponseStatus.SUCCESS.getHttpStatus())
             .message(BaseResponseStatus.SUCCESS.getMessage())
             .data(data)
             .build();
@@ -29,7 +29,7 @@ public class BaseResponseServiceImpl implements BaseResponseService {
   @Override
   public <T> BaseResponse<Object> getSuccessResponse() {
     return BaseResponse.builder()
-            .code(BaseResponseStatus.SUCCESS.getCode())
+            .httpStatus(BaseResponseStatus.SUCCESS.getHttpStatus())
             .message(BaseResponseStatus.SUCCESS.getMessage())
             .build();
   }
@@ -43,7 +43,7 @@ public class BaseResponseServiceImpl implements BaseResponseService {
    */
   public <T> BaseResponse<Object> getFailureResponse(BaseResponseStatus status) {
     return BaseResponse.builder()
-            .code(status.getCode())
+            .httpStatus(status.getHttpStatus())
             .message(status.getMessage())
             .build();
   }

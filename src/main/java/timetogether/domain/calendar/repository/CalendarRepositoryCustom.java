@@ -1,12 +1,11 @@
 package timetogether.domain.calendar.repository;
 
-import org.springframework.stereotype.Repository;
-import timetogether.domain.calendar.dto.CalendarViewDto;
-
-import java.util.List;
+import timetogether.domain.calendar.dto.response.CalendarViewResponseDto;
 
 public interface CalendarRepositoryCustom {
-  CalendarViewDto findMeetings(Long calendarId, int yearNow, int monthNow);
-  CalendarViewDto findMeetings(Long calendarId, int yearNow, int monthNow, int dateNow);
+  public CalendarViewResponseDto findMeetings(Long calendarId, int year, int month);
 
+  public CalendarViewResponseDto findMeetings(Long calendarId, int year, int month, int date);
+
+  public CalendarViewResponseDto findMeetings(Long calendarId, Long meetingId);
 }
