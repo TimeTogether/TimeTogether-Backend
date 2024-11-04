@@ -1,12 +1,13 @@
-package timetogether.domain;
+package timetogether.domain.meeting;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogether.domain.MeetType;
+import timetogether.domain.Where2meet;
 import timetogether.domain.calendar.Calendar;
 
 
@@ -33,10 +34,8 @@ public class Meeting {
 
   private String meetContent;
 
-  @NotNull
   private String groupName;
 
-  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "calendar_id")
   private Calendar calendar;
@@ -45,7 +44,7 @@ public class Meeting {
   private Where2meet where2meet;
 
   @Builder
-  public Meeting(String meetDTstart, String meetDTend, MeetType meetType, String meetTitle, String meetContent, String groupName, Calendar calendar, Where2meet where2meet) {
+  public Meeting(String meetDTstart, String meetDTend, MeetType meetType, String meetTitle, String meetContent, String groupName, Calendar calendar) {
     this.meetDTstart = meetDTstart;
     this.meetDTend = meetDTend;
     this.meetType = meetType;
@@ -53,6 +52,8 @@ public class Meeting {
     this.meetContent = meetContent;
     this.groupName = groupName;
     this.calendar = calendar;
-    this.where2meet = where2meet;
+
+    //where2meet을 저장하는 비즈니스 로직 필요
+
   }
 }

@@ -1,11 +1,9 @@
 package timetogether.domain.calendar;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import timetogether.domain.Meeting;
+import timetogether.domain.meeting.Meeting;
 
 import java.util.ArrayList;
 import java.util.List;

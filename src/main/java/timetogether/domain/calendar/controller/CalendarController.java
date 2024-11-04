@@ -40,7 +40,7 @@ public class CalendarController {
   ) {
     try {
       Long calendarId = calendarViewService.putandGetCalendarId(socialId);
-      CalendarCreateResponseDto calendarCreateResponseDto = calendarService.createMeeting(calendarId, year, month, date, request);
+      CalendarCreateResponseDto calendarCreateResponseDto = calendarService.createMeeting( socialId,calendarId, year, month, date, request);
       return baseResponseService.getSuccessResponse(calendarCreateResponseDto);
     } catch (CalendarNotExist e) {
       return baseResponseService.getFailureResponse(e.getStatus());

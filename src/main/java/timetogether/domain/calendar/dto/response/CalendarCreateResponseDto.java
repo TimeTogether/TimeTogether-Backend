@@ -14,17 +14,16 @@ public class CalendarCreateResponseDto {
   private MeetType meetType;
   private String meetDTstart;
   private String meetDTend;
-  private String locationName;
-  private String locationUrl;
+  private String groupName;
+
 
   @Builder
-  public CalendarCreateResponseDto(String meetTitle, String meetContent, MeetType meetType, String meetDTstart, String meetDTend, String locationName, String locationUrl) {
+  public CalendarCreateResponseDto(String meetTitle, String meetContent, MeetType meetType, String meetDTstart, String meetDTend, String groupName) {
     this.meetTitle = meetTitle;
     this.meetContent = meetContent;
     this.meetType = meetType;
     this.meetDTstart = meetDTstart;
     this.meetDTend = meetDTend;
-    this.locationName = locationName;
-    this.locationUrl = locationUrl;
+    this.groupName = groupName;
   }
 }

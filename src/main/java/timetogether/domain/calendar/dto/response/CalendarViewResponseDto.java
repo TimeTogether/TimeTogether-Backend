@@ -3,7 +3,7 @@ package timetogether.domain.calendar.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import timetogether.domain.Meeting;
+import timetogether.domain.meeting.Meeting;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package timetogether.domain.calendar.repository;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import timetogether.domain.Meeting;
+import timetogether.domain.meeting.Meeting;
 import timetogether.domain.calendar.dto.response.CalendarViewResponseDto;
 
 import java.util.List;
