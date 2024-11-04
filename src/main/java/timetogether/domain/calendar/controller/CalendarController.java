@@ -48,4 +48,21 @@ public class CalendarController {
       return baseResponseService.getFailureResponse(BaseResponseStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @PatchMapping("/update/{meetId}") //수정중!!!
+  public BaseResponse<Object> updateMeeting(
+          @PathParam(value = "socialId") String socialId, //임시
+          @PathVariable(value = "meetingId") int meetingId
+  ) {
+    try {
+      Long calendarId = calendarViewService.putandGetCalendarId(socialId);
+      //CalendarCreateResponseDto calendarCreateResponseDto = calendarService.createMeeting( socialId,calendarId, year, month, date, request);
+      //return baseResponseService.getSuccessResponse(calendarCreateResponseDto);
+      return null;
+    } catch (CalendarNotExist e) {
+      return baseResponseService.getFailureResponse(e.getStatus());
+    } catch (Exception e) {
+      return baseResponseService.getFailureResponse(BaseResponseStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

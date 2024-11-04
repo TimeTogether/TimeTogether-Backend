@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico").permitAll() // 기본 페이지 접근 허용
-                        .anyRequest().authenticated() // 그 외의 요청은 인증 필요
+                        //.anyRequest().authenticated() // 그 외의 요청은 인증 필요
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oAuth2LoginSuccessHandler) // 소셜 로그인 성공 핸들러
