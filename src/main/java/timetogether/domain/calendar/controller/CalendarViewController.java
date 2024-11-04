@@ -1,18 +1,12 @@
 package timetogether.domain.calendar.controller;
 
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import timetogether.domain.calendar.dto.request.CalendarCreateRequestDto;
-import timetogether.domain.calendar.dto.response.CalendarCreateResponseDto;
 import timetogether.domain.calendar.dto.response.CalendarViewResponseDto;
 import timetogether.domain.calendar.exception.CalendarNotExist;
-import timetogether.domain.calendar.service.CalendarService;
 import timetogether.domain.calendar.service.CalendarViewService;
 import timetogether.global.response.BaseResponse;
 import timetogether.global.response.BaseResponseService;
-import timetogether.global.response.BaseResponseStatus;
-import timetogether.jwt.service.JwtService;
 
 @RestController
 @RequestMapping("/calendar")
@@ -32,17 +26,12 @@ public class CalendarViewController {
           @RequestParam(value = "socialId") String socialId, //임시
           @PathVariable(value = "year") int year,
           @PathVariable(value = "month") int month
-  ) throws Exception {
-    try{
-      Long calendarId = calendarViewService.putandGetCalendarId(socialId);
-      CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonth(calendarId,year,month);
-      return baseResponseService.getSuccessResponse(calendarViewResponseDto);
-    }catch (CalendarNotExist e){
-      throw new CalendarNotExist(e.getStatus());
-    }
-    catch (Exception e){
-      throw new Exception();
-    }
+  ) throws CalendarNotExist {
+
+    Long calendarId = calendarViewService.putandGetCalendarId(socialId);
+    CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonth(calendarId,year,month);
+    return baseResponseService.getSuccessResponse(calendarViewResponseDto);
+
   }
   /**
    * user의 캘린더 (특정 월,날짜) 일정 전체 조회
@@ -56,17 +45,12 @@ public class CalendarViewController {
           @PathVariable(value = "year") int year,
           @PathVariable(value = "month") int month,
           @PathVariable(value = "date") int date
-  ) throws Exception {
-    try{
-      Long calendarId = calendarViewService.putandGetCalendarId(socialId);
-      CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonthDate(calendarId,year,month,date);
-      return baseResponseService.getSuccessResponse(calendarViewResponseDto);
-    }catch (CalendarNotExist e){
-      throw new CalendarNotExist(e.getStatus());
-    }
-    catch (Exception e){
-      throw new Exception();
-    }
+  ) throws CalendarNotExist {
+
+    Long calendarId = calendarViewService.putandGetCalendarId(socialId);
+    CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonthDate(calendarId,year,month,date);
+    return baseResponseService.getSuccessResponse(calendarViewResponseDto);
+
   }
 
 
@@ -80,17 +64,12 @@ public class CalendarViewController {
   public BaseResponse<Object> viewSpecificMeeting(
           @RequestParam(value = "socialId") String socialId,//임시
           @PathVariable(value = "meetingId") Long meetingId
-  ) throws Exception {
-    try{
-      Long calendarId = calendarViewService.putandGetCalendarId(socialId);
-      CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeeting(calendarId,meetingId);
-      return baseResponseService.getSuccessResponse(calendarViewResponseDto);
-    }catch (CalendarNotExist e){
-      throw new CalendarNotExist(e.getStatus());
-    }
-    catch (Exception e){
-      throw new Exception();
-    }
+  ) throws CalendarNotExist {
+
+    Long calendarId = calendarViewService.putandGetCalendarId(socialId);
+    CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeeting(calendarId,meetingId);
+    return baseResponseService.getSuccessResponse(calendarViewResponseDto);
+
   }
 
 }
