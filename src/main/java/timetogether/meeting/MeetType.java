@@ -1,4 +1,4 @@
-package timetogether.demo.domain;
+package timetogether.meeting;
 
 public enum MeetType {
   OFFLINE, ONLINE

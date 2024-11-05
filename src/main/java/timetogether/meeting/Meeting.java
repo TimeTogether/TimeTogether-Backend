@@ -1,4 +1,4 @@
-package timetogether.demo.domain;
+package timetogether.meeting;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,6 +6,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogether.calendar.dto.request.CalendarUpdateRequestDto;
+import timetogether.where2meet.Where2meet;
+import timetogether.calendar.Calendar;
+
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -18,12 +23,10 @@ public class Meeting {
   private Long id;
 
   @NotNull
-  @Column(unique = true)
-  private String meetDTstart;
+  private LocalDateTime meetDTstart;
 
   @NotNull
-  @Column(unique = true)
-  private String meetDTend;
+  private LocalDateTime meetDTend;
 
   private MeetType meetType;
 
@@ -42,7 +45,7 @@ public class Meeting {
   private Where2meet where2meet;
 
   @Builder
-  public Meeting(String meetDTstart, String meetDTend, MeetType meetType, String meetTitle, String meetContent, String groupName, Calendar calendar, Where2meet where2meet) {
+  public Meeting(LocalDateTime meetDTstart, LocalDateTime meetDTend, MeetType meetType, String meetTitle, String meetContent, String groupName, Calendar calendar, Where2meet where2meet) {
     this.meetDTstart = meetDTstart;
     this.meetDTend = meetDTend;
     this.meetType = meetType;
@@ -51,5 +54,16 @@ public class Meeting {
     this.groupName = groupName;
     this.calendar = calendar;
     this.where2meet = where2meet;
+
+  }
+
+  //updateDto를 Meeting으로 변환하는 메소드
+  public void update(CalendarUpdateRequestDto request, Where2meet newWhere) {
+    this.meetTitle = request.getMeetTitle();
+    this.meetContent = request.getMeetContent();
+    this.meetType = request.getMeetType();
+    this.meetDTstart = request.getMeetDTstart();
+    this.meetDTend = request.getMeetDTend();
+    this.where2meet = newWhere;
   }
 }
