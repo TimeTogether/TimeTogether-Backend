@@ -38,10 +38,14 @@ jobs:
 
     # 4. jar 파일 복사
     - name: Copy jar
-      run:  cp ./build/libs/*.jar ./deploy
+      run: |
+        cp ./build/libs/*.jar ./deploy/
+        cp ./scripts/deploy.sh ./deploy/
+        cp ./appspec.yml ./deploy/
 
     - name: Make zip file
-      run: zip -r ./timetogether.zip ./deploy
+      run: | 
+        cd deploy && zip -r ../timetogether.zip .
       shell: bash
 
     - name: Configure AWS credentials

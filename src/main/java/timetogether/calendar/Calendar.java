@@ -1,16 +1,16 @@
-package timetogether.demo.domain;
+package timetogether.calendar;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogether.meeting.Meeting;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Calendar {
 
   @Id
