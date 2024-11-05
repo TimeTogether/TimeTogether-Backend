@@ -1,18 +1,14 @@
 package timetogether.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import timetogether.jwt.filter.JwtAuthenticationProcessingFilter;
 import timetogether.jwt.service.JwtService;
 import timetogether.oauth2.handler.OAuth2LoginFailureHandler;
@@ -37,37 +33,19 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico").permitAll() // 기본 페이지 접근 허용
-//                        .anyRequest().authenticated() // 그 외의 요청은 인증 필요
-//                )
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/", "/login/**", "/home").permitAll()
+                        .anyRequest().authenticated() // 그 외의 요청은 인증 필요
+                )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oAuth2LoginSuccessHandler) // 소셜 로그인 성공 핸들러
                         .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 핸들러
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)) // 사용자 정보 서비스 설정
                 );
 
-        http.addFilterAfter(jwtAuthenticationProcessingFilter(), LogoutFilter.class); // JWT 필터 추가
-        // 필터가 세워지는 순서 확인하기
-        // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
-        // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
-//        http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
-//        http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
 
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // BCryptPasswordEncoder를 사용하여 비밀번호 인코딩
-    }
-
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        // 여기서 필요한 추가 설정을 할 수 있습니다.
-        return authenticationManagerBuilder.build();
     }
 
     @Bean

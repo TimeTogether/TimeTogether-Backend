@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import timetogether.group.Group;
 import timetogether.oauth2.entity.User;
-import timetogether.when2meet.When2meet;
+import timetogether.where2meet.When2meet;
 
 @Entity
 @Getter
