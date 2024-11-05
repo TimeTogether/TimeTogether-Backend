@@ -3,8 +3,8 @@ package timetogether.global.response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import timetogether.domain.calendar.exception.CalendarNotExist;
-import timetogether.domain.calendar.exception.CalendarValidateFail;
+import timetogether.calendar.exception.CalendarNotExist;
+import timetogether.calendar.exception.CalendarValidateFail;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
