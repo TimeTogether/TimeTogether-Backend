@@ -3,7 +3,7 @@ package timetogether.oauth2.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import timetogether.domain.calendar.Calendar;
+import timetogether.calendar.Calendar;
 
 @Entity
 @Getter
