@@ -44,25 +44,22 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 .filter(jwtService::isTokenValid)
                 .orElse(null);
 
-        // 리프레시 토큰이 DB에 존재하는 경우, 액세스 토큰을 재발급한다
+        // 리프레시 토큰이 요청헤더에 존재하는 경우 -> 액세스 토큰이 만료되었을 때 또는 리프레시 토큰이 만료되었을때
+        // 리프레스 토큰이 DB에 존재하는 경우, 해당 사용자에 대한 리프레시 토큰과 액세스 토큰을 재발급한다
         if (refreshToken != null) {
             checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
             return; // 이후 인증 처리 X
         }
 
-        // 리프레시 토큰이 유효하지 않다면 로그아웃 처리
-        if (refreshToken == null) {
-            checkAccessTokenAndAuthentication(request, response, filterChain);
-        }
+        // 액세스 토큰이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러가 발생한다
+        // 액세스 토큰이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공한다
+        // 로그인한 유저인지 확인하는 과정
+        checkAccessTokenAndAuthentication(request, response, filterChain);
+
+        filterChain.doFilter(request, response);
     }
 
-    /**
-     *  [리프레시 토큰으로 유저 정보 찾기 & 액세스 토큰/리프레시 토큰 재발급 메소드]
-     *  파라미터로 들어온 헤더에서 추출한 리프레시 토큰으로 DB에서 유저를 찾고, 해당 유저가 있다면
-     *  JwtService.createAccessToken()으로 AccessToken 생성,
-     *  reIssueRefreshToken()로 리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드 호출
-     *  그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
-     */
+    // 리프레시 토큰 및 액세스 토큰 재발급
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
         userRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
@@ -72,11 +69,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 });
     }
 
-    /**
-     * [리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드]
-     * jwtService.createRefreshToken()으로 리프레시 토큰 재발급 후
-     * DB에 재발급한 리프레시 토큰 업데이트 후 Flush
-     */
+
+    // 리프레시 토큰 재발급
     private String reIssueRefreshToken(User user) {
         String reIssuedRefreshToken = jwtService.createRefreshToken();
         user.updateRefreshToken(reIssuedRefreshToken);
@@ -84,63 +78,22 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         return reIssuedRefreshToken;
     }
 
-    /**
-     * [액세스 토큰 체크 & 인증 처리 메소드]
-     * request에서 extractAccessToken()으로 액세스 토큰 추출 후, isTokenValid()로 유효한 토큰인지 검증
-     * 유효한 토큰이면, 액세스 토큰에서 extractEmail로 Email을 추출한 후 findByEmail()로 해당 이메일을 사용하는 유저 객체 반환
-     * 그 유저 객체를 saveAuthentication()으로 인증 처리하여
-     * 인증 허가 처리된 객체를 SecurityContextHolder에 담기
-     * 그 후 다음 인증 필터로 진행
-     */
+
+    // access 토큰의 유효성을 확인하고 사용자 인증을 처리
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentication() 호출");
 
-        Optional<String> s = jwtService.extractAccessToken(request);
-        log.info("extractAccessToken = {}", s);
-        Optional<String> s1 = s.filter(jwtService::isTokenValid);
-        log.info("isTokenValid = {}", s1);
-        if (s1.isPresent()) {
-            String accessToken = s1.get();
-            log.info("accessToken = {}", accessToken);
-            Optional<String> socialIdOptional = jwtService.extractId(accessToken);
-            log.info("socialIdOptional = {}", socialIdOptional);
-            if (socialIdOptional.isPresent()) {
-                String socialId = socialIdOptional.get();
-                log.info("socialId = {}", socialId);
-                Optional<User> userOptional = userRepository.findBySocialId(socialId);
-                if (userOptional.isPresent()) {
-                    User user = userOptional.get();
-                    log.info("socialId = {}", user);
-                    saveAuthentication(user);
-                }
-            }
-        }
-
-//        jwtService.extractAccessToken(request)
-//                .filter(jwtService::isTokenValid)
-//                .ifPresent(accessToken -> jwtService.extractId(accessToken)
-//                        .ifPresent(socialId -> userRepository.findBySocialId(socialId)
-//                                .ifPresent(this::saveAuthentication)));
+        jwtService.extractAccessToken(request)
+                .filter(jwtService::isTokenValid)
+                .ifPresent(accessToken -> jwtService.extractId(accessToken)
+                        .ifPresent(socialId -> userRepository.findBySocialId(socialId)
+                                .ifPresent(this::saveAuthentication)));
 
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * [인증 허가 메소드]
-     * 파라미터의 유저 : 우리가 만든 회원 객체 / 빌더의 유저 : UserDetails의 User 객체
-     *
-     * new UsernamePasswordAuthenticationToken()로 인증 객체인 Authentication 객체 생성
-     * UsernamePasswordAuthenticationToken의 파라미터
-     * 1. 위에서 만든 UserDetailsUser 객체 (유저 정보)
-     * 2. credential(보통 비밀번호로, 인증 시에는 보통 null로 제거)
-     * 3. Collection < ? extends GrantedAuthority>로,
-     * UserDetails의 User 객체 안에 Set<GrantedAuthority> authorities이 있어서 getter로 호출한 후에,
-     * new NullAuthoritiesMapper()로 GrantedAuthoritiesMapper 객체를 생성하고 mapAuthorities()에 담기
-     *
-     * SecurityContextHolder.getContext()로 SecurityContext를 꺼낸 후,
-     * setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한 인증 허가 처리
-     */
+
     public void saveAuthentication(User myUser) {
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
                 .username(myUser.getSocialId()) // 소셜아이디를 사용자 이름으로 사용

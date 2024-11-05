@@ -115,16 +115,14 @@ public class JwtService {
         response.setHeader(refreshHeader,BEARER+refreshToken);
     }
 
-    /**
-     * RefreshToken DB 저장(업데이트)
-     */
+
     public void updateRefreshToken(String socialId, String refreshToken) {
         Optional<User> userOptional = userRepository.findBySocialId(socialId);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             user.updateRefreshToken(refreshToken);
-            userRepository.save(user);
+            userRepository.save(user); // 수정
             log.info("Refresh token updated for user with social ID: {}", socialId);
         } else {
             log.error("No matching user found for social ID: {}", socialId);
