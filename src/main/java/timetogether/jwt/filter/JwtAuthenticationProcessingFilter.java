@@ -15,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 import timetogether.jwt.service.JwtService;
-import timetogether.jwt.util.PasswordUtil;
 import timetogether.oauth2.entity.User;
 import timetogether.oauth2.repository.UserRepository;
 
@@ -37,31 +36,21 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         // 요청 정보를 로그에 출력
         log.info("Incoming request: {} {}", request.getMethod(), request.getRequestURI());
 
-        // 요청 헤더 출력 (예: Authorization 헤더)
         String authorizationHeader = request.getHeader("Authorization");
         log.info("Authorization Header: {}", authorizationHeader);
 
-        log.info("Request parameters: {}", request.getParameterMap());
-
         // 사용자 요청 헤더에서 RefreshToken 추출
-        // -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
-        // 사용자의 요청 헤더에 RefreshToken이 있는 경우는, AccessToken이 만료되어 요청한 경우밖에 없다.
-        // 따라서, 위의 경우를 제외하면 추출한 refreshToken은 모두 null
         String refreshToken = jwtService.extractRefreshToken(request)
                 .filter(jwtService::isTokenValid)
                 .orElse(null);
 
-        // 리프레시 토큰이 요청 헤더에 존재했다면, 사용자가 AccessToken이 만료되어서
-        // RefreshToken까지 보낸 것이므로 리프레시 토큰이 DB의 리프레시 토큰과 일치하는지 판단 후,
-        // 일치한다면 AccessToken을 재발급해준다.
+        // 리프레시 토큰이 DB에 존재하는 경우, 액세스 토큰을 재발급한다
         if (refreshToken != null) {
             checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
-            return; // RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해 바로 return으로 필터 진행 막기
+            return; // 이후 인증 처리 X
         }
 
-        // RefreshToken이 없거나 유효하지 않다면, AccessToken을 검사하고 인증을 처리하는 로직 수행
-        // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
-        // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
+        // 리프레시 토큰이 유효하지 않다면 로그아웃 처리
         if (refreshToken == null) {
             checkAccessTokenAndAuthentication(request, response, filterChain);
         }
@@ -153,10 +142,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한 인증 허가 처리
      */
     public void saveAuthentication(User myUser) {
-        // 비밀번호를 사용하지 않도록 변경
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
                 .username(myUser.getSocialId()) // 소셜아이디를 사용자 이름으로 사용
-                .password("") // 비밀번호를 빈 문자열로 설정
                 .roles(myUser.getRole().name()) // 사용자 권한 설정
                 .build();
 

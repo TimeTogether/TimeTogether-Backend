@@ -47,12 +47,5 @@ public class User {
     this.refreshToken = updateRefreshToken;
   }
 
-//  @Builder
-//  public User(String socialId, boolean groupMgr, String userName, SocialType socialType, Role role) {
-//    this.socialId = socialId; // social Id 고유 식별자
-//    this.userName = userName;
-//    this.socialType = socialType;
-//    this.role = role;
-//    this.groupMgr = groupMgr;
-//  }
+
 }
