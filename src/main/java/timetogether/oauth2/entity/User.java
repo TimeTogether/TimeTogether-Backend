@@ -3,11 +3,7 @@ package timetogether.oauth2.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import timetogether.demo.domain.Calendar;
-
-import java.util.ArrayList;
-import java.util.List;
+import timetogether.calendar.Calendar;
 
 @Entity
 @Getter

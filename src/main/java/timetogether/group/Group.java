@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import timetogether.when2meet.When2meet;
+import timetogether.where2meet.When2meet;
 
 import java.util.ArrayList;
 import java.util.List;

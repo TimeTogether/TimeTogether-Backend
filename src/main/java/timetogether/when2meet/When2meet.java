@@ -5,6 +5,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogether.group.Group;
+import timetogether.meeting.MeetType;
+import timetogether.oauth2.entity.User;
 
 @Entity
 @Getter
