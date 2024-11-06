@@ -9,7 +9,6 @@ import timetogether.group.repository.GroupRepository;
 @Service
 @RequiredArgsConstructor
 public class GroupService {
-  private final GroupRepository groupRepository;
   //요거 수정중
   public GroupCreateResponseDto createGroup(String socialId, GroupCreateRequestDto request) {
     return null;
