@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogether.group.dto.GroupCreateRequestDto;
+import timetogether.meeting.MeetType;
 import timetogether.when2meet.When2meet;
 
 import java.util.ArrayList;
@@ -22,25 +24,42 @@ public class Group {
   private Long id;
   @NotNull
   private String groupName;
+  private String groupTitle;
   private String groupImg;
-
   @NotNull
-  private Long groupMgrId;
+  private String groupMgrId;
   @NotNull
   private String groupTimes;
+  private String date;
+  private MeetType meetType;
   @NotNull
   private String groupUrl;
 
   @OneToMany(mappedBy = "group")
   private List<When2meet> when2meetList = new ArrayList<>();
 
-
   @Builder
-  public Group(String groupName, String groupImg, Long groupMgrId, String groupTimes, String groupUrl) {
+  public Group(String groupName, String groupTitle, String groupImg, String groupMgrId, String groupTimes, String date, MeetType meetType, String groupUrl) {
     this.groupName = groupName;
+    this.groupTitle = groupTitle;
     this.groupImg = groupImg;
     this.groupMgrId = groupMgrId;
     this.groupTimes = groupTimes;
+    this.date = date;
+    this.meetType = meetType;
     this.groupUrl = groupUrl;
+  }
+
+  public Group update(GroupCreateRequestDto request) {
+
+    this.groupName = request.getGroupName();
+    this.groupTitle = request.getGroupTitle();
+    this.groupImg = request.getGroupImg();
+    this.groupTimes = request.getGroupTimes();
+    this.date = request.getDate();
+    this.meetType = request.getMeetType();
+    this.groupUrl = request.getGroupUrl();
+
+    return this;
   }
 }

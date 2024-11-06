@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import timetogether.group.Group;
 
 @Repository
-public abstract class GroupRepository implements JpaRepository<Group, Long> {
+public interface GroupRepository extends JpaRepository<Group, Long> {
 }
