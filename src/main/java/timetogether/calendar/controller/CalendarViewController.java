@@ -33,33 +33,33 @@ public class CalendarViewController {
    * @param year,month
    * @return BaseResponse<Object>
    */
-  @GetMapping("/view/{year}/{month}")
-  public BaseResponse<Object> viewAllSpecificMonthMeetings(
-          @RequestHeader("Authorization") String authorizationHeader,
-          @PathVariable(value = "year") int year,
-          @PathVariable(value = "month") int month
-  ) throws CalendarNotExist {
-
-    log.info("헤더에서 가져온 :{}", authorizationHeader);
-    String token = authorizationHeader.replace("Bearer ", "");
-    Optional<String> socialId = jwtService.extractId(token);
-
-    Long calendarId = calendarViewService.putandGetCalendarId(socialId.get());
-    CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonth(calendarId, year, month);
-    return baseResponseService.getSuccessResponse(calendarViewResponseDto);
-  }
 //  @GetMapping("/view/{year}/{month}")
 //  public BaseResponse<Object> viewAllSpecificMonthMeetings(
-//          @RequestParam(value = "socialId") String socialId, //임시
+//          @RequestHeader("Authorization") String authorizationHeader,
 //          @PathVariable(value = "year") int year,
 //          @PathVariable(value = "month") int month
 //  ) throws CalendarNotExist {
 //
-//    Long calendarId = calendarViewService.putandGetCalendarId(socialId);
-//    CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonth(calendarId,year,month);
-//    return baseResponseService.getSuccessResponse(calendarViewResponseDto);
+//    log.info("헤더에서 가져온 :{}", authorizationHeader);
+//    String token = authorizationHeader.replace("Bearer ", "");
+//    Optional<String> socialId = jwtService.extractId(token);
 //
+//    Long calendarId = calendarViewService.putandGetCalendarId(socialId.get());
+//    CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonth(calendarId, year, month);
+//    return baseResponseService.getSuccessResponse(calendarViewResponseDto);
 //  }
+  @GetMapping("/view/{year}/{month}")
+  public BaseResponse<Object> viewAllSpecificMonthMeetings(
+          @RequestParam(value = "socialId") String socialId, //임시
+          @PathVariable(value = "year") int year,
+          @PathVariable(value = "month") int month
+  ) throws CalendarNotExist {
+
+    Long calendarId = calendarViewService.putandGetCalendarId(socialId);
+    CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonth(calendarId,year,month);
+    return baseResponseService.getSuccessResponse(calendarViewResponseDto);
+
+  }
   /**
    * user의 캘린더 (특정 월,날짜) 일정 전체 조회
    *

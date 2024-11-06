@@ -22,6 +22,10 @@ public enum BaseResponseStatus {
   NOT_VALID_CALENDAR_TIME_NULL(HttpStatus.BAD_REQUEST,"일정 종료 시각이나 시작 시각 값이 비어있습니다." ),
   NOT_EXIST_MEETINGID(HttpStatus.NOT_FOUND, "존재하지 않은 캘린더 회의일정입니다."),
   /**
+   * Group
+   */
+  NOT_VALID_MEMBERS_WHEN_CREATING_GROUP(HttpStatus.NOT_FOUND, "존재하지 않는 멤버를 등록하셨습니다."),
+  /**
    * User
    */
   NOT_VALID_USER(HttpStatus.NOT_FOUND, "유효한 유저가 아닙니다.");

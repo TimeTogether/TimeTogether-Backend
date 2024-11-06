@@ -34,12 +34,13 @@ public class Group {
   private MeetType meetType;
   @NotNull
   private String groupUrl;
+  private String groupMembers;
 
   @OneToMany(mappedBy = "group")
   private List<When2meet> when2meetList = new ArrayList<>();
 
   @Builder
-  public Group(String groupName, String groupTitle, String groupImg, String groupMgrId, String groupTimes, String date, MeetType meetType, String groupUrl) {
+  public Group(String groupName, String groupTitle, String groupImg, String groupMgrId, String groupTimes, String date, MeetType meetType, String groupUrl,String groupMembers) {
     this.groupName = groupName;
     this.groupTitle = groupTitle;
     this.groupImg = groupImg;
@@ -48,18 +49,17 @@ public class Group {
     this.date = date;
     this.meetType = meetType;
     this.groupUrl = groupUrl;
+    this.groupMembers = groupMembers;
   }
 
   public Group update(GroupCreateRequestDto request) {
-
     this.groupName = request.getGroupName();
     this.groupTitle = request.getGroupTitle();
     this.groupImg = request.getGroupImg();
     this.groupTimes = request.getGroupTimes();
-    this.date = request.getDate();
     this.meetType = request.getMeetType();
     this.groupUrl = request.getGroupUrl();
-
+    this.groupMembers = request.getGroupMembers();
     return this;
   }
 }

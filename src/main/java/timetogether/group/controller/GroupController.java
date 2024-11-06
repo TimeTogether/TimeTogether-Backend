@@ -6,6 +6,7 @@ import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.exception.CalendarValidateFail;
 import timetogether.group.dto.GroupCreateRequestDto;
 import timetogether.group.dto.GroupCreateResponseDto;
+import timetogether.group.exception.NotValidMembersException;
 import timetogether.group.service.GroupService;
 import timetogether.global.response.BaseResponse;
 import timetogether.global.response.BaseResponseService;
@@ -15,8 +16,8 @@ import timetogether.global.response.BaseResponseService;
 @RequiredArgsConstructor
 public class GroupController {
 
-  private BaseResponseService baseResponseService;
-  private GroupService groupService;
+  private final BaseResponseService baseResponseService;
+  private final GroupService groupService;
 
   /**
    * 그룹 생성
@@ -29,14 +30,23 @@ public class GroupController {
   public BaseResponse<Object> createGroup(
           @RequestParam(value = "socialId") String socialId, //임시
           @RequestBody GroupCreateRequestDto request
-  ) {
+  ) throws NotValidMembersException {
     GroupCreateResponseDto groupCreateResponseDto = groupService.createGroup(socialId, request);
     return baseResponseService.getSuccessResponse(groupCreateResponseDto);
   }
+
+  /**
+   * 그룹 정보 수정
+   *
+   * @param socialId
+   * @param groupId
+   * @param request
+   * @return
+   */
   @PostMapping("/{groupId}/edit")
   public BaseResponse<Object> createGroup(
           @RequestParam(value = "socialId") String socialId, //임시
-          @RequestParam(value = "groupId") Long groupId,
+          @PathVariable(value = "groupId") Long groupId,
           @RequestBody GroupCreateRequestDto request
   ) {
     GroupCreateResponseDto groupCreateResponseDto = groupService.editGroup(socialId, groupId,request);

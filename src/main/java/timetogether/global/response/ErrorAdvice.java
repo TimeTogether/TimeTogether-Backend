@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.exception.CalendarValidateFail;
+import timetogether.group.exception.NotValidMembersException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -30,6 +31,13 @@ public class ErrorAdvice {
   public BaseResponse<Object> handleGeneralException() {
     return baseResponseService.getFailureResponse(
             BaseResponseStatus.INTERNAL_SERVER_ERROR
+    );
+  }
+
+  @ExceptionHandler(NotValidMembersException.class)
+  public BaseResponse<Object> handleNotValidMembersWhenCreatingGroup(){
+    return baseResponseService.getFailureResponse(
+            BaseResponseStatus.NOT_VALID_MEMBERS_WHEN_CREATING_GROUP
     );
   }
 }
