@@ -36,7 +36,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             // TODO : 동일한 사용자가 다른 브라우저에서 로그인할 경우 처리해보기
             loginSuccess(response, socialId); // 로그인에 성공한 경우 access, refresh 토큰 생성
-            response.sendRedirect("/home"); // 로그인 성공 후 redirect할 URL
+            //response.sendRedirect("/home"); // 로그인 성공 후 redirect할 URL
         } catch (Exception e) {
             throw e;
         }

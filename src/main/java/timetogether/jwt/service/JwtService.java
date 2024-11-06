@@ -77,7 +77,7 @@ public class JwtService {
 
         setAccessTokenHeader(response, accessToken);
         setRefreshTokenHeader(response, refreshToken);
-        log.info("Access Token, Refresh Token 헤더 설정 완료");
+        log.info("Access Token, Refresh Token 헤더 설정 완료 = {}", accessToken);
     }
 
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
