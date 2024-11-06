@@ -18,14 +18,28 @@ public class GroupController {
   private BaseResponseService baseResponseService;
   private GroupService groupService;
 
+  /**
+   * 그룹 생성
+   *
+   * @param socialId
+   * @param request
+   * @return
+   */
   @PostMapping("/create")
   public BaseResponse<Object> createGroup(
           @RequestParam(value = "socialId") String socialId, //임시
           @RequestBody GroupCreateRequestDto request
-  ) throws CalendarNotExist, CalendarValidateFail {
-    //방장인지 확인 여부 로직 필요
-
+  ) {
     GroupCreateResponseDto groupCreateResponseDto = groupService.createGroup(socialId, request);
+    return baseResponseService.getSuccessResponse(groupCreateResponseDto);
+  }
+  @PostMapping("/{groupId}/edit")
+  public BaseResponse<Object> createGroup(
+          @RequestParam(value = "socialId") String socialId, //임시
+          @RequestParam(value = "groupId") Long groupId,
+          @RequestBody GroupCreateRequestDto request
+  ) {
+    GroupCreateResponseDto groupCreateResponseDto = groupService.editGroup(socialId, groupId,request);
     return baseResponseService.getSuccessResponse(groupCreateResponseDto);
   }
 }
