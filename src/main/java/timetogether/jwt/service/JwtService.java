@@ -77,8 +77,7 @@ public class JwtService {
 
         setAccessTokenHeader(response, accessToken);
         setRefreshTokenHeader(response, refreshToken);
-        log.info("엑세스 토큰: {}",accessToken);
-        log.info("Access Token, Refresh Token 헤더 설정 완료");
+        log.info("Access Token, Refresh Token 헤더 설정 완료 = {}", accessToken);
     }
 
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
@@ -109,7 +108,6 @@ public class JwtService {
     }
 
     public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
-        log.info("엑세스 토큰: {}",accessToken);
         response.setHeader(accessHeader,BEARER+accessToken);
     }
 
