@@ -55,8 +55,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         // 액세스 토큰이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공한다
         // 로그인한 유저인지 확인하는 과정
         checkAccessTokenAndAuthentication(request, response, filterChain);
-
-        filterChain.doFilter(request, response);
     }
 
     // 리프레시 토큰 및 액세스 토큰 재발급
@@ -97,6 +95,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     public void saveAuthentication(User myUser) {
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
                 .username(myUser.getSocialId()) // 소셜아이디를 사용자 이름으로 사용
+                .password("")
                 .roles(myUser.getRole().name()) // 사용자 권한 설정
                 .build();
 
