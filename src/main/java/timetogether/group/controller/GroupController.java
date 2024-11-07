@@ -17,6 +17,8 @@ import timetogether.jwt.service.JwtService;
 
 import java.util.Optional;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @RestController
 @RequestMapping("/group")
 @RequiredArgsConstructor
@@ -53,16 +55,17 @@ public class GroupController {
    * @param request
    * @return
    */
-  @PatchMapping("/{groupId}/edit")
+  @PatchMapping("/edit/{groupId}")
   public BaseResponse<Object> updateGroup(
           HttpServletRequest headerRequest,
-          @PathVariable(value = "groupId") Long groupId,
+          @PathVariable("groupId") Long groupId,
           @RequestBody GroupUpdateRequestDto request
   ) throws NotValidMemberException, GroupNotFoundException, NotGroupMgrInGroup {
+    log.info("group edit 시작");
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
 
-    GroupUpdateResponseDto groupUpdateResponseDto = groupService.editGroup(socialId.get(),groupId,request);
+    GroupUpdateResponseDto groupUpdateResponseDto = groupService.editGroup(socialId.get(), groupId,request);
     return baseResponseService.getSuccessResponse(groupUpdateResponseDto);
   }
 
@@ -75,10 +78,10 @@ public class GroupController {
    * @throws GroupNotFoundException
    * @throws NotGroupMgrInGroup
    */
-  @DeleteMapping("/{groupId}/delete")
+  @DeleteMapping("/delete/{groupId}")
   public BaseResponse<Object> deleteGroup(
           HttpServletRequest headerRequest,
-          @PathVariable(value = "groupId") Long groupId
+          @PathVariable("groupId") Long groupId
   ) throws GroupNotFoundException, NotGroupMgrInGroup {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
@@ -96,10 +99,10 @@ public class GroupController {
    * @throws GroupNotFoundException
    * @throws NotValidMemberException
    */
-  @DeleteMapping("/{groupId}/leave")
+  @DeleteMapping("/leave/{groupId}")
   public BaseResponse<Object> leaveGroup(
           HttpServletRequest headerRequest,
-          @PathVariable(value = "groupId") Long groupId
+          @PathVariable("groupId") Long groupId
   ) throws GroupNotFoundException, NotValidMemberException, NotAllowedGroupMgrToLeave {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());

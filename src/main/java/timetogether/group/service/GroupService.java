@@ -42,7 +42,6 @@ public class GroupService {
   }
 
   public GroupUpdateResponseDto editGroup(String socialId, Long groupId, GroupUpdateRequestDto request) throws GroupNotFoundException, NotValidMemberException, NotGroupMgrInGroup {
-
     Group foundGroup = groupRepository.findById(groupId)
             .orElseThrow(()->new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
     boolean isMgr = foundGroup.getGroupMgrId().equals(socialId); //방장인 경우 판별
@@ -90,8 +89,12 @@ public class GroupService {
 
   private boolean validateSocialId(Group foundGroup, String socialId) throws NotValidMemberException {
     String[] memberIds = foundGroup.getGroupMembers().split(",");
-    return Arrays.stream(memberIds)
-            .map(String::trim)
-            .equals(socialId);
+    for (String id : memberIds){
+      if (id != null){
+        if (id.equals(socialId))
+          return true;
+      }
+    }
+    return false;
   }
 }
