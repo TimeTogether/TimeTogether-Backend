@@ -18,7 +18,7 @@ public class GroupService {
   private final GroupRepository groupRepository;
 
   public GroupCreateResponseDto createGroup(String socialId, GroupCreateRequestDto request) throws NotValidMembersException {
-    Group newGroup = request.transferToGroup(socialId);
+    Group newGroup = request.transferToGroup(socialId);//groupMgrId 설정
     Group savedGroup =  groupRepository.save(newGroup);
     return GroupCreateResponseDto.from(savedGroup);
   }
