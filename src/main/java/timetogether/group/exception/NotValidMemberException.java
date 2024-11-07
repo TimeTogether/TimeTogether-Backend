@@ -5,8 +5,8 @@ import timetogether.global.response.BaseException;
 import timetogether.global.response.BaseResponseStatus;
 
 @AllArgsConstructor
-public class NotValidMembersException extends BaseException{
-  public NotValidMembersException(BaseResponseStatus status) {
+public class NotValidMemberException extends BaseException{
+  public NotValidMemberException(BaseResponseStatus status) {
     super(status);
   }
 }

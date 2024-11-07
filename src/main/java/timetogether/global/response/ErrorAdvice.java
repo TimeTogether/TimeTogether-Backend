@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.exception.CalendarValidateFail;
 import timetogether.group.exception.GroupNotFoundException;
+import timetogether.group.exception.NotAllowedGroupMgrToLeave;
 import timetogether.group.exception.NotGroupMgrInGroup;
-import timetogether.group.exception.NotValidMembersException;
+import timetogether.group.exception.NotValidMemberException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class ErrorAdvice {
     );
   }
 
-  @ExceptionHandler(NotValidMembersException.class)
+  @ExceptionHandler(NotValidMemberException.class)
   public BaseResponse<Object> handleNotValidMembers(){
     return baseResponseService.getFailureResponse(
             BaseResponseStatus.NOT_VALID_MEMBERS
@@ -54,6 +55,13 @@ public class ErrorAdvice {
   public BaseResponse<Object> handleNotValidMgrWhenEditingGroup(){
     return baseResponseService.getFailureResponse(
             BaseResponseStatus.NOT_VALID_MGR
+    );
+  }
+
+  @ExceptionHandler(NotAllowedGroupMgrToLeave.class)
+  public BaseResponse<Object> handleNotAllowedGroupMgrLeaving(){
+    return baseResponseService.getFailureResponse(
+            BaseResponseStatus.NOT_ALLOWED_TO_LEAVE_FOR_GROUPMGR
     );
   }
 

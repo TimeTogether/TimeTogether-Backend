@@ -5,13 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.exception.CalendarValidateFail;
-import timetogether.group.dto.GroupCreateRequestDto;
-import timetogether.group.dto.GroupCreateResponseDto;
-import timetogether.group.dto.GroupUpdateRequestDto;
-import timetogether.group.dto.GroupUpdateResponseDto;
+import timetogether.group.dto.*;
 import timetogether.group.exception.GroupNotFoundException;
+import timetogether.group.exception.NotAllowedGroupMgrToLeave;
 import timetogether.group.exception.NotGroupMgrInGroup;
-import timetogether.group.exception.NotValidMembersException;
+import timetogether.group.exception.NotValidMemberException;
 import timetogether.group.service.GroupService;
 import timetogether.global.response.BaseResponse;
 import timetogether.global.response.BaseResponseService;
@@ -33,13 +31,13 @@ public class GroupController {
    * 
    * @param headerRequest
    * @return
-   * @throws NotValidMembersException
+   * @throws NotValidMemberException
    */
   @PostMapping("/create")
   public BaseResponse<Object> createGroup(
           HttpServletRequest headerRequest,
           @RequestBody GroupCreateRequestDto request
-  ) throws NotValidMembersException {
+  ) throws NotValidMemberException {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
 
@@ -55,12 +53,12 @@ public class GroupController {
    * @param request
    * @return
    */
-  @PostMapping("/{groupId}/edit")
+  @PatchMapping("/{groupId}/edit")
   public BaseResponse<Object> updateGroup(
           HttpServletRequest headerRequest,
           @PathVariable(value = "groupId") Long groupId,
           @RequestBody GroupUpdateRequestDto request
-  ) throws NotValidMembersException, GroupNotFoundException, NotGroupMgrInGroup {
+  ) throws NotValidMemberException, GroupNotFoundException, NotGroupMgrInGroup {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
 
@@ -68,11 +66,20 @@ public class GroupController {
     return baseResponseService.getSuccessResponse(groupUpdateResponseDto);
   }
 
+  /**
+   * 방장이 그룹 삭제
+   * 
+   * @param headerRequest
+   * @param groupId
+   * @return
+   * @throws GroupNotFoundException
+   * @throws NotGroupMgrInGroup
+   */
   @DeleteMapping("/{groupId}/delete")
   public BaseResponse<Object> deleteGroup(
           HttpServletRequest headerRequest,
           @PathVariable(value = "groupId") Long groupId
-  ) throws NotValidMembersException, GroupNotFoundException, NotGroupMgrInGroup {
+  ) throws GroupNotFoundException, NotGroupMgrInGroup {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
 
@@ -80,5 +87,24 @@ public class GroupController {
     return baseResponseService.getSuccessResponse(deletedGroup);
   }
 
-  @
+  /**
+   * 그룹 떠나기 (방장 제외)
+   *
+   * @param headerRequest
+   * @param groupId
+   * @return
+   * @throws GroupNotFoundException
+   * @throws NotValidMemberException
+   */
+  @DeleteMapping("/{groupId}/leave")
+  public BaseResponse<Object> leaveGroup(
+          HttpServletRequest headerRequest,
+          @PathVariable(value = "groupId") Long groupId
+  ) throws GroupNotFoundException, NotValidMemberException, NotAllowedGroupMgrToLeave {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+
+    GroupLeaveResponseDto groupLeaveResponseDto = groupService.leaveGroup(socialId.get(),groupId);
+    return baseResponseService.getSuccessResponse(groupLeaveResponseDto);
+  }
 }

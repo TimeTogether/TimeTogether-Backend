@@ -11,7 +11,9 @@ import timetogether.meeting.MeetType;
 import timetogether.when2meet.When2meet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -62,4 +64,12 @@ public class Group {
     return this;
   }
 
+  public void removeFromGroup(String socialId) {
+    String[] memberIds = this.getGroupMembers().split(",");
+    List<String> updatedMembers = Arrays.stream(memberIds)
+            .map(String::trim)
+            .filter(id -> !id.equals(socialId))
+            .collect(Collectors.toList());
+    this.groupMembers = String.join(",", updatedMembers);
+  }
 }

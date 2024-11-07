@@ -3,7 +3,7 @@ package timetogether.group.dto;
 import lombok.Builder;
 import lombok.Getter;
 import timetogether.group.Group;
-import timetogether.group.exception.NotValidMembersException;
+import timetogether.group.exception.NotValidMemberException;
 import timetogether.meeting.MeetType;
 
 import java.util.Arrays;
@@ -30,9 +30,9 @@ public class GroupUpdateRequestDto {
     //date는 함수로 해결 (GropCreateResponseDto에서)
   }
 
-  public Group transferToGroup(String socialId) throws NotValidMembersException {
+  public Group transferToGroup(String socialId) throws NotValidMemberException {
     validateGroupMembers(groupMembers)
-            .orElseThrow(() -> new NotValidMembersException());
+            .orElseThrow(() -> new NotValidMemberException());
     return Group.builder()
             .groupName(groupName)
             .groupTitle(groupTitle)
