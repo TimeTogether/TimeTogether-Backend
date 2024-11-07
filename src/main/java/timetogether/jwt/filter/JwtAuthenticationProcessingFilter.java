@@ -82,38 +82,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                                                   FilterChain filterChain) throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentication() 호출");
 
-//        jwtService.extractAccessToken(request)
-//                .ifPresent(accessToken -> {
-//                    log.info("Access Token: {}", accessToken);  // 토큰 로그 출력
-//                    if (jwtService.isTokenValid(accessToken)) {
-//                        jwtService.extractId(accessToken)
-//                                .ifPresent(socialId -> userRepository.findBySocialId(socialId)
-//                                        .ifPresent(this::saveAuthentication));
-//                    }
-//                });
-//
-//        filterChain.doFilter(request, response);
+        jwtService.extractAccessToken(request)
+                .filter(jwtService::isTokenValid)
+                .ifPresent(accessToken -> jwtService.extractId(accessToken)
+                        .ifPresent(socialId -> userRepository.findBySocialId(socialId)
+                                .ifPresent(this::saveAuthentication)));
 
-        Optional<String> s = jwtService.extractAccessToken(request);
-        log.info("extractAccessToken = {}", s);
-        Optional<String> s1 = s.filter(jwtService::isTokenValid);
-        log.info("isTokenValid = {}", s1);
-        if (s1.isPresent()) {
-            String accessToken = s1.get();
-            log.info("accessToken = {}", accessToken);
-            Optional<String> socialIdOptional = jwtService.extractId(accessToken);
-            log.info("socialIdOptional = {}", socialIdOptional);
-            if (socialIdOptional.isPresent()) {
-                String socialId = socialIdOptional.get();
-                log.info("socialId = {}", socialId);
-                Optional<User> userOptional = userRepository.findBySocialId(socialId);
-                if (userOptional.isPresent()) {
-                    User user = userOptional.get();
-                    log.info("socialId = {}", user);
-                    saveAuthentication(user);
-                }
-            }
-        }
+        filterChain.doFilter(request, response);
     }
 
 
