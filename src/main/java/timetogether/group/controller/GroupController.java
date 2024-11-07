@@ -7,6 +7,10 @@ import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.exception.CalendarValidateFail;
 import timetogether.group.dto.GroupCreateRequestDto;
 import timetogether.group.dto.GroupCreateResponseDto;
+import timetogether.group.dto.GroupUpdateRequestDto;
+import timetogether.group.dto.GroupUpdateResponseDto;
+import timetogether.group.exception.GroupNotFoundException;
+import timetogether.group.exception.NotGroupMgrInGroup;
 import timetogether.group.exception.NotValidMembersException;
 import timetogether.group.service.GroupService;
 import timetogether.global.response.BaseResponse;
@@ -46,18 +50,35 @@ public class GroupController {
   /**
    * 그룹 정보 수정
    *
-   * @param socialId
+   * @param headerRequest
    * @param groupId
    * @param request
    * @return
    */
   @PostMapping("/{groupId}/edit")
-  public BaseResponse<Object> createGroup(
-          @RequestParam(value = "socialId") String socialId, //임시
+  public BaseResponse<Object> updateGroup(
+          HttpServletRequest headerRequest,
           @PathVariable(value = "groupId") Long groupId,
-          @RequestBody GroupCreateRequestDto request
-  ) {
-    GroupCreateResponseDto groupCreateResponseDto = groupService.editGroup(socialId, groupId,request);
-    return baseResponseService.getSuccessResponse(groupCreateResponseDto);
+          @RequestBody GroupUpdateRequestDto request
+  ) throws NotValidMembersException, GroupNotFoundException, NotGroupMgrInGroup {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+
+    GroupUpdateResponseDto groupUpdateResponseDto = groupService.editGroup(socialId.get(),groupId,request);
+    return baseResponseService.getSuccessResponse(groupUpdateResponseDto);
   }
+
+  @DeleteMapping("/{groupId}/delete")
+  public BaseResponse<Object> deleteGroup(
+          HttpServletRequest headerRequest,
+          @PathVariable(value = "groupId") Long groupId
+  ) throws NotValidMembersException, GroupNotFoundException, NotGroupMgrInGroup {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+
+    String deletedGroup = groupService.deleteGroup(socialId.get(),groupId);
+    return baseResponseService.getSuccessResponse(deletedGroup);
+  }
+
+  @
 }

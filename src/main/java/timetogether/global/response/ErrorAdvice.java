@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.exception.CalendarValidateFail;
+import timetogether.group.exception.GroupNotFoundException;
+import timetogether.group.exception.NotGroupMgrInGroup;
 import timetogether.group.exception.NotValidMembersException;
 
 @RestControllerAdvice
@@ -35,9 +37,24 @@ public class ErrorAdvice {
   }
 
   @ExceptionHandler(NotValidMembersException.class)
-  public BaseResponse<Object> handleNotValidMembersWhenCreatingGroup(){
+  public BaseResponse<Object> handleNotValidMembers(){
     return baseResponseService.getFailureResponse(
-            BaseResponseStatus.NOT_VALID_MEMBERS_WHEN_CREATING_GROUP
+            BaseResponseStatus.NOT_VALID_MEMBERS
     );
   }
+
+  @ExceptionHandler(GroupNotFoundException.class)
+  public BaseResponse<Object> handleNotFoundGroupWhenEditingGroup(){
+    return baseResponseService.getFailureResponse(
+            BaseResponseStatus.NOT_EXIST_GROUPID
+    );
+  }
+
+  @ExceptionHandler(NotGroupMgrInGroup.class)
+  public BaseResponse<Object> handleNotValidMgrWhenEditingGroup(){
+    return baseResponseService.getFailureResponse(
+            BaseResponseStatus.NOT_VALID_MGR
+    );
+  }
+
 }

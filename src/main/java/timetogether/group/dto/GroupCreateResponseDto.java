@@ -23,10 +23,11 @@ public class GroupCreateResponseDto {
   private String date;
   private MeetType meetType;
   private String groupUrl;
+  private String groupMembers;
 
 
   @Builder
-  public GroupCreateResponseDto(String groupName, String groupTitle, String groupImg, String groupMgrId, String groupTimes, String date, MeetType meetType, String groupUrl) {
+  public GroupCreateResponseDto(String groupName, String groupTitle, String groupImg, String groupMgrId, String groupTimes, String date, MeetType meetType, String groupUrl, String groupMembers) {
     this.groupName = groupName;
     this.groupTitle = groupTitle;
     this.groupImg = groupImg;
@@ -35,7 +36,8 @@ public class GroupCreateResponseDto {
     this.date = date;
     this.meetType = meetType;
     this.groupUrl = groupUrl;
-    //date 를 저장하는 부분
+    this.groupMembers = groupMembers;
+    //date를 groupTimes에서 가져와서 변환하여 저장하는 부분
     saveDateFromGroupTimes(groupTimes);
   }
 
@@ -85,6 +87,7 @@ public class GroupCreateResponseDto {
             .date(savedGroup.getDate())
             .meetType(savedGroup.getMeetType())
             .groupUrl(savedGroup.getGroupUrl())
+            .groupMembers(savedGroup.getGroupMembers())
             .build();
   }
 }

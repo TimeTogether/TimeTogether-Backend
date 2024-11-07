@@ -24,7 +24,9 @@ public enum BaseResponseStatus {
   /**
    * Group
    */
-  NOT_VALID_MEMBERS_WHEN_CREATING_GROUP(HttpStatus.NOT_FOUND, "존재하지 않는 멤버를 등록하셨습니다."),
+  NOT_VALID_MEMBERS(HttpStatus.NOT_FOUND, "존재하지 않는 멤버를 입력했습니다."),
+  NOT_EXIST_GROUPID(HttpStatus.NOT_FOUND,"존재하지 않는 그룹입니다."),
+  NOT_VALID_MGR(HttpStatus.NOT_ACCEPTABLE, "그룹을 수정할 권한이 없습니다."),
   /**
    * User
    */

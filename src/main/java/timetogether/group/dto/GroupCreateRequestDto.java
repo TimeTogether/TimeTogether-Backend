@@ -44,7 +44,7 @@ public class GroupCreateRequestDto {
             .groupName(groupName)
             .groupTitle(groupTitle)
             .groupImg(groupImg)
-            .groupMgrId(socialId)
+            .groupMgrId(socialId) //방장 설정
             .groupTimes(groupTimes)
             .meetType(meetType)
             .groupUrl(groupUrl)

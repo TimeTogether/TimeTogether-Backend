@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import timetogether.group.dto.GroupCreateRequestDto;
+import timetogether.group.dto.GroupUpdateRequestDto;
 import timetogether.meeting.MeetType;
 import timetogether.when2meet.When2meet;
 
@@ -36,7 +36,7 @@ public class Group {
   private String groupUrl;
   private String groupMembers;
 
-  @OneToMany(mappedBy = "group")
+  @OneToMany(mappedBy = "group",cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<When2meet> when2meetList = new ArrayList<>();
 
   @Builder
@@ -52,14 +52,14 @@ public class Group {
     this.groupMembers = groupMembers;
   }
 
-  public Group update(GroupCreateRequestDto request) {
+  public Group update(GroupUpdateRequestDto request) {
     this.groupName = request.getGroupName();
     this.groupTitle = request.getGroupTitle();
     this.groupImg = request.getGroupImg();
     this.groupTimes = request.getGroupTimes();
     this.meetType = request.getMeetType();
-    this.groupUrl = request.getGroupUrl();
     this.groupMembers = request.getGroupMembers();
     return this;
   }
+
 }
