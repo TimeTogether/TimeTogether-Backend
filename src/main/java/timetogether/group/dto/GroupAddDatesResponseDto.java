@@ -30,11 +30,15 @@ public class GroupAddDatesResponseDto {
   }
 
   public GroupAddDatesResponseDto(Group group) throws GroupTimesLimitSevenDays {
-    GroupAddDatesResponseDto.builder()
+    GroupAddDatesResponseDto result = GroupAddDatesResponseDto.builder()
             .groupTimes(group.getGroupTimes())
             .date(changeGroupTimesToDates(group.getGroupTimes()))
             .groupUrl(makeGroupUrl(group))
             .build();
+
+    this.groupTimes = result.getGroupTimes();
+    this.date = result.getDate();
+    this.groupUrl = result.getGroupUrl();
   }
 
   private String makeGroupUrl(Group group) {

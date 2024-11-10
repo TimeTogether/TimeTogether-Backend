@@ -49,7 +49,7 @@ public class GroupController {
    * @throws GroupTimesLimitSevenDays
    * @throws GroupNotFoundOrNotMgrException
    */
-  @PatchMapping("/addDates")
+  @PostMapping("/addDates")
   public BaseResponse<Object> createDates(
           HttpServletRequest headerRequest,
           @RequestBody GroupAddDatesRequestDto request
@@ -59,27 +59,27 @@ public class GroupController {
     GroupAddDatesResponseDto groupAddDatesResponseDto = groupService.addDates(socialId.get(),request);
     return baseResponseService.getSuccessResponse(groupAddDatesResponseDto);
   }
-  /**
-   * 그룹 정보 수정
-   *
-   * @param headerRequest
-   * @param groupId
-   * @param request
-   * @return
-   */
-  @PatchMapping("/edit/{groupId}")
-  public BaseResponse<Object> updateGroup(
-          HttpServletRequest headerRequest,
-          @PathVariable("groupId") Long groupId,
-          @RequestBody GroupUpdateRequestDto request
-  ) throws NotValidMemberException, GroupNotFoundException, NotGroupMgrInGroup {
-    log.info("group edit 시작");
-    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    Optional<String> socialId = jwtService.extractId(accessToken.get());
-
-    GroupUpdateResponseDto groupUpdateResponseDto = groupService.editGroup(socialId.get(), groupId,request);
-    return baseResponseService.getSuccessResponse(groupUpdateResponseDto);
-  }
+//  /**
+//   * 그룹 정보 수정
+//   *
+//   * @param headerRequest
+//   * @param groupId
+//   * @param request
+//   * @return
+//   */
+//  @PatchMapping("/edit/{groupId}")
+//  public BaseResponse<Object> updateGroup(
+//          HttpServletRequest headerRequest,
+//          @PathVariable("groupId") Long groupId,
+//          @RequestBody GroupUpdateRequestDto request
+//  ) throws NotValidMemberException, GroupNotFoundException, NotGroupMgrInGroup {
+//    log.info("group edit 시작");
+//    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+//    Optional<String> socialId = jwtService.extractId(accessToken.get());
+//
+//    GroupUpdateResponseDto groupUpdateResponseDto = groupService.editGroup(socialId.get(), groupId,request);
+//    return baseResponseService.getSuccessResponse(groupUpdateResponseDto);
+//  }
 
   /**
    * 방장이 그룹 삭제
