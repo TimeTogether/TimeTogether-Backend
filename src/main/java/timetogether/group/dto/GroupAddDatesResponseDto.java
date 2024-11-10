@@ -42,7 +42,7 @@ public class GroupAddDatesResponseDto {
   }
 
   private String makeGroupUrl(Group group) {
-    return "http://timetogether.com/group/" + group.getId();
+    return "http://timetogether.com/group/invited/" + group.getId();
   }
 
   private String changeGroupTimesToDates(String groupTimes) throws GroupTimesLimitSevenDays {

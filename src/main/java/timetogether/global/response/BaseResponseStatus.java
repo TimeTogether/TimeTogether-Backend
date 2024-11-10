@@ -30,6 +30,7 @@ public enum BaseResponseStatus {
   NOT_VALID_GROUPTIMES(HttpStatus.BAD_REQUEST, "정할 수 있는 기간은 오늘로부터 최대 7일 이내 입니다."),
   NOT_VALID_MGR(HttpStatus.NOT_ACCEPTABLE, "그룹을 수정할 권한이 없습니다."),
   NOT_ALLOWED_TO_LEAVE_FOR_GROUPMGR(HttpStatus.NOT_ACCEPTABLE,"방장은 그룹을 나갈 수 없습니다."),
+  ALREADY_EXIST_IN_GROUP(HttpStatus.ALREADY_REPORTED,"이미 그룹에 속해있습니다."),
   /**
    * User
    */

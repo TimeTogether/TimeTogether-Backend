@@ -37,7 +37,7 @@ public class Group {
   private String date; //GroupAddDatesResponseDto에서 정함
   private MeetType meetType; //GroupCreateRequestDto에서 정함
   private String groupUrl; //GroupAddDatesResponseDto에서 정함
-  private String groupMembers;
+  private String groupMembers = null;
 
   @OneToMany(mappedBy = "group",cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<When2meet> when2meetList = new ArrayList<>();
@@ -92,4 +92,11 @@ public class Group {
   }
 
 
+  public void addGroupSocailId(String socialId) {
+    if (this.groupMembers == null){
+      this.groupMembers = socialId;
+    }else{
+      this.groupMembers += "," + socialId;
+    }
+  }
 }

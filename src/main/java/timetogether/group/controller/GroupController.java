@@ -103,6 +103,14 @@ public class GroupController {
     return baseResponseService.getSuccessResponse(deletedGroup);
   }
 
+  /**
+   * 초대 코드 보기
+   *
+   * @param headerRequest
+   * @param groupId
+   * @return
+   * @throws GroupNotFoundException
+   */
   @GetMapping("/invitationCode/{groupId}")
   public BaseResponse<Object> getInvitationCode(
           HttpServletRequest headerRequest,
@@ -116,6 +124,22 @@ public class GroupController {
       return baseResponseService.getSuccessResponse(invitationCode);
     }else{
       return baseResponseService.getFailureResponse(BaseResponseStatus.NOT_VALID_USER);
+    }
+  }
+
+  @GetMapping("/invited/{groupId}")
+  public BaseResponse<Object> getIntoGroupByInvitationCode(
+          HttpServletRequest headerRequest,
+          @PathVariable("groupId") Long groupId
+  ) throws GroupNotFoundException {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+    boolean checkIfMemberInGroup = groupService.checkGroupMembers(socialId.get(), groupId);
+    if (checkIfMemberInGroup){//이미 그룹에 등록된 경우
+      return baseResponseService.getFailureResponse(BaseResponseStatus.ALREADY_EXIST_IN_GROUP);
+    }else{//그룹에 등록되지 않은 경우
+      groupService.getIntoGroup(socialId.get(),groupId);
+      return baseResponseService.getSuccessResponse(BaseResponseStatus.SUCCESS);
     }
   }
 

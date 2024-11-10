@@ -40,15 +40,21 @@ public class GroupService {
   }
 
   public boolean checkGroupMembers(String socialId, Long groupId) throws GroupNotFoundException {
-    Optional<Group> groupFound = Optional.ofNullable(groupRepository.findById(groupId)
-            .orElseThrow(() -> new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID)));
-    if (groupFound.get().getGroupMgrId().equals(socialId)) //그룹 매니저이면
+    Optional<Group> groupFound = groupQueryRepository.findByGroupId(groupId);
+    Group group = groupFound.orElseThrow(() -> new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
+    if (group.getGroupMgrId().equals(socialId)) {
       return true;
-    else {//그룹 매니저가 아니면
-      String[] memberIds = groupFound.get().getGroupMembers().split(",");
-      for (String m : memberIds) {
-        if (m.equals(socialId))
+    } else {//그룹 매니저가 아니면
+      String groupMembers = group.getGroupMembers();
+      if (groupMembers == null || groupMembers.isEmpty()) {
+        return false;
+      }
+
+      String[] memberIds = groupMembers.split(",");
+      for (String memberId : memberIds) {
+        if (memberId.trim().equals(socialId)) {
           return true;
+        }
       }
       return false;
     }
@@ -57,6 +63,12 @@ public class GroupService {
   public String getInvitationCode(Long groupId) throws GroupNotFoundException {
     return groupQueryRepository.findById(groupId)
             .orElseThrow(() ->  new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
+  }
+
+  public void getIntoGroup(String socialId, Long groupId) throws GroupNotFoundException {
+    Optional<Group> groupFound = groupQueryRepository.findByGroupId(groupId);
+    Group group = groupFound.orElseThrow(() -> new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
+    group.addGroupSocailId(socialId);
   }
 
   private boolean validateGroupMembers(String groupMembers) {
@@ -122,6 +134,5 @@ public class GroupService {
     }
     return false;
   }
-
 
 }

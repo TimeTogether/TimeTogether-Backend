@@ -39,4 +39,18 @@ public class GroupQueryRepository {
       return Optional.empty();
     }
   }
+
+  public Optional<Group> findByGroupId(Long groupId) {
+    String query = "SELECT m FROM Group m "
+            + "where m.id =: groupId";
+    try {
+      Group result = entityManager.createQuery(query, Group.class)
+              .setParameter("groupId", groupId)
+              .getSingleResult();
+      return Optional.ofNullable(result);
+    } catch (NoResultException e) {
+      return Optional.empty();
+    }
+
+  }
 }
