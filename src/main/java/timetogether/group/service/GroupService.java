@@ -39,6 +39,26 @@ public class GroupService {
     return  groupAddDatesResponseDto;
   }
 
+  public boolean checkGroupMembers(String socialId, Long groupId) throws GroupNotFoundException {
+    Optional<Group> groupFound = Optional.ofNullable(groupRepository.findById(groupId)
+            .orElseThrow(() -> new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID)));
+    if (groupFound.get().getGroupMgrId().equals(socialId)) //그룹 매니저이면
+      return true;
+    else {//그룹 매니저가 아니면
+      String[] memberIds = groupFound.get().getGroupMembers().split(",");
+      for (String m : memberIds) {
+        if (m.equals(socialId))
+          return true;
+      }
+      return false;
+    }
+  }
+
+  public String getInvitationCode(Long groupId) throws GroupNotFoundException {
+    return groupQueryRepository.findById(groupId)
+            .orElseThrow(() ->  new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
+  }
+
   private boolean validateGroupMembers(String groupMembers) {
     String[] memberIds = groupMembers.split(",");
     return Arrays.stream(memberIds)
@@ -46,24 +66,24 @@ public class GroupService {
             .allMatch(userRepository::existsById);
   }
 
-  public GroupUpdateResponseDto editGroup(String socialId, Long groupId, GroupUpdateRequestDto request) throws GroupNotFoundException, NotValidMemberException, NotGroupMgrInGroup {
-    Group foundGroup = groupRepository.findById(groupId)
-            .orElseThrow(()->new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
-    boolean isMgr = foundGroup.getGroupMgrId().equals(socialId); //방장인 경우 판별
-    if (!isMgr){
-      throw new NotGroupMgrInGroup(BaseResponseStatus.NOT_VALID_MGR);
-    }
-
-    Group updatedGroup = foundGroup.update(request);
-
-    boolean ok = validateGroupMembers(request.getGroupMembers());
-    if (!ok){
-      throw new NotValidMemberException(BaseResponseStatus.NOT_VALID_USER);
-    }
-    Group savedGroup = groupRepository.save(updatedGroup);
-    return GroupUpdateResponseDto.from(savedGroup);
-
-  }
+//  public GroupUpdateResponseDto editGroup(String socialId, Long groupId, GroupUpdateRequestDto request) throws GroupNotFoundException, NotValidMemberException, NotGroupMgrInGroup {
+//    Group foundGroup = groupRepository.findById(groupId)
+//            .orElseThrow(()->new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
+//    boolean isMgr = foundGroup.getGroupMgrId().equals(socialId); //방장인 경우 판별
+//    if (!isMgr){
+//      throw new NotGroupMgrInGroup(BaseResponseStatus.NOT_VALID_MGR);
+//    }
+//
+//    Group updatedGroup = foundGroup.update(request);
+//
+//    boolean ok = validateGroupMembers(request.getGroupMembers());
+//    if (!ok){
+//      throw new NotValidMemberException(BaseResponseStatus.NOT_VALID_USER);
+//    }
+//    Group savedGroup = groupRepository.save(updatedGroup);
+//    return GroupUpdateResponseDto.from(savedGroup);
+//
+//  }
 
   public String deleteGroup(String socialId, Long groupId) throws GroupNotFoundException, NotGroupMgrInGroup {
     Group foundGroup = groupRepository.findById(groupId)
@@ -102,5 +122,6 @@ public class GroupService {
     }
     return false;
   }
+
 
 }

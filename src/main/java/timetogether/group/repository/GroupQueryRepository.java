@@ -26,4 +26,17 @@ public class GroupQueryRepository {
       return Optional.empty();
     }
   }
+
+  public Optional<String> findById(Long groupId) {
+    String query = "SELECT m.groupUrl FROM Group m " +
+            "WHERE m.id =: groupId";
+    try {
+      String result = entityManager.createQuery(query, String.class)
+              .setParameter("groupId", groupId)
+              .getSingleResult();
+      return Optional.ofNullable(result);
+    } catch (NoResultException e) {
+      return Optional.empty();
+    }
+  }
 }

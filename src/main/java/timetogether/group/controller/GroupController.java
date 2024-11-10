@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import timetogether.global.response.BaseResponse;
 import timetogether.global.response.BaseResponseService;
+import timetogether.global.response.BaseResponseStatus;
 import timetogether.group.dto.*;
 import timetogether.group.exception.*;
 import timetogether.group.service.GroupService;
@@ -101,6 +102,23 @@ public class GroupController {
     String deletedGroup = groupService.deleteGroup(socialId.get(),groupId);
     return baseResponseService.getSuccessResponse(deletedGroup);
   }
+
+  @GetMapping("/invitationCode/{groupId}")
+  public BaseResponse<Object> getInvitationCode(
+          HttpServletRequest headerRequest,
+          @PathVariable("groupId") Long groupId
+  ) throws GroupNotFoundException {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+    boolean checkIfMemberInGroup = groupService.checkGroupMembers(socialId.get(), groupId);
+    if (checkIfMemberInGroup){
+      String invitationCode = groupService.getInvitationCode(groupId);
+      return baseResponseService.getSuccessResponse(invitationCode);
+    }else{
+      return baseResponseService.getFailureResponse(BaseResponseStatus.NOT_VALID_USER);
+    }
+  }
+
 
   /**
    * 그룹 떠나기 (방장 제외)
