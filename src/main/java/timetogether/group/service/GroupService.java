@@ -6,14 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import timetogether.global.response.BaseResponseStatus;
 import timetogether.group.Group;
 import timetogether.group.dto.*;
-import timetogether.group.exception.GroupNotFoundException;
-import timetogether.group.exception.NotAllowedGroupMgrToLeave;
-import timetogether.group.exception.NotGroupMgrInGroup;
-import timetogether.group.exception.NotValidMemberException;
+import timetogether.group.exception.*;
+import timetogether.group.repository.GroupQueryRepository;
 import timetogether.group.repository.GroupRepository;
 import timetogether.oauth2.repository.UserRepository;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,17 +20,23 @@ import java.util.Arrays;
 public class GroupService {
 
   private final GroupRepository groupRepository;
+  private final GroupQueryRepository groupQueryRepository;
   private final UserRepository userRepository;
 
-  public GroupCreateResponseDto createGroup(String socialId, GroupCreateRequestDto request) throws NotValidMemberException {
-    Group newGroup = request.transferToGroup(socialId);//groupMgrId 설정
-    //groupmembers 유효 검사
-    boolean ok = validateGroupMembers(newGroup.getGroupMembers());
-    if (!ok){
-      throw new NotValidMemberException(BaseResponseStatus.NOT_VALID_USER);
-    }
+  public GroupCreateResponseDto createGroup(String socialId, GroupCreateRequestDto request){
+    Group newGroup = new Group(request, socialId);//groupMgrId 설정후 Group 객체로 변경
     Group savedGroup =  groupRepository.save(newGroup);
     return GroupCreateResponseDto.from(savedGroup);
+  }
+
+  public GroupAddDatesResponseDto addDates(String socialId, GroupAddDatesRequestDto request) throws GroupNotFoundOrNotMgrException, GroupTimesLimitSevenDays {
+    Group groupFound = groupQueryRepository.findByGroupNameAndIsMgr(socialId, request.getGroupName())
+            .orElseThrow(() -> new GroupNotFoundOrNotMgrException(BaseResponseStatus.NOT_VALID_MGR_OR_GROUPNAME));
+    groupFound.addGroupTimes(request); //날짜 추가
+    GroupAddDatesResponseDto groupAddDatesResponseDto = new GroupAddDatesResponseDto(groupFound);
+    groupFound.addDatesAndUrl(groupAddDatesResponseDto);
+    groupRepository.save(groupFound);
+    return  groupAddDatesResponseDto;
   }
 
   private boolean validateGroupMembers(String groupMembers) {
@@ -97,4 +102,5 @@ public class GroupService {
     }
     return false;
   }
+
 }

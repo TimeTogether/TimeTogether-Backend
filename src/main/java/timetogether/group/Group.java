@@ -6,6 +6,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogether.group.dto.GroupAddDatesRequestDto;
+import timetogether.group.dto.GroupAddDatesResponseDto;
+import timetogether.group.dto.GroupCreateRequestDto;
 import timetogether.group.dto.GroupUpdateRequestDto;
 import timetogether.meeting.MeetType;
 import timetogether.when2meet.When2meet;
@@ -25,17 +28,15 @@ public class Group {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @NotNull
-  private String groupName;
-  private String groupTitle;
-  private String groupImg;
+  private String groupName; //GroupCreateRequestDto에서 정함
+  private String groupTitle; //GroupCreateRequestDto에서 정함
+  private String groupImg; //GroupCreateRequestDto에서 정함
   @NotNull
-  private String groupMgrId;
-  @NotNull
-  private String groupTimes;
-  private String date;
-  private MeetType meetType;
-  @NotNull
-  private String groupUrl;
+  private String groupMgrId; //GroupService의 groupCreateDto에서 정함
+  private String groupTimes; //GroupAddDatesRequestDto에서 정함
+  private String date; //GroupAddDatesResponseDto에서 정함
+  private MeetType meetType; //GroupCreateRequestDto에서 정함
+  private String groupUrl; //GroupAddDatesResponseDto에서 정함
   private String groupMembers;
 
   @OneToMany(mappedBy = "group",cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -52,6 +53,23 @@ public class Group {
     this.meetType = meetType;
     this.groupUrl = groupUrl;
     this.groupMembers = groupMembers;
+  }
+
+  public Group(GroupCreateRequestDto request, String socialId){
+    this.groupName = request.getGroupName();
+    this.groupMgrId = socialId;
+    this.groupImg = request.getGroupImg();
+    this.groupTitle = request.getGroupTitle();
+    this.meetType = request.getMeetType();
+  }
+
+  public Group addGroupTimes(GroupAddDatesRequestDto request){
+    this.groupTimes = request.getGroupTimes();
+    return this;
+  }
+  public void addDatesAndUrl(GroupAddDatesResponseDto groupAddDatesResponseDto) {
+    this.date = groupAddDatesResponseDto.getDate();
+    this.groupUrl = groupAddDatesResponseDto.getGroupUrl();
   }
 
   public Group update(GroupUpdateRequestDto request) {
@@ -72,4 +90,6 @@ public class Group {
             .collect(Collectors.toList());
     this.groupMembers = String.join(",", updatedMembers);
   }
+
+
 }

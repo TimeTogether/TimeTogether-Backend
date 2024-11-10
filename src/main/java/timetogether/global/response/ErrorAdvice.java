@@ -5,10 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.exception.CalendarValidateFail;
-import timetogether.group.exception.GroupNotFoundException;
-import timetogether.group.exception.NotAllowedGroupMgrToLeave;
-import timetogether.group.exception.NotGroupMgrInGroup;
-import timetogether.group.exception.NotValidMemberException;
+import timetogether.group.exception.*;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -34,6 +31,20 @@ public class ErrorAdvice {
   public BaseResponse<Object> handleGeneralException() {
     return baseResponseService.getFailureResponse(
             BaseResponseStatus.INTERNAL_SERVER_ERROR
+    );
+  }
+
+  @ExceptionHandler(GroupNotFoundOrNotMgrException.class)
+  public BaseResponse<Object> handleGroupNotFoundOrNotMgr(){
+    return baseResponseService.getFailureResponse(
+            BaseResponseStatus.NOT_VALID_MGR_OR_GROUPNAME
+    );
+  }
+
+  @ExceptionHandler(GroupTimesLimitSevenDays.class)
+  public BaseResponse<Object> handleGroupTimesLimit(){
+    return baseResponseService.getFailureResponse(
+      BaseResponseStatus.NOT_VALID_GROUPTIMES
     );
   }
 

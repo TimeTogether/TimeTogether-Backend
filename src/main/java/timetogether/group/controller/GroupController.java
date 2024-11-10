@@ -2,23 +2,18 @@ package timetogether.group.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import timetogether.calendar.exception.CalendarNotExist;
-import timetogether.calendar.exception.CalendarValidateFail;
-import timetogether.group.dto.*;
-import timetogether.group.exception.GroupNotFoundException;
-import timetogether.group.exception.NotAllowedGroupMgrToLeave;
-import timetogether.group.exception.NotGroupMgrInGroup;
-import timetogether.group.exception.NotValidMemberException;
-import timetogether.group.service.GroupService;
 import timetogether.global.response.BaseResponse;
 import timetogether.global.response.BaseResponseService;
+import timetogether.group.dto.*;
+import timetogether.group.exception.*;
+import timetogether.group.service.GroupService;
 import timetogether.jwt.service.JwtService;
 
 import java.util.Optional;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
+@Slf4j
 @RestController
 @RequestMapping("/group")
 @RequiredArgsConstructor
@@ -33,20 +28,37 @@ public class GroupController {
    * 
    * @param headerRequest
    * @return
-   * @throws NotValidMemberException
    */
   @PostMapping("/create")
   public BaseResponse<Object> createGroup(
           HttpServletRequest headerRequest,
           @RequestBody GroupCreateRequestDto request
-  ) throws NotValidMemberException {
+  ){
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
-
     GroupCreateResponseDto groupCreateResponseDto = groupService.createGroup(socialId.get(), request);
     return baseResponseService.getSuccessResponse(groupCreateResponseDto);
   }
 
+  /**
+   * 그룹 날짜 설정
+   *
+   * @param headerRequest
+   * @param request
+   * @return
+   * @throws GroupTimesLimitSevenDays
+   * @throws GroupNotFoundOrNotMgrException
+   */
+  @PatchMapping("/addDates")
+  public BaseResponse<Object> createDates(
+          HttpServletRequest headerRequest,
+          @RequestBody GroupAddDatesRequestDto request
+  ) throws GroupTimesLimitSevenDays, GroupNotFoundOrNotMgrException {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+    GroupAddDatesResponseDto groupAddDatesResponseDto = groupService.addDates(socialId.get(),request);
+    return baseResponseService.getSuccessResponse(groupAddDatesResponseDto);
+  }
   /**
    * 그룹 정보 수정
    *
