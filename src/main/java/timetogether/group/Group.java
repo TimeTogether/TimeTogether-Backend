@@ -12,6 +12,7 @@ import timetogether.group.dto.GroupCreateRequestDto;
 import timetogether.group.dto.GroupUpdateRequestDto;
 import timetogether.meeting.MeetType;
 import timetogether.when2meet.When2meet;
+import timetogether.where2meet.GroupWhere;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,14 +37,17 @@ public class Group {
   private String groupTimes; //GroupAddDatesRequestDto에서 정함
   private String date; //GroupAddDatesResponseDto에서 정함
   private MeetType meetType; //GroupCreateRequestDto에서 정함
-  private String groupUrl; //GroupAddDatesResponseDto에서 정함
+  private String groupWhereUrl; //GroupAddDatesResponseDto에서 정함
   private String groupMembers = null;
 
   @OneToMany(mappedBy = "group",cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<When2meet> when2meetList = new ArrayList<>();
 
+  @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private List<GroupWhere> groupWhereList = new ArrayList<>();
+
   @Builder
-  public Group(String groupName, String groupTitle, String groupImg, String groupMgrId, String groupTimes, String date, MeetType meetType, String groupUrl,String groupMembers) {
+  public Group(String groupName, String groupTitle, String groupImg, String groupMgrId, String groupTimes, String date, MeetType meetType, String groupWhereUrl,String groupMembers) {
     this.groupName = groupName;
     this.groupTitle = groupTitle;
     this.groupImg = groupImg;
@@ -51,7 +55,7 @@ public class Group {
     this.groupTimes = groupTimes;
     this.date = date;
     this.meetType = meetType;
-    this.groupUrl = groupUrl;
+    this.groupWhereUrl = groupWhereUrl;
     this.groupMembers = groupMembers;
   }
 
@@ -69,7 +73,7 @@ public class Group {
   }
   public void addDatesAndUrl(GroupAddDatesResponseDto groupAddDatesResponseDto) {
     this.date = groupAddDatesResponseDto.getDate();
-    this.groupUrl = groupAddDatesResponseDto.getGroupUrl();
+    this.groupWhereUrl = groupAddDatesResponseDto.getgroupWhereUrl();
   }
 
   public Group update(GroupUpdateRequestDto request) {

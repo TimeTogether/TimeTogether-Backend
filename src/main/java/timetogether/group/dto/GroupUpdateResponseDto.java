@@ -23,12 +23,12 @@ public class GroupUpdateResponseDto {
     private String groupTimes;
     private String date;
     private MeetType meetType;
-    private String groupUrl;
+    private String groupWhereUrl;
     private String groupMembers;
 
 
     @Builder
-    public GroupUpdateResponseDto(String groupName, String groupTitle, String groupImg, String groupMgrId, String groupTimes, String date, MeetType meetType, String groupUrl, String groupMembers) {
+    public GroupUpdateResponseDto(String groupName, String groupTitle, String groupImg, String groupMgrId, String groupTimes, String date, MeetType meetType, String groupWhereUrl, String groupMembers) {
       this.groupName = groupName;
       this.groupTitle = groupTitle;
       this.groupImg = groupImg;
@@ -36,7 +36,7 @@ public class GroupUpdateResponseDto {
       this.groupTimes = groupTimes;
       this.date = date;
       this.meetType = meetType;
-      this.groupUrl = groupUrl;
+      this.groupWhereUrl = groupWhereUrl;
       this.groupMembers = groupMembers;
       //date를 groupTimes에서 가져와서 변환하여 저장하는 부분
       saveDateFromGroupTimes(groupTimes);
@@ -87,7 +87,7 @@ public class GroupUpdateResponseDto {
               .groupTimes(savedGroup.getGroupTimes())
               .date(savedGroup.getDate())
               .meetType(savedGroup.getMeetType())
-              .groupUrl(savedGroup.getGroupUrl())
+              .groupWhereUrl(savedGroup.getgroupWhereUrl())
               .groupMembers(savedGroup.getGroupMembers())
               .build();
     }
