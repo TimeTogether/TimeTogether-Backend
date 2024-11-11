@@ -24,7 +24,7 @@ import timetogether.oauth2.service.CustomOAuth2UserService;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig implements WebMvcConfigurer {
+public class SecurityConfig {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;

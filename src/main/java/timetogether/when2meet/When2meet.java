@@ -1,4 +1,4 @@
-package timetogether.where2meet;
+package timetogether.when2meet;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
