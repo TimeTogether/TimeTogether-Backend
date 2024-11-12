@@ -38,7 +38,7 @@ public class GroupAddDatesResponseDto {
 
     this.groupTimes = result.getGroupTimes();
     this.date = result.getDate();
-    this.groupWhereUrl = result.getgroupWhereUrl();
+    this.groupWhereUrl = result.getGroupWhereUrl();
   }
 
   private String makegroupWhereUrl(Group group) {

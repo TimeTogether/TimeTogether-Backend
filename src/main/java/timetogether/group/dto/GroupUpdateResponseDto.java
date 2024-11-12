@@ -87,7 +87,7 @@ public class GroupUpdateResponseDto {
               .groupTimes(savedGroup.getGroupTimes())
               .date(savedGroup.getDate())
               .meetType(savedGroup.getMeetType())
-              .groupWhereUrl(savedGroup.getgroupWhereUrl())
+              .groupWhereUrl(savedGroup.getGroupWhereUrl())
               .groupMembers(savedGroup.getGroupMembers())
               .build();
     }

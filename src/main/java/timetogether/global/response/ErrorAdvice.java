@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.exception.CalendarValidateFail;
 import timetogether.group.exception.*;
+import timetogether.where2meet.exception.GroupWhereNotFoundException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -73,6 +74,13 @@ public class ErrorAdvice {
   public BaseResponse<Object> handleNotAllowedGroupMgrLeaving(){
     return baseResponseService.getFailureResponse(
             BaseResponseStatus.NOT_ALLOWED_TO_LEAVE_FOR_GROUPMGR
+    );
+  }
+
+  @ExceptionHandler(GroupWhereNotFoundException.class)
+  public BaseResponse<Object> handleGroupWhereNotFoundException(){
+    return baseResponseService.getFailureResponse(
+            BaseResponseStatus.NOT_EXIST_GROUPWHERE
     );
   }
 

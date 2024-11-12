@@ -73,7 +73,7 @@ public class Group {
   }
   public void addDatesAndUrl(GroupAddDatesResponseDto groupAddDatesResponseDto) {
     this.date = groupAddDatesResponseDto.getDate();
-    this.groupWhereUrl = groupAddDatesResponseDto.getgroupWhereUrl();
+    this.groupWhereUrl = groupAddDatesResponseDto.getGroupWhereUrl();
   }
 
   public Group update(GroupUpdateRequestDto request) {

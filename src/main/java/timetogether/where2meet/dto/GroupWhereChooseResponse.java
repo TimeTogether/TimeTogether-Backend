@@ -6,12 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GroupWhereCreateRequestDto {
+public class GroupWhereChooseResponse {
   private String groupLocationName;
   private String groupWhereUrl;
+  private boolean groupWhereChooseThis =  true;
 
   @Builder
-  public GroupWhereCreateRequestDto(String groupLocationName, String groupWhereUrl) {
+  public GroupWhereChooseResponse(String groupLocationName, String groupWhereUrl) {
     this.groupLocationName = groupLocationName;
     this.groupWhereUrl = groupWhereUrl;
   }

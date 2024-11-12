@@ -32,6 +32,10 @@ public enum BaseResponseStatus {
   NOT_ALLOWED_TO_LEAVE_FOR_GROUPMGR(HttpStatus.NOT_ACCEPTABLE,"방장은 그룹을 나갈 수 없습니다."),
   ALREADY_EXIST_IN_GROUP(HttpStatus.ALREADY_REPORTED,"이미 그룹에 속해있습니다."),
   /**
+   * GroupWhere
+   */
+  NOT_EXIST_GROUPWHERE(HttpStatus.NOT_FOUND, "존재하지 않는 그룹장소입니다."),
+  /**
    * User
    */
   NOT_VALID_USER(HttpStatus.NOT_FOUND, "유효한 유저가 아닙니다.");

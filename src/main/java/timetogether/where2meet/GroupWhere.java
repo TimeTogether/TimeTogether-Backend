@@ -23,11 +23,19 @@ public class GroupWhere {
   private String groupWhereName;
   private String groupWhereUrl;
   private int count = 0;
+  private boolean chooseThis = false;
 
   @Builder
   public GroupWhere(String groupWhereName,String groupWhereUrl,Group group) {
     this.groupWhereName = groupWhereName;
     this.groupWhereUrl = groupWhereUrl;
     this.group = group;
+  }
+
+  public void addCount(){
+    this.count++;
+  }
+  public void doneChooseThis(){
+    this.chooseThis = true;
   }
 }

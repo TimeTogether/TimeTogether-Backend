@@ -13,6 +13,6 @@ public class GroupWhereCreateResponseDto {
   @Builder
   public GroupWhereCreateResponseDto(String groupLocationName, String groupWhereUrl) {
     this.groupLocationName = groupLocationName;
-    groupWhereUrl = groupWhereUrl;
+    this.groupWhereUrl = groupWhereUrl;
   }
 }
