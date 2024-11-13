@@ -1,6 +1,7 @@
 package timetogether.group.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import timetogether.group.exception.*;
 import timetogether.group.service.GroupService;
 import timetogether.jwt.service.JwtService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -34,6 +36,7 @@ public class GroupController {
   public BaseResponse<Object> createGroup(
           HttpServletRequest headerRequest,
           @RequestBody GroupCreateRequestDto request
+         // @PathVariable("socialId") String socialId
   ){
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
@@ -163,5 +166,18 @@ public class GroupController {
 
     GroupLeaveResponseDto groupLeaveResponseDto = groupService.leaveGroup(socialId.get(),groupId);
     return baseResponseService.getSuccessResponse(groupLeaveResponseDto);
+  }
+
+  @GetMapping("/groups/view")
+  public BaseResponse<Object> leaveGroup(
+          HttpServletRequest headerRequest
+          //@PathVariable("socialId") String socialId
+  ) {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+
+    List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId.get());
+    //List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId);
+    return baseResponseService.getSuccessResponse(groupShowResponseDtoList);
   }
 }

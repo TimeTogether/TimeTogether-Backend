@@ -5,7 +5,9 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import timetogether.group.Group;
+import timetogether.group.dto.GroupShowResponseDto;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -52,5 +54,17 @@ public class GroupQueryRepository {
       return Optional.empty();
     }
 
+  }
+
+  public List<GroupShowResponseDto> findGroupsWhereSocialIdIn(String socialId) {
+    String query = "SELECT new timetogether.group.dto.GroupShowResponseDto(m.id, m.groupName, m.groupTitle, m.groupImg, m.groupMembers, m.groupMgrId) " +
+            "FROM Group m " +
+            "WHERE m.groupMembers LIKE :pattern " +
+            "OR m.groupMgrId = :socialId";
+
+    return entityManager.createQuery(query, GroupShowResponseDto.class)
+            .setParameter("pattern", "%" + socialId + "%")
+            .setParameter("socialId", socialId)
+            .getResultList();
   }
 }
