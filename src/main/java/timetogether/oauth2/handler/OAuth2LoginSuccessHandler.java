@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             }
 
             // TODO : 동일한 사용자가 다른 브라우저에서 로그인할 경우 처리해보기
-            loginSuccess(response, socialId); // 로그인에 성공한 경우 access, refresh 토큰 생성
+            loginSuccess(request, response, socialId); // 로그인에 성공한 경우 access, refresh 토큰 생성
         } catch (Exception e) {
             throw e;
         }
@@ -72,7 +73,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 
     // TODO : RefreshToken 유/무에 따라 다르게 처리해보기
-    private void loginSuccess(HttpServletResponse response, String socialId) throws IOException {
+    private void loginSuccess(HttpServletRequest request, HttpServletResponse response, String socialId) throws IOException {
+        log.info("socialId = {}", socialId);
         String accessToken = jwtService.createAccessToken(socialId); // 사용자의 소셜 아이디로 액세스토큰을 생성
         String refreshToken = jwtService.createRefreshToken(); // 리프레시 토큰을 생성
 
@@ -80,14 +82,19 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         jwtService.updateRefreshToken(socialId, refreshToken); // 사용자의(소셜아이디) 리프레시 토큰를 db에 저장
         //String redirectUrl = "http://172.20.10.4:3000/oauth2/redirect?access_token=" + accessToken;
 
-//        String redirectUrl = "http://172.20.10.4:3000/oauth2/redirect?access_token=" + accessToken + "&refresh_token=" + refreshToken;
+        String redirectUrl = "http://192.168.233.242:3000/login/oauth2/redirect?access_token=" + accessToken + "&refresh_token=" + refreshToken;
+        response.sendRedirect(redirectUrl);
+
+//        HttpSession session = request.getSession();
+//        log.info("Session ID in loginSuccess: {}", session.getId());
+//        session.setAttribute("accessToken", accessToken);
+//        session.setAttribute("refreshToken", refreshToken);
+//
+//        String accessToken1 = (String) session.getAttribute("accessToken");
+//        String refreshToken1 = (String) session.getAttribute("refreshToken");
+//        log.info("redirect : accessToken : { }, refresh : { }", accessToken1, refreshToken1);
+//
+//        String redirectUrl = "http://192.168.233.242:3000/login/oauth2/redirect";
 //        response.sendRedirect(redirectUrl);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("application/json;charset=UTF-8");
-
-        String jsonResponse = String.format("{\"message\":\"Login successful\",\"access_token\":\"%s\",\"refresh_token\":\"%s\"}",
-                accessToken, refreshToken);
-
-        response.getWriter().write(jsonResponse);
     }
 }
