@@ -57,6 +57,18 @@ public class Meeting {
 
   }
 
+  @Builder
+  public Meeting(LocalDateTime meetDTstart, LocalDateTime meetDTend, MeetType meetType, String meetTitle, String groupName, Calendar calendar, Where2meet where2meet) {
+    this.meetDTstart = meetDTstart;
+    this.meetDTend = meetDTend;
+    this.meetType = meetType;
+    this.meetTitle = meetTitle;
+    this.groupName = groupName;
+    this.calendar = calendar;
+    this.where2meet = where2meet;
+
+  }
+
   //updateDto를 Meeting으로 변환하는 메소드
   public void update(CalendarUpdateRequestDto request, Where2meet newWhere) {
     this.meetTitle = request.getMeetTitle();

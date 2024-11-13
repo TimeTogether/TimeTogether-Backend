@@ -28,7 +28,7 @@ public class GroupQueryRepository {
   }
 
   public Optional<String> findById(Long groupId) {
-    String query = "SELECT m.groupUrl FROM Group m " +
+    String query = "SELECT m.groupWhereUrl FROM Group m " +
             "WHERE m.id =: groupId";
     try {
       String result = entityManager.createQuery(query, String.class)

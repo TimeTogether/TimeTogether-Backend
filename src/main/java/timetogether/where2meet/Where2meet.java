@@ -3,6 +3,7 @@ package timetogether.where2meet;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ public class Where2meet {
   @NotNull
   private String locationUrl;
 
+  @Builder
   public Where2meet(String locationName, String locationUrl) {
     this.locationName = locationName;
     this.locationUrl = locationUrl;

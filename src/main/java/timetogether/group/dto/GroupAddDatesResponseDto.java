@@ -20,28 +20,28 @@ import java.util.stream.Collectors;
 public class GroupAddDatesResponseDto {
   private String groupTimes;
   private String date;
-  private String groupUrl;
+  private String groupWhereUrl;
 
   @Builder
-  public GroupAddDatesResponseDto(String groupTimes, String date, String groupUrl) {
+  public GroupAddDatesResponseDto(String groupTimes, String date, String groupWhereUrl) {
     this.groupTimes = groupTimes;
     this.date = date;
-    this.groupUrl = groupUrl;
+    this.groupWhereUrl = groupWhereUrl;
   }
 
   public GroupAddDatesResponseDto(Group group) throws GroupTimesLimitSevenDays {
     GroupAddDatesResponseDto result = GroupAddDatesResponseDto.builder()
             .groupTimes(group.getGroupTimes())
             .date(changeGroupTimesToDates(group.getGroupTimes()))
-            .groupUrl(makeGroupUrl(group))
+            .groupWhereUrl(makegroupWhereUrl(group))
             .build();
 
     this.groupTimes = result.getGroupTimes();
     this.date = result.getDate();
-    this.groupUrl = result.getGroupUrl();
+    this.groupWhereUrl = result.getGroupWhereUrl();
   }
 
-  private String makeGroupUrl(Group group) {
+  private String makegroupWhereUrl(Group group) {
     return "http://localhost:8080/group/invited/" + group.getId();
   }
 
