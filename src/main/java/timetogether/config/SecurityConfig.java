@@ -35,7 +35,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://192.168.0.5:8080"); // 허용할 프론트 URL
+        configuration.addAllowedOrigin("http://172.20.10.4:3000"); // 허용할 프론트 URL
         configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
         configuration.addExposedHeader("Authorization"); // 클라이언트에서 Authorization 헤더를 읽을 수 있게 노출
@@ -54,7 +54,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/login/**", "/home/", "/css/**","/images/**","/js/**","/favicon.ico", "/header", "header-info").permitAll()
+                        .requestMatchers("/", "/login/**", "/home/", "/css/**","/images/**","/js/**","/favicon.ico", "/header", "/header-info").permitAll()
                         .anyRequest().authenticated() // 그 외의 요청은 인증 필요
                 )
                 .oauth2Login(oauth2 -> oauth2
