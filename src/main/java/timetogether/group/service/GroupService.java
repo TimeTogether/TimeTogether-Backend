@@ -12,6 +12,7 @@ import timetogether.group.repository.GroupRepository;
 import timetogether.oauth2.repository.UserRepository;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -135,4 +136,8 @@ public class GroupService {
     return false;
   }
 
+  public List<GroupShowResponseDto> showGroupsWhereSocialIdIn(String socialId) {
+    List<GroupShowResponseDto> response = groupQueryRepository.findGroupsWhereSocialIdIn(socialId);
+    return response;
+  }
 }

@@ -1,6 +1,7 @@
 package timetogether.group.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import timetogether.group.exception.*;
 import timetogether.group.service.GroupService;
 import timetogether.jwt.service.JwtService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -24,20 +26,23 @@ public class GroupController {
   private final GroupService groupService;
   private final JwtService jwtService;
 
+  // login 안됨으로 인해 수정됨
   /**
    * 그룹생성
    * 
    * @param headerRequest
    * @return
    */
-  @PostMapping("/create")
+  @PostMapping("/create/{socialId}")
   public BaseResponse<Object> createGroup(
           HttpServletRequest headerRequest,
-          @RequestBody GroupCreateRequestDto request
+          @RequestBody GroupCreateRequestDto request,
+          @PathVariable("socialId") String socialId
   ){
-    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    Optional<String> socialId = jwtService.extractId(accessToken.get());
-    GroupCreateResponseDto groupCreateResponseDto = groupService.createGroup(socialId.get(), request);
+    //Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    //Optional<String> socialId = jwtService.extractId(accessToken.get());
+    //GroupCreateResponseDto groupCreateResponseDto = groupService.createGroup(socialId.get(), request);
+    GroupCreateResponseDto groupCreateResponseDto = groupService.createGroup(socialId, request);
     return baseResponseService.getSuccessResponse(groupCreateResponseDto);
   }
 
@@ -163,5 +168,19 @@ public class GroupController {
 
     GroupLeaveResponseDto groupLeaveResponseDto = groupService.leaveGroup(socialId.get(),groupId);
     return baseResponseService.getSuccessResponse(groupLeaveResponseDto);
+  }
+
+  // login 안됨으로 인해 수정됨
+  @GetMapping("/groups/view/{socialId}")
+  public BaseResponse<Object> leaveGroup(
+          HttpServletRequest headerRequest,
+          @PathVariable("socialId") String socialId
+  ) {
+    //Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    //Optional<String> socialId = jwtService.extractId(accessToken.get());
+
+    //List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId.get());
+    List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId);
+    return baseResponseService.getSuccessResponse(groupShowResponseDtoList);
   }
 }
