@@ -26,23 +26,21 @@ public class GroupController {
   private final GroupService groupService;
   private final JwtService jwtService;
 
-  // login 안됨으로 인해 수정됨
   /**
    * 그룹생성
    * 
    * @param headerRequest
    * @return
    */
-  @PostMapping("/create/{socialId}")
+  @PostMapping("/create")
   public BaseResponse<Object> createGroup(
           HttpServletRequest headerRequest,
-          @RequestBody GroupCreateRequestDto request,
-          @PathVariable("socialId") String socialId
+          @RequestBody GroupCreateRequestDto request
+         // @PathVariable("socialId") String socialId
   ){
-    //Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    //Optional<String> socialId = jwtService.extractId(accessToken.get());
-    //GroupCreateResponseDto groupCreateResponseDto = groupService.createGroup(socialId.get(), request);
-    GroupCreateResponseDto groupCreateResponseDto = groupService.createGroup(socialId, request);
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+    GroupCreateResponseDto groupCreateResponseDto = groupService.createGroup(socialId.get(), request);
     return baseResponseService.getSuccessResponse(groupCreateResponseDto);
   }
 
@@ -170,17 +168,16 @@ public class GroupController {
     return baseResponseService.getSuccessResponse(groupLeaveResponseDto);
   }
 
-  // login 안됨으로 인해 수정됨
-  @GetMapping("/groups/view/{socialId}")
+  @GetMapping("/groups/view")
   public BaseResponse<Object> leaveGroup(
-          HttpServletRequest headerRequest,
-          @PathVariable("socialId") String socialId
+          HttpServletRequest headerRequest
+          //@PathVariable("socialId") String socialId
   ) {
-    //Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    //Optional<String> socialId = jwtService.extractId(accessToken.get());
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
 
-    //List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId.get());
-    List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId);
+    List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId.get());
+    //List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId);
     return baseResponseService.getSuccessResponse(groupShowResponseDtoList);
   }
 }
