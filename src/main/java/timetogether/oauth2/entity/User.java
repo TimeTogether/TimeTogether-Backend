@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import timetogether.calendar.Calendar;
+import timetogether.when2meet.When2meet;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,6 +38,9 @@ public class User {
 
   private String refreshToken; // 리프레시 토큰
 
+  @OneToMany(mappedBy = "group",cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private List<When2meet> when2meetList = new ArrayList<>();
+
   // 유저 권한 설정 메소드
   public void authorizeUser() {
     this.role = Role.USER;
@@ -45,6 +52,11 @@ public class User {
 
   public void updateCalendarId(Calendar calendar) {
     this.calendar = calendar;
+  }
+
+  public void addWhen2meet(When2meet when2meet) {
+    this.when2meetList.add(when2meet);
+    when2meet.setUser(this);  // 양방향 연관관계 설정
   }
 
 }

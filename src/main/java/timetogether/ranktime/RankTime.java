@@ -14,6 +14,9 @@ import timetogether.when2meet.When2meet;
 @Table(name = "rank_table")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RankTime {
+
+  private static final String ZERO = "0";
+
   @Column(name = "time_id")
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +27,7 @@ public class RankTime {
   @Column(name = "time_value")
   private String time;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "date")
   private When2meet when2meet;
 
@@ -37,11 +40,19 @@ public class RankTime {
   private User user;
 
   @Builder
-  public RankTime(When2meet when2meet, Group group, User user, String rank, String time) {
+  public RankTime(When2meet when2meet, Group group, User user, int rank, int time) {
     this.when2meet = when2meet;
     this.group = group;
     this.user = user;
-    this.rank = rank;
-    this.time = time;
+    this.rank = parserRank(rank);
+    this.time = parserTime(time);
+  }
+
+  private String parserTime(int time) {
+    return ZERO.repeat(time);
+  }
+
+  private String parserRank(int rank) {
+    return ZERO.repeat(rank);
   }
 }

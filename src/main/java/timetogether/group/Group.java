@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @Getter
@@ -95,6 +96,11 @@ public class Group {
     this.groupMembers = String.join(",", updatedMembers);
   }
 
+  public List<String> parserGroupMembers(){
+    String[] split = this.groupMembers.split(",");
+    return Arrays.stream(split).map(String::trim).collect(Collectors.toList());
+  }
+
 
   public void addGroupSocailId(String socialId) {
     if (this.groupMembers == null){
@@ -102,5 +108,9 @@ public class Group {
     }else{
       this.groupMembers += "," + socialId;
     }
+  }
+
+  public void addWhen2meet(When2meet when2meet) {
+    this.when2meetList.add(when2meet);
   }
 }
