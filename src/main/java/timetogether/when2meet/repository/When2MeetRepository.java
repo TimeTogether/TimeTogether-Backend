@@ -2,8 +2,7 @@ package timetogether.when2meet.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import timetogether.calendar.Calendar;
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.MeetType;
 import timetogether.oauth2.entity.User;
 import timetogether.when2meet.When2meet;
 

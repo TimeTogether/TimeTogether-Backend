@@ -1,4 +1,4 @@
-package timetogether.meeting;
+package timetogether.groupMeeting;
 
 public enum MeetType {
   OFFLINE, ONLINE;

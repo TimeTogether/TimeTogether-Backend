@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import timetogether.group.Group;
 import timetogether.group.repository.GroupProjection;
 import timetogether.group.repository.GroupRepository;
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.MeetType;
 import timetogether.meeting.Meeting;
 import timetogether.meeting.repository.MeetingRepository;
 import timetogether.oauth2.entity.User;

@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import timetogether.group.Group;
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.MeetType;
 
 @Getter
 @NoArgsConstructor

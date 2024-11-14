@@ -2,7 +2,7 @@ package timetogether.when2meet.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.MeetType;
 
 import java.time.LocalDateTime;
 

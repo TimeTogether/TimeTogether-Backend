@@ -2,7 +2,7 @@ package timetogether.meeting.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.MeetType;
 import timetogether.calendar.dto.response.CalendarSimpleDto;
 import timetogether.meeting.Meeting;
 

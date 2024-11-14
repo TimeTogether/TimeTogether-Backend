@@ -10,39 +10,39 @@ import timetogether.group.dto.GroupAddDatesRequestDto;
 import timetogether.group.dto.GroupAddDatesResponseDto;
 import timetogether.group.dto.GroupCreateRequestDto;
 import timetogether.group.dto.GroupUpdateRequestDto;
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.GroupMeeting;
+import timetogether.groupMeeting.MeetType;
 import timetogether.when2meet.When2meet;
-import timetogether.where2meet.GroupWhere;
+import timetogether.GroupWhere.GroupWhere;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Entity
 @Getter
-@Table(name = "group_table")
+@Table(name = "group")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Group {
   @Column(name = "group_id")
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long groupId;
   @NotNull
   private String groupName; //GroupCreateRequestDto에서 정함
-  private String groupTitle; //GroupCreateRequestDto에서 정함
+  //private String groupTitle; //GroupCreateRequestDto에서 정함
   private String groupImg; //GroupCreateRequestDto에서 정함
   @NotNull
   private String groupMgrId; //GroupService의 groupCreateDto에서 정함
-  private String groupTimes; //GroupAddDatesRequestDto에서 정함
-  private String date; //GroupAddDatesResponseDto에서 정함
-  private MeetType meetType; //GroupCreateRequestDto에서 정함
+  private String groupTimes; //GroupAddDatesRequestDto에서 정함  "2024-11-14,2024-11-15"
+  //private String date; //GroupAddDatesResponseDto에서 정함
+  //private MeetType meetType; //GroupCreateRequestDto에서 정함
   private String groupWhereUrl; //GroupAddDatesResponseDto에서 정함
-  private String groupMembers = null;
+  //private String groupMembers = null;
 
   @OneToMany(mappedBy = "group",cascade = CascadeType.REMOVE, orphanRemoval = true)
-  private List<When2meet> when2meetList = new ArrayList<>();
+  private List<GroupMeeting> groupMeetingList;
 
   @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<GroupWhere> groupWhereList = new ArrayList<>();

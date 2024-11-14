@@ -1,14 +1,13 @@
 package timetogether.when2meet.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import timetogether.global.response.BaseResponse;
 import timetogether.global.response.BaseResponseService;
 import timetogether.jwt.service.JwtService;
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.MeetType;
 import timetogether.when2meet.dto.Days;
 import timetogether.when2meet.dto.GroupTableDTO;
 import timetogether.when2meet.dto.Result;

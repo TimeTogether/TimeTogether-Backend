@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import timetogether.calendar.dto.request.CalendarUpdateRequestDto;
+import timetogether.groupMeeting.MeetType;
 import timetogether.where2meet.Where2meet;
 import timetogether.calendar.Calendar;
 
@@ -20,7 +21,7 @@ public class Meeting {
 
   @Column(name = "meet_id")
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long meetId;
 
   @NotNull
   private LocalDateTime meetDTstart;
