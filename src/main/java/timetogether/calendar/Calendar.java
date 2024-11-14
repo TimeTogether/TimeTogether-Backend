@@ -16,7 +16,7 @@ public class Calendar {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "calendar_id")
-  private Long id;
+  private Long calendarId;
 
 
   @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)

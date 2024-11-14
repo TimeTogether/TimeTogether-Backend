@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import timetogether.group.Group;
 import timetogether.group.exception.NotValidMemberException;
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.MeetType;
 
 import java.util.Arrays;
 import java.util.Optional;

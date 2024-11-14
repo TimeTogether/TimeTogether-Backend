@@ -3,7 +3,7 @@ package timetogether.calendar.dto.request;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.MeetType;
 import timetogether.calendar.exception.CalendarValidateFail;
 
 import java.time.LocalDateTime;

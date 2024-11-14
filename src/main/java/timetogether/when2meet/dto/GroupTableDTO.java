@@ -1,7 +1,7 @@
 package timetogether.when2meet.dto;
 
 
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.MeetType;
 
 import java.util.List;
 

@@ -13,9 +13,9 @@ public class Login {
   @Column(name = "login_id")
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long loginId;
 
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "social_id")
   @OneToOne(fetch = FetchType.LAZY)
   private User user;
 

@@ -3,12 +3,7 @@ package timetogether.group.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import timetogether.group.Group;
-import timetogether.group.exception.NotValidMemberException;
-import timetogether.meeting.MeetType;
-
-import java.util.Arrays;
-import java.util.Optional;
+import timetogether.groupMeeting.MeetType;
 
 @Getter
 @NoArgsConstructor

@@ -11,16 +11,16 @@ import timetogether.when2meet.When2meet;
 
 @Entity
 @Getter
-@Table(name = "rank_table")
+@Table(name = "rank")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RankTime {
 
   private static final String ZERO = "0";
 
-  @Column(name = "time_id")
+  @Column(name = "rankTime_id")
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long rankTimeId;
 
   @Column(name = "rank_value")
   private String rank;
@@ -28,16 +28,8 @@ public class RankTime {
   private String time;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "date")
+  @JoinColumn(name = "when2meet_id")
   private When2meet when2meet;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "group_id")
-  private Group group;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
-  private User user;
 
   @Builder
   public RankTime(When2meet when2meet, Group group, User user, int rank, int time) {

@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import timetogether.group.Group;
-import timetogether.meeting.MeetType;
+import timetogether.groupMeeting.GroupMeeting;
+import timetogether.groupMeeting.MeetType;
 import timetogether.oauth2.entity.User;
 
 @Entity
@@ -14,20 +15,20 @@ import timetogether.oauth2.entity.User;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class When2meet {
 
+  @Column(name = "when2meet_id")
   @Id
-  private String date;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long when2meetId;
 
   private String day;
-
-  private MeetType type;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
-  private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "group_id")
   private Group group;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name ="groupMeet_id")
+  private GroupMeeting groupMeeting;
 
   @Builder
   public When2meet(String date, String day, MeetType type, User user, Group group) {

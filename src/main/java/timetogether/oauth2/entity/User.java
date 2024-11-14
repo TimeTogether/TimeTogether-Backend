@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import timetogether.calendar.Calendar;
+import timetogether.groupMeeting.GroupMeeting;
 import timetogether.when2meet.When2meet;
 
 import java.util.ArrayList;
@@ -23,12 +24,16 @@ public class User {
   @NotNull
   private String userName;
 
-  @NotNull
-  private boolean groupMgr;
-
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "calendar_id")
   private Calendar calendar;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "groupMeet_id")
+  private GroupMeeting groupMeeting;
+
+  @OneToMany(mappedBy = "user")
+  private List<GroupMeeting> groupMeetingList = new ArrayList<>();
 
   @Enumerated(EnumType.STRING)
   private Role role;
