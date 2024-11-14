@@ -7,5 +7,5 @@ import timetogether.when2meet.When2meet;
 import java.util.Optional;
 
 public interface When2MeetRepository extends JpaRepository<When2meet, String> {
-
+    Optional<When2meet> findByDate(String date);
 }
