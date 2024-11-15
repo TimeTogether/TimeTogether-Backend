@@ -3,23 +3,10 @@ package timetogether.where2meet.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import timetogether.global.response.BaseResponseStatus;
-import timetogether.group.Group;
-import timetogether.group.exception.GroupNotFoundException;
-import timetogether.group.exception.NotGroupMgrInGroup;
-import timetogether.group.exception.NotValidMemberException;
 import timetogether.group.repository.GroupRepository;
 import timetogether.group.service.GroupService;
-import timetogether.GroupWhere.GroupWhere;
-import timetogether.where2meet.dto.GroupWhereChooseResponse;
-import timetogether.where2meet.dto.GroupWhereCreateRequestDto;
-import timetogether.where2meet.dto.GroupWhereViewResponseDto;
-import timetogether.where2meet.exception.GroupWhereNotFoundException;
-import timetogether.where2meet.repository.GroupWhereQueryRepository;
-import timetogether.where2meet.repository.GroupWhereRepository;
-
-import java.util.List;
-import java.util.Optional;
+import timetogether.GroupWhere.repository.GroupWhereQueryRepository;
+import timetogether.GroupWhere.repository.GroupWhereRepository;
 
 @Service
 @RequiredArgsConstructor
