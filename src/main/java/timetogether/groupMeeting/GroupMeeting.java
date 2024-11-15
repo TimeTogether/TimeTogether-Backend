@@ -1,14 +1,18 @@
 package timetogether.groupMeeting;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import timetogether.group.Group;
 import timetogether.oauth2.entity.User;
+import timetogether.when2meet.When2meet;
 
 import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class GroupMeeting {
   @Column(name = "groupMeet_id")
   @Id
@@ -16,8 +20,6 @@ public class GroupMeeting {
   private Long groupMeetId;
 
   private String groupMeetingTitle;
-
-  private MeetType type;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "group_id")
@@ -27,6 +29,15 @@ public class GroupMeeting {
   @JoinColumn(name = "user_id")
   private User user;
 
+  @Builder
+  public GroupMeeting(String groupMeetingTitle, Group group, User user) {
+    this.groupMeetingTitle = groupMeetingTitle;
+    this.group = group;
+    this.user = user;
+  }
 
 
+  public void setUser(User user) {
+    this.user = user;
+  }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import timetogether.calendar.Calendar;
+import timetogether.group.Group;
 import timetogether.groupMeeting.GroupMeeting;
 import timetogether.when2meet.When2meet;
 
@@ -35,6 +36,10 @@ public class User {
   @OneToMany(mappedBy = "user")
   private List<GroupMeeting> groupMeetingList = new ArrayList<>();
 
+  @ManyToOne
+  @JoinColumn(name = "group_id")
+  private Group group;
+
   @Enumerated(EnumType.STRING)
   private Role role;
 
@@ -59,9 +64,9 @@ public class User {
     this.calendar = calendar;
   }
 
-  public void addWhen2meet(When2meet when2meet) {
-    this.when2meetList.add(when2meet);
-    when2meet.setUser(this);  // 양방향 연관관계 설정
-  }
+  public void initGroupMeeting(GroupMeeting groupMeeting) {
+    groupMeetingList.add(groupMeeting);
+    groupMeeting.setUser(this);
 
+  }
 }

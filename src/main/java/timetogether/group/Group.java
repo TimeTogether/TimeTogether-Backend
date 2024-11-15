@@ -12,6 +12,7 @@ import timetogether.group.dto.GroupCreateRequestDto;
 import timetogether.group.dto.GroupUpdateRequestDto;
 import timetogether.groupMeeting.GroupMeeting;
 import timetogether.groupMeeting.MeetType;
+import timetogether.oauth2.entity.User;
 import timetogether.when2meet.When2meet;
 import timetogether.GroupWhere.GroupWhere;
 
@@ -42,30 +43,29 @@ public class Group {
   //private String groupMembers = null;
 
   @OneToMany(mappedBy = "group",cascade = CascadeType.REMOVE, orphanRemoval = true)
-  private List<GroupMeeting> groupMeetingList;
+  private List<User> userList;
 
   @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<GroupWhere> groupWhereList = new ArrayList<>();
 
   @Builder
-  public Group(String groupName, String groupTitle, String groupImg, String groupMgrId, String groupTimes, String date, MeetType meetType, String groupWhereUrl,String groupMembers) {
+  public Group(Long groupId, String groupName, String groupImg, String groupMgrId, String groupTimes, String groupWhereUrl, List<User> userList, List<GroupWhere> groupWhereList) {
+    this.groupId = groupId;
     this.groupName = groupName;
-    this.groupTitle = groupTitle;
     this.groupImg = groupImg;
     this.groupMgrId = groupMgrId;
     this.groupTimes = groupTimes;
-    this.date = date;
-    this.meetType = meetType;
     this.groupWhereUrl = groupWhereUrl;
-    this.groupMembers = groupMembers;
+    this.userList = userList;
+    this.groupWhereList = groupWhereList;
   }
 
   public Group(GroupCreateRequestDto request, String socialId){
     this.groupName = request.getGroupName();
     this.groupMgrId = socialId;
     this.groupImg = request.getGroupImg();
-    this.groupTitle = request.getGroupTitle();
-    this.meetType = request.getMeetType();
+    //this.groupTitle = request.getGroupTitle();
+    //this.meetType = request.getMeetType();
   }
 
   public Group addGroupTimes(GroupAddDatesRequestDto request){
@@ -103,14 +103,10 @@ public class Group {
 
 
   public void addGroupSocailId(String socialId) {
-    if (this.groupMembers == null){
+    if (this.groupMembers == null) {
       this.groupMembers = socialId;
-    }else{
+    } else {
       this.groupMembers += "," + socialId;
     }
-  }
-
-  public void addWhen2meet(When2meet when2meet) {
-    this.when2meetList.add(when2meet);
   }
 }
