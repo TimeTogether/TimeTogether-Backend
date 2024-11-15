@@ -34,27 +34,25 @@ public class When2MeetController {
 
 
     @PostMapping("/meet/add")
-    public BaseResponse<Object> addGroupMeet(HttpServletRequest request, @RequestBody List<String> dates, @PathVariable("groupId") Long groupId){
-        // (그룹, 회의 ID, date를 확인 -> 회의 아이디와 date로 meet과 when2meet 테이블 생성(off,on) 및 저장)
-        Optional<String> accessToken = jwtService.extractAccessToken(request);
-        Optional<String> socialId = jwtService.extractId(accessToken.get());
-        when2MeetService.addGroupMeet(socialId.get(), dates, groupId); // 회의를 하나 더 만든다 = meet table을 생성한다
+    public BaseResponse<Object> addGroupMeet(@RequestBody String groupMeetingTitle, @RequestBody List<String> dates, @PathVariable("groupId") Long groupId){
+        when2MeetService.addGroupMeet(groupMeetingTitle, dates, groupId); // 회의를 하나 더 만든다 = meet table을 생성한다
         return baseResponseService.getSuccessResponse();
     }
 
-    @GetMapping("/{type}")
-    public BaseResponse<Object> viewGroupMeet(@PathVariable("groupId") Long groupId, @PathVariable("type") String type) // group table을 위한 정보
+    @GetMapping("/{title}/{type}")
+    public BaseResponse<Object> viewGroupMeet(@PathVariable("groupId") Long groupId, @PathVariable("title") String groupMeetingTitle, @PathVariable("type") String type) // group table을 위한 정보
     {   // (그룹, 회의 ID, TYPE을 확인)
-        GroupTableDTO<Users> table = when2MeetService.viewMeet(groupId, MeetType.fromString(type)); // 해당 type, group, meet에 대한 모든 사용자의 정보를 넘긴다
+        GroupTableDTO<Users> table = when2MeetService.viewMeet(groupId, groupMeetingTitle, MeetType.fromString(type)); // 해당 type, group, meet에 대한 모든 사용자의 정보를 넘긴다
         return baseResponseService.getSuccessResponse(table);
     }
 
-    @PostMapping("/{type}/add")
+    @PostMapping("/{title}/{type}/add")
     public BaseResponse<Object> addUserMeet(@PathVariable("groupId") Long groupId,
+                                            @PathVariable("title") String groupMeetingTitle,
                                             @PathVariable("type") String type,
                                             @RequestBody String userNames)
-    {   // (그룹, 회의 ID, TYPE을 확인) -> 회의 아이디로 테이블을 조회해서 해당 날짜에 대한 RankTime(off, on) 테이블 생성 및 저장
-        GroupTableDTO<Days> table = when2MeetService.addUserMeet(groupId, MeetType.fromString(type), userNames);
+    {   // (그룹, 회의 ID, TYPE을 확인) -> 회의 아이디로 테이블을 조회해서 해당 날짜에 대한 RankTime(off or on) 테이블 생성 및 저장
+        GroupTableDTO<Days> table = when2MeetService.addUserMeet(groupId, groupMeetingTitle, MeetType.fromString(type), userNames);
         return baseResponseService.getSuccessResponse(table);
     }
 

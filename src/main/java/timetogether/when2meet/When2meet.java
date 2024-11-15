@@ -9,6 +9,7 @@ import timetogether.group.Group;
 import timetogether.groupMeeting.GroupMeeting;
 import timetogether.groupMeeting.MeetType;
 import timetogether.oauth2.entity.User;
+import timetogether.ranktime.RankTime;
 
 @Entity
 @Getter
@@ -18,7 +19,9 @@ public class When2meet {
   @Column(name = "when2meet_id")
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long when2meetId;
+  private String when2meetId;
+
+  private String date;
 
   private String day;
 
@@ -30,12 +33,14 @@ public class When2meet {
   @JoinColumn(name ="groupMeet_id")
   private GroupMeeting groupMeeting;
 
+  private MeetType type;
+
   @Builder
-  public When2meet(String date, String day, MeetType type, User user, Group group) {
+  public When2meet(String date, String day, Group group, GroupMeeting groupMeeting, MeetType type) {
     this.date = date;
     this.day = day;
-    this.type = type;
-    this.user = user;
     this.group = group;
+    this.groupMeeting = groupMeeting;
+    this.type = type;
   }
 }

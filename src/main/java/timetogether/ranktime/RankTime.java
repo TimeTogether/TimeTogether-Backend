@@ -32,12 +32,10 @@ public class RankTime {
   private When2meet when2meet;
 
   @Builder
-  public RankTime(When2meet when2meet, Group group, User user, int rank, int time) {
-    this.when2meet = when2meet;
-    this.group = group;
-    this.user = user;
+  public RankTime(int rank, int time, When2meet when2meet) {
     this.rank = parserRank(rank);
-    this.time = parserTime(time);
+    this.time = parserTime(rank);
+    this.when2meet = when2meet;
   }
 
   private String parserTime(int time) {

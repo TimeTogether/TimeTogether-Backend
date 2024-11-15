@@ -1,0 +1,13 @@
+package timetogether.groupMeeting;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface GroupMeetingRepository extends JpaRepository<GroupMeeting, Long> {
+    @Override
+    Optional<GroupMeeting> findById(Long groupMeetId);
+
+    List<GroupMeeting> findByGroupMeetingTitle(String groupMeetingTitle);
+}
