@@ -1,5 +1,8 @@
 package timetogether.when2meet.dto;
 
+import lombok.Getter;
+
+@Getter
 public class Days {
     private final String date;
     private final String day;

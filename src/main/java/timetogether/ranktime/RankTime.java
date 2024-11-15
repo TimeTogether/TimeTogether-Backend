@@ -36,6 +36,12 @@ public class RankTime {
     this.when2meet = when2meet;
   }
 
+  public RankTime(String rank, String time, When2meet when2meet) {
+    this.rank = rank;
+    this.time = time;
+    this.when2meet = when2meet;
+  }
+
   private String parserTime(int time) {
     return ZERO.repeat(time);
   }

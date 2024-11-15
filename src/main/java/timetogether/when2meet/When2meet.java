@@ -25,9 +25,9 @@ public class When2meet {
 
   private String day;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "social_id")
-  private User user;
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "social_id")
+//  private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "group_id")
