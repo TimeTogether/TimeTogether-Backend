@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "meeting")
 public class Meeting {
 
   @Column(name = "meet_id")

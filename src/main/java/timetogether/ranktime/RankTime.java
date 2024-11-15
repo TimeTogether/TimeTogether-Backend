@@ -5,13 +5,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import timetogether.group.Group;
-import timetogether.oauth2.entity.User;
 import timetogether.when2meet.When2meet;
 
 @Entity
 @Getter
-@Table(name = "rank")
+@Table(name = "rank_time")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RankTime {
 

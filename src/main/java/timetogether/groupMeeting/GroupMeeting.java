@@ -6,13 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import timetogether.group.Group;
 import timetogether.oauth2.entity.User;
-import timetogether.when2meet.When2meet;
-
-import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "group_meeting")
 public class GroupMeeting {
   @Column(name = "groupMeet_id")
   @Id

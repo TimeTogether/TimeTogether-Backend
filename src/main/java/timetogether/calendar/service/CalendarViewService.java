@@ -33,12 +33,12 @@ public class CalendarViewService {
     User matchedUser = userRepository.findBySocialId(socialId)
             .orElseThrow(() -> new CalendarNotExist(BaseResponseStatus.NOT_VALID_USER));
     if (matchedUser.getCalendar() != null) {//이미 calendarId가 존재하는 경우 반환
-      return matchedUser.getCalendar().getId();
+      return matchedUser.getCalendar().getCalendarId();
     }
     Calendar savedCalendar = calendarRepository.save(new Calendar());
     matchedUser.updateCalendarId(savedCalendar);
     userRepository.save(matchedUser);
-    return savedCalendar.getId();
+    return savedCalendar.getCalendarId();
   }
 
 

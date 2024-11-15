@@ -9,21 +9,25 @@ import timetogether.group.Group;
 import timetogether.groupMeeting.GroupMeeting;
 import timetogether.groupMeeting.MeetType;
 import timetogether.oauth2.entity.User;
-import timetogether.ranktime.RankTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "when2meet")
 public class When2meet {
 
   @Column(name = "when2meet_id")
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private String when2meetId;
+  private Long when2meetId;
 
   private String date;
 
   private String day;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "social_id")
+  private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "group_id")
@@ -43,4 +47,5 @@ public class When2meet {
     this.groupMeeting = groupMeeting;
     this.type = type;
   }
+
 }

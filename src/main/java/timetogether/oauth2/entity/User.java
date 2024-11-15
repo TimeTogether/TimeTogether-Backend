@@ -10,6 +10,7 @@ import timetogether.when2meet.When2meet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -36,9 +37,13 @@ public class User {
   @OneToMany(mappedBy = "user")
   private List<GroupMeeting> groupMeetingList = new ArrayList<>();
 
-  @ManyToOne
-  @JoinColumn(name = "group_id")
-  private Group group;
+  @ManyToMany
+  @JoinTable(
+          name = "user_group",  // 중간 테이블 이름
+          joinColumns = @JoinColumn(name = "social_id"),  // User 쪽 외래키
+          inverseJoinColumns = @JoinColumn(name = "group_id")  // Group 쪽 외래키
+  )
+  private List<Group> groupList;
 
   @Enumerated(EnumType.STRING)
   private Role role;
@@ -48,8 +53,24 @@ public class User {
 
   private String refreshToken; // 리프레시 토큰
 
-  @OneToMany(mappedBy = "group",cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<When2meet> when2meetList = new ArrayList<>();
+  
+  /*
+   * 그룹 내에서 유저를 삭제하기 위한 equals 재정의
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return Objects.equals(getSocialId(), user.getSocialId()) && Objects.equals(getUserName(), user.getUserName());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getSocialId(), getUserName());
+  }
 
   // 유저 권한 설정 메소드
   public void authorizeUser() {
@@ -68,5 +89,12 @@ public class User {
     groupMeetingList.add(groupMeeting);
     groupMeeting.setUser(this);
 
+  }
+  /*
+   * 유저내에서 그룹을 삭제하기 위한 내부 로직
+   */
+  public void removeGroupFromUser(Group group) {
+    int index = groupList.indexOf(group);
+    groupList.remove(index);
   }
 }
