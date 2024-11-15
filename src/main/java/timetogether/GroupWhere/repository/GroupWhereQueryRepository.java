@@ -33,7 +33,7 @@ public class GroupWhereQueryRepository {
             .getResultList();
   }
 
-  //장소 최종 결정 가져오는 쿼리
+  //장소 최종 결정 가져오는 쿼리 -쓰이진 않음
   public GroupWhereChooseResponse findByChosenOne(Long groupId, Long meetingId) {
     String query = "SELECT new timetogether.GroupWhere.dto.GroupWhereChooseResponse(" +
             "gw.id, " +            // groupWhereId

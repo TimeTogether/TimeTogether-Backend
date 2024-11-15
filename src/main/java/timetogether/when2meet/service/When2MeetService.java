@@ -3,6 +3,9 @@ package timetogether.when2meet.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import timetogether.GroupWhere.dto.GroupWhereChooseResponse;
+import timetogether.GroupWhere.repository.GroupWhereQueryRepository;
 import timetogether.calendar.Calendar;
 import timetogether.group.Group;
 import timetogether.group.repository.GroupProjection;
@@ -19,6 +22,9 @@ import timetogether.ranktime.RankTimeRepository;
 import timetogether.when2meet.When2meet;
 import timetogether.when2meet.dto.*;
 import timetogether.when2meet.repository.When2MeetRepository;
+import timetogether.where2meet.Where2meet;
+import timetogether.where2meet.repository.Where2meetRepository;
+import timetogether.where2meet.service.Where2meetService;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -35,6 +41,9 @@ public class When2MeetService {
     private final RankTimeRepository rankTimeRepository;
     private final UserRepository userRepository;
     private final GroupMeetingRepository groupMeetingRepository;
+    private final Where2meetService where2meetService;
+    private final GroupWhereQueryRepository groupWhereQueryRepository;
+    private final Where2meetRepository where2meetRepository;
 
     public MeetTableDTO viewMeetResult(Long groupId) {
         List<Result> resultList = new LinkedList<>();
@@ -184,12 +193,18 @@ public class When2MeetService {
         }
     }
 
+    @Transactional
     public void doneGroupMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, String meetDT) {
         Group group = groupRepository.findById(groupId).get();
         User user = userRepository.findById(socialId).get();
 
-        // where2meet Service로 가져온다
+        // groupWhere에서 chosseThis = true 인 부분을 가져온다.
+        GroupWhereChooseResponse chosenOne = groupWhereQueryRepository.findByChosenOne(groupId, meetingId); //meetingId(그룹 내 회의 아이디) 필요
+        //Where2meet에 저장될 형식으로 변환한다.
+        Where2meet where2meet = new Where2meet(chosenOne);
+        Where2meet savedWhere2Meet = where2meetRepository.save(where2meet); //groupId와 meetingId 가 Where2meet 테이블에 없어서 여기서 저장
+
         LocalDate finalMeet = LocalDate.parse(meetDT);
-        new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(),where2meet);
+        new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(),savedWhere2Meet);
     }
 }
