@@ -15,5 +15,5 @@ import java.util.Optional;
 public interface When2MeetRepository extends JpaRepository<When2meet, String> {
     Optional<When2meet> findByDate(String date);
     Optional<When2meet> findByDateAndUserAndTypeAndGroupMeeting(String date, User user, MeetType type, GroupMeeting groupMeeting);
-    List<When2meet> findByUserAndTypeAndGroupMeeting(User user, MeetType type, GroupMeeting groupMeeting);
+    List<When2meet> findByTypeAndGroupMeeting(MeetType type, GroupMeeting groupMeeting);
 }

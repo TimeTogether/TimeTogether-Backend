@@ -88,7 +88,6 @@ public class User {
   public void initGroupMeeting(GroupMeeting groupMeeting) {
     groupMeetingList.add(groupMeeting);
     groupMeeting.setUser(this);
-
   }
   /*
    * 유저내에서 그룹을 삭제하기 위한 내부 로직
