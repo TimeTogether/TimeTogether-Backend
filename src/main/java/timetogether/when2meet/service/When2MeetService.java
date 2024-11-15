@@ -17,10 +17,7 @@ import timetogether.oauth2.repository.UserRepository;
 import timetogether.ranktime.RankTime;
 import timetogether.ranktime.RankTimeRepository;
 import timetogether.when2meet.When2meet;
-import timetogether.when2meet.dto.Days;
-import timetogether.when2meet.dto.GroupTableDTO;
-import timetogether.when2meet.dto.Result;
-import timetogether.when2meet.dto.Users;
+import timetogether.when2meet.dto.*;
 import timetogether.when2meet.repository.When2MeetRepository;
 
 import java.time.LocalDate;
@@ -39,8 +36,9 @@ public class When2MeetService {
     private final UserRepository userRepository;
     private final GroupMeetingRepository groupMeetingRepository;
 
-    public List<Result> viewMeetResult(Long groupId) {
+    public MeetTableDTO viewMeetResult(Long groupId) {
         List<Result> resultList = new LinkedList<>();
+        List<String> meetingList = new ArrayList<>();
         String groupName = groupRepository.findGroupNameById(groupId).getGroupName();
         // group service에 더 적합
 
@@ -49,13 +47,14 @@ public class When2MeetService {
 
         //
         for (Meeting meet : meeting) {
+            meetingList.add(meet.getMeetTitle()); // title
             resultList.add(new Result(meet.getMeetId(), meet.getMeetDTstart(),
                     meet.getMeetDTend(), meet.getMeetType(),
                     meet.getMeetTitle(), groupName,
                     meet.getWhere2meet().getLocationName(), meet.getWhere2meet().getLocationUrl()));
         }
 
-        return resultList;
+        return new MeetTableDTO(resultList, meetingList);
     }
 
     private List<String> dates = new ArrayList<>();
@@ -71,7 +70,7 @@ public class When2MeetService {
 
     private void initWhen2Meet(List<User> users, Group group, String groupMeetingTitile, List<String> dates) {
         for(int i=0; i<users.size(); i++) {
-            GroupMeeting groupMeeting = groupMeetingRepository.findByGroupMeetingTitleAndUser(groupMeetingTitile, users.get(i));
+            GroupMeeting groupMeeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitile, users.get(i));
             for(String date : dates){
                 String day = LocalDate.parse(date).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN); // 요일
                 /**
@@ -115,7 +114,7 @@ public class When2MeetService {
             List<Days> days = new ArrayList<>();
             for (String date : dates) {
                 // 사용자와 회의일정 제목으로 회의 테이블을 가져온다
-                GroupMeeting meeting = groupMeetingRepository.findByGroupMeetingTitleAndUser(groupMeetingTitle, user);
+                GroupMeeting meeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitle, user);
                 // 회의 테이블에서 타입을 확인한 후 when2meet(특정날짜에 대한) 테이블을 가져온다
                 When2meet when2meet = when2MeetRepository.findByDateAndUserAndTypeAndGroupMeeting(date, user, type, meeting).get();
                 // when2meet으로 ranktime 테이블을 가져온다
@@ -185,7 +184,12 @@ public class When2MeetService {
         }
     }
 
-    public void doneGroupMeet(Long groupId, String groupMeetingTitle, MeetType meetType, String socialId) {
+    public void doneGroupMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, String meetDT) {
+        Group group = groupRepository.findById(groupId).get();
+        User user = userRepository.findById(socialId).get();
 
+        // where2meet Service로 가져온다
+        LocalDate finalMeet = LocalDate.parse(meetDT);
+        new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(),where2meet);
     }
 }
