@@ -22,7 +22,7 @@ public class MeetingResponseDto {
 
   public static MeetingResponseDto from(Meeting meeting) {
     return MeetingResponseDto.builder()
-            .id(meeting.getId())
+            .id(meeting.getMeetId())
             .meetDTstart(meeting.getMeetDTstart())
             .meetDTend(meeting.getMeetDTend())
             .meetType(meeting.getMeetType())

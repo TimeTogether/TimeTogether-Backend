@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "where2meet")
 public class Where2meet {
 
   @Column(name = "location_id")
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long locationId;
 
   @NotNull
   private String locationName;

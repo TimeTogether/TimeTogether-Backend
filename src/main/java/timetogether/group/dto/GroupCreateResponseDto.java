@@ -11,33 +11,26 @@ import timetogether.groupMeeting.MeetType;
 public class GroupCreateResponseDto {
   private Long groupId;
   private String groupName;
-  private String groupTitle;
   private String groupImg;
   private String groupMgrId;
-  private MeetType meetType;
-  private String groupMembers;
+  private String groupurl;
 
   @Builder
-  public GroupCreateResponseDto(Long groupId, String groupName, String groupTitle, String groupImg, String groupMgrId, MeetType meetType,String groupMembers) {
+  public GroupCreateResponseDto(Long groupId, String groupName, String groupImg, String groupMgrId, String groupurl) {
     this.groupId = groupId;
     this.groupName = groupName;
-    this.groupTitle = groupTitle;
     this.groupImg = groupImg;
     this.groupMgrId = groupMgrId;
-    this.meetType = meetType;
-    this.groupMembers = groupMembers;
+    this.groupurl = groupurl;
   }
-
 
   public static GroupCreateResponseDto from(Group savedGroup) {
     return GroupCreateResponseDto.builder()
             .groupId(savedGroup.getId())
             .groupName(savedGroup.getGroupName())
-            .groupTitle(savedGroup.getGroupTitle())
             .groupImg(savedGroup.getGroupImg())
             .groupMgrId(savedGroup.getGroupMgrId())
-            .meetType(savedGroup.getMeetType())
-            .groupMembers(savedGroup.getGroupMembers())
+            .groupurl(savedGroup.getGroupUrl())
             .build();
   }
 }

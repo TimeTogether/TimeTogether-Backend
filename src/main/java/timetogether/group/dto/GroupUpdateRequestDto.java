@@ -35,12 +35,8 @@ public class GroupUpdateRequestDto {
             .orElseThrow(() -> new NotValidMemberException());
     return Group.builder()
             .groupName(groupName)
-            .groupTitle(groupTitle)
             .groupImg(groupImg)
             .groupMgrId(socialId)
-            .groupTimes(groupTimes)
-            .meetType(meetType)
-            .groupMembers(groupMembers)
             .build();
 
   }

@@ -10,6 +10,7 @@ import timetogether.group.Group;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "group_where")
 public class GroupWhere {
   @Column(name = "groupWhere_id")
   @Id

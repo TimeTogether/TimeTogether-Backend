@@ -134,7 +134,7 @@ public class CalendarService {
     Meeting existMeeting = meetingRepository.findById(meetingId)
             .orElseThrow(() -> new InCalendarMeetingIdNotExist(BaseResponseStatus.NOT_EXIST_MEETINGID));
 
-    where2meetRepository.deleteById(existMeeting.getWhere2meet().getId());
+    where2meetRepository.deleteById(existMeeting.getWhere2meet().getLocationId());
     meetingRepository.delete(existMeeting);
   }
 }

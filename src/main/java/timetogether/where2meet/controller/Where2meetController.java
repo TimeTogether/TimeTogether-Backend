@@ -25,105 +25,105 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class Where2meetController {
 
-  private final BaseResponseService baseResponseService;
-  private final Where2meetService where2meetService;
-  private final JwtService jwtService;
-
-  /**
-   * 후보 장소 전체 조회
-   *
-   * @param headerRequest
-   * @param groupId
-   * @return
-   * @throws GroupNotFoundException
-   * @throws NotValidMemberException
-   */
-  @GetMapping("/{groupId}/where/view")
-  public BaseResponse<Object> viewAllCandidates(
-          HttpServletRequest headerRequest,
-          @PathVariable("groupId") Long groupId
-  ) throws GroupNotFoundException, NotValidMemberException {
-    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    Optional<String> socialId = jwtService.extractId(accessToken.get());
-    Optional<List<GroupWhereViewResponseDto>> groupViewResponseList = where2meetService.getAllCandidates(socialId.get(), groupId);
-    return baseResponseService.getSuccessResponse(groupViewResponseList);
-  }
-
-  /**
-   * 후보에 장소 등록
-   *
-   * @param headerRequest
-   * @param groupId
-   * @param request
-   * @return
-   * @throws GroupNotFoundException
-   * @throws NotValidMemberException
-   */
-  @PostMapping("/{groupId}/where/create")
-  public BaseResponse<Object> createCandidate(
-          HttpServletRequest headerRequest,
-          @PathVariable("groupId") Long groupId,
-          @RequestBody GroupWhereCreateRequestDto request
-  ) throws GroupNotFoundException, NotValidMemberException {
-    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    Optional<String> socialId = jwtService.extractId(accessToken.get());
-    GroupWhereViewResponseDto groupViewResponse = where2meetService.createCandidate(request, socialId.get(), groupId);
-    return baseResponseService.getSuccessResponse(groupViewResponse);
-  }
-
-  /**
-   * 후보 장소 투표
-   *
-   * @param headerRequest
-   * @param groupId
-   * @param groupWhereId
-   * @return
-   * @throws GroupNotFoundException
-   * @throws NotValidMemberException
-   */
-  @PostMapping("/{groupId}/where/vote/{groupWhereId}")
-  public BaseResponse<Object> voteCandidtate(
-          HttpServletRequest headerRequest,
-          @PathVariable("groupId") Long groupId,
-          @PathVariable("groupWhereId") Long groupWhereId
-  ) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
-    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    Optional<String> socialId = jwtService.extractId(accessToken.get());
-    GroupWhereViewResponseDto groupViewResponse = where2meetService.voteCandidate(socialId.get(), groupId, groupWhereId);
-    return baseResponseService.getSuccessResponse(groupViewResponse);
-  }
-
-  /**
-   * 그룹 특정 후보 장소 삭제
-   *
-   * @param headerRequest
-   * @param groupId
-   * @param groupWhereId
-   * @return
-   * @throws GroupNotFoundException
-   * @throws NotValidMemberException
-   */
-  @DeleteMapping("{groupId}/where/delete/{groupWhereId}")
-  public BaseResponse<Object> deleteCandidate(
-          HttpServletRequest headerRequest,
-          @PathVariable("groupId") Long groupId,
-          @PathVariable("groupWhereId") Long groupWhereId
-  ) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
-    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    Optional<String> socialId = jwtService.extractId(accessToken.get());
-    String response = where2meetService.delete(socialId.get(), groupId, groupWhereId);
-    return baseResponseService.getSuccessResponse(response);
-  }
-
-  @PostMapping("/{groupId}/where/done/{groupWhereId}")
-  public BaseResponse<Object> doneGroupWhere(
-          HttpServletRequest headerRequest,
-          @PathVariable("groupId") Long groupId,
-          @PathVariable("groupWhereId") Long groupWhereId
-  ) throws GroupNotFoundException, NotGroupMgrInGroup, GroupWhereNotFoundException {
-    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    Optional<String> socialId = jwtService.extractId(accessToken.get());
-    GroupWhereChooseResponse done = where2meetService.doneGroupWhere(socialId.get(), groupId, groupWhereId);
-    return baseResponseService.getSuccessResponse(done);
-  }
+//  private final BaseResponseService baseResponseService;
+//  private final Where2meetService where2meetService;
+//  private final JwtService jwtService;
+//
+//  /**
+//   * 후보 장소 전체 조회
+//   *
+//   * @param headerRequest
+//   * @param groupId
+//   * @return
+//   * @throws GroupNotFoundException
+//   * @throws NotValidMemberException
+//   */
+//  @GetMapping("/{groupId}/where/view")
+//  public BaseResponse<Object> viewAllCandidates(
+//          HttpServletRequest headerRequest,
+//          @PathVariable("groupId") Long groupId
+//  ) throws GroupNotFoundException, NotValidMemberException {
+//    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+//    Optional<String> socialId = jwtService.extractId(accessToken.get());
+//    Optional<List<GroupWhereViewResponseDto>> groupViewResponseList = where2meetService.getAllCandidates(socialId.get(), groupId);
+//    return baseResponseService.getSuccessResponse(groupViewResponseList);
+//  }
+//
+//  /**
+//   * 후보에 장소 등록
+//   *
+//   * @param headerRequest
+//   * @param groupId
+//   * @param request
+//   * @return
+//   * @throws GroupNotFoundException
+//   * @throws NotValidMemberException
+//   */
+//  @PostMapping("/{groupId}/where/create")
+//  public BaseResponse<Object> createCandidate(
+//          HttpServletRequest headerRequest,
+//          @PathVariable("groupId") Long groupId,
+//          @RequestBody GroupWhereCreateRequestDto request
+//  ) throws GroupNotFoundException, NotValidMemberException {
+//    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+//    Optional<String> socialId = jwtService.extractId(accessToken.get());
+//    GroupWhereViewResponseDto groupViewResponse = where2meetService.createCandidate(request, socialId.get(), groupId);
+//    return baseResponseService.getSuccessResponse(groupViewResponse);
+//  }
+//
+//  /**
+//   * 후보 장소 투표
+//   *
+//   * @param headerRequest
+//   * @param groupId
+//   * @param groupWhereId
+//   * @return
+//   * @throws GroupNotFoundException
+//   * @throws NotValidMemberException
+//   */
+//  @PostMapping("/{groupId}/where/vote/{groupWhereId}")
+//  public BaseResponse<Object> voteCandidtate(
+//          HttpServletRequest headerRequest,
+//          @PathVariable("groupId") Long groupId,
+//          @PathVariable("groupWhereId") Long groupWhereId
+//  ) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
+//    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+//    Optional<String> socialId = jwtService.extractId(accessToken.get());
+//    GroupWhereViewResponseDto groupViewResponse = where2meetService.voteCandidate(socialId.get(), groupId, groupWhereId);
+//    return baseResponseService.getSuccessResponse(groupViewResponse);
+//  }
+//
+//  /**
+//   * 그룹 특정 후보 장소 삭제
+//   *
+//   * @param headerRequest
+//   * @param groupId
+//   * @param groupWhereId
+//   * @return
+//   * @throws GroupNotFoundException
+//   * @throws NotValidMemberException
+//   */
+//  @DeleteMapping("{groupId}/where/delete/{groupWhereId}")
+//  public BaseResponse<Object> deleteCandidate(
+//          HttpServletRequest headerRequest,
+//          @PathVariable("groupId") Long groupId,
+//          @PathVariable("groupWhereId") Long groupWhereId
+//  ) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
+//    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+//    Optional<String> socialId = jwtService.extractId(accessToken.get());
+//    String response = where2meetService.delete(socialId.get(), groupId, groupWhereId);
+//    return baseResponseService.getSuccessResponse(response);
+//  }
+//
+//  @PostMapping("/{groupId}/where/done/{groupWhereId}")
+//  public BaseResponse<Object> doneGroupWhere(
+//          HttpServletRequest headerRequest,
+//          @PathVariable("groupId") Long groupId,
+//          @PathVariable("groupWhereId") Long groupWhereId
+//  ) throws GroupNotFoundException, NotGroupMgrInGroup, GroupWhereNotFoundException {
+//    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+//    Optional<String> socialId = jwtService.extractId(accessToken.get());
+//    GroupWhereChooseResponse done = where2meetService.doneGroupWhere(socialId.get(), groupId, groupWhereId);
+//    return baseResponseService.getSuccessResponse(done);
+//  }
 }

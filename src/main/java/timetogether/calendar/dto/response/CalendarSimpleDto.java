@@ -11,7 +11,7 @@ public class CalendarSimpleDto {
 
   public static CalendarSimpleDto from(Calendar calendar) {
     return CalendarSimpleDto.builder()
-            .id(calendar.getId())
+            .id(calendar.getCalendarId())
             .build();
   }
 }

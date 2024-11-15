@@ -60,7 +60,7 @@ public class When2MeetService {
     private List<String> dates = new ArrayList<>();
     public void addGroupMeet(String groupMeetingTitle, List<String> dates, Long groupId) {
         Group group = groupRepository.findById(groupId).get(); // 그룹 아이디로 그룹을 조회
-        List<User> users = group.getUserList(); // 그룹에서 사용자 리스트 조회
+        List<User> users = group.getGroupUserList(); // 그룹에서 사용자 리스트 조회
 
         List<Long> meetId = initGroupMeeting(users, group, groupMeetingTitle);// 회의 일정 초기화, 모든 사용자에 대해 회의 일정 추가
         initWhen2Meet(group, meetId, dates); // 특정 날짜 초기화, 모든 사용자에 대해 특정 날짜 추가
@@ -105,7 +105,7 @@ public class When2MeetService {
         String groupTimes = group.getGroupTimes();
         List<GroupMeeting> meetings = groupMeetingRepository.findByGroupMeetingTitle(groupMeetingTitle);
 
-        List<User> members = group.getUserList();
+        List<User> members = group.getGroupUserList();
         List<Users> users = new ArrayList<>();
 
         for (User user : members) {

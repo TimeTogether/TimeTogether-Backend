@@ -65,7 +65,6 @@ public class OAuthAttributes {
                 .userName(oauth2UserInfo.getName())
                 .socialType(socialType)
                 .role(Role.GUEST)
-                .groupMgr(false)
                 .build();
     }
 }

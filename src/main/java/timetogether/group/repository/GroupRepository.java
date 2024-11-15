@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
-    GroupProjection findGroupNameById(Long id);
-    GroupProjection findGroupTimesById(Long id);
+    GroupProjection findGroupNameById(Long groupId);
+    GroupProjection findGroupTimesById(Long groupId);
 }

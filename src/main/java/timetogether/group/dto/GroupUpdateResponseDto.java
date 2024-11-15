@@ -81,14 +81,9 @@ public class GroupUpdateResponseDto {
     public static GroupUpdateResponseDto from(Group savedGroup) {
       return GroupUpdateResponseDto.builder()
               .groupName(savedGroup.getGroupName())
-              .groupTitle(savedGroup.getGroupTitle())
               .groupImg(savedGroup.getGroupImg())
               .groupMgrId(savedGroup.getGroupMgrId())
-              .groupTimes(savedGroup.getGroupTimes())
-              .date(savedGroup.getDate())
-              .meetType(savedGroup.getMeetType())
-              .groupWhereUrl(savedGroup.getGroupWhereUrl())
-              .groupMembers(savedGroup.getGroupMembers())
+
               .build();
     }
 
