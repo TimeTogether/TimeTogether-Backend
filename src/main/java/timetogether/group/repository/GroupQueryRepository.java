@@ -59,11 +59,12 @@ public class GroupQueryRepository {
   }
 
   public List<GroupShowResponseDto> findGroupsWhereSocialIdIn(String socialId) {
-    // 먼저 Group 정보를 조회
-    String query = "SELECT u FROM User u " +
+    // 사용자가 속한 그룹과 관리자인 그룹 모두 조회
+    String query = "SELECT DISTINCT g " +
+            "FROM Group g " +
             "JOIN g.groupUserList u " +
             "WHERE u.socialId = :socialId " +
-            "OR g.groupMgrId = :socialId";
+            "   OR g.groupMgrId = :socialId";
 
     List<Group> groups = entityManager.createQuery(query, Group.class)
             .setParameter("socialId", socialId)
@@ -71,16 +72,15 @@ public class GroupQueryRepository {
 
     // Group 정보를 DTO로 변환
     return groups.stream()
-            .map(group -> new GroupShowResponseDto(
-                    group.getId(),
-                    group.getGroupName(),
-                    group.getGroupImg(),
-                    group.getGroupMgrId(),
-                    // User 리스트를 UserNameResponse로 변환
-                    group.getGroupUserList().stream()
+            .map(group -> GroupShowResponseDto.builder()
+                    .groupId(group.getId())
+                    .groupName(group.getGroupName())
+                    .groupImg(group.getGroupImg())
+                    .groupMgrId(group.getGroupMgrId())
+                    .userNameResponseList(group.getGroupUserList().stream()
                             .map(user -> new UserNameResponse(user.getUserName()))
-                            .collect(Collectors.toList())
-            ))
+                            .collect(Collectors.toList()))
+                    .build())
             .collect(Collectors.toList());
   }
 

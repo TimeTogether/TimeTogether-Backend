@@ -49,27 +49,6 @@ public class GroupController {
   }
 
   /**
-   * 방장이 그룹 삭제
-   *
-   * @param headerRequest
-   * @param groupId
-   * @return
-   * @throws GroupNotFoundException
-   * @throws NotGroupMgrInGroup
-   */
-  @DeleteMapping("/delete/{groupId}")
-  public BaseResponse<Object> deleteGroup(
-          HttpServletRequest headerRequest,
-          @PathVariable("groupId") Long groupId
-  ) throws GroupNotFoundException, NotGroupMgrInGroup {
-    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    Optional<String> socialId = jwtService.extractId(accessToken.get());
-
-    String deletedGroup = groupService.deleteGroup(socialId.get(),groupId);
-    return baseResponseService.getSuccessResponse(deletedGroup);
-  }
-
-  /**
    * 초대 코드 보기
    *
    * @param headerRequest
@@ -108,6 +87,27 @@ public class GroupController {
       groupService.getIntoGroup(socialId.get(),groupId);
       return baseResponseService.getSuccessResponse(BaseResponseStatus.SUCCESS);
     }
+  }
+
+  /**
+   * 방장이 그룹 삭제
+   *
+   * @param headerRequest
+   * @param groupId
+   * @return
+   * @throws GroupNotFoundException
+   * @throws NotGroupMgrInGroup
+   */
+  @DeleteMapping("/delete/{groupId}")
+  public BaseResponse<Object> deleteGroup(
+          HttpServletRequest headerRequest,
+          @PathVariable("groupId") Long groupId
+  ) throws GroupNotFoundException, NotGroupMgrInGroup {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+
+    String deletedGroup = groupService.deleteGroup(socialId.get(),groupId);
+    return baseResponseService.getSuccessResponse(deletedGroup);
   }
 
 

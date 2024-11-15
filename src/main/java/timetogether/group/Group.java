@@ -35,7 +35,8 @@ public class Group {
   private String groupImg;
   @NotNull
   private String groupMgrId;
-  private String groupTimes; //빼야할 것 같음
+  private String groupTimes = "07002359";
+  private String groupIntro;
   private String groupUrl;
 
   @ManyToMany(mappedBy = "groupList")  // User 엔티티의 필드명을 참조
@@ -45,16 +46,18 @@ public class Group {
   private List<GroupWhere> groupWhereList = new ArrayList<>();
 
   @Builder
-  public Group(String groupName, String groupImg, String groupMgrId) {
+  public Group(String groupName, String groupImg, String groupMgrId,String groupIntro) {
     this.groupName = groupName;
     this.groupImg = groupImg;
     this.groupMgrId = groupMgrId;
+    this.groupIntro = groupIntro;
   }
 
   public Group(GroupCreateRequestDto request, String socialId) {
     this.groupName = request.getGroupName();
-    this.groupMgrId = socialId;
     this.groupImg = request.getGroupImg();
+    this.groupMgrId = socialId;
+    this.groupIntro = request.getGroupIntro();
   }
 
   public Group addGroupTimes(GroupAddDatesRequestDto request) {
