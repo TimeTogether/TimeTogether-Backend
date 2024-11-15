@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.exception.CalendarValidateFail;
 import timetogether.group.exception.*;
-import timetogether.where2meet.exception.GroupWhereNotFoundException;
+import timetogether.GroupWhere.exception.GroupWhereNotFoundException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor

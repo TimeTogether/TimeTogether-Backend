@@ -1,4 +1,4 @@
-package timetogether.where2meet.repository;
+package timetogether.GroupWhere.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

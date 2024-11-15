@@ -10,6 +10,7 @@ import timetogether.global.response.BaseResponseStatus;
 import timetogether.group.dto.GroupCreateRequestDto;
 import timetogether.group.dto.GroupCreateResponseDto;
 import timetogether.group.dto.GroupLeaveResponseDto;
+import timetogether.group.dto.GroupShowResponseDto;
 import timetogether.group.exception.GroupNotFoundException;
 import timetogether.group.exception.NotAllowedGroupMgrToLeave;
 import timetogether.group.exception.NotGroupMgrInGroup;
@@ -17,6 +18,7 @@ import timetogether.group.exception.NotValidMemberException;
 import timetogether.group.service.GroupService;
 import timetogether.jwt.service.JwtService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -47,27 +49,6 @@ public class GroupController {
   }
 
   /**
-   * 방장이 그룹 삭제
-   *
-   * @param headerRequest
-   * @param groupId
-   * @return
-   * @throws GroupNotFoundException
-   * @throws NotGroupMgrInGroup
-   */
-  @DeleteMapping("/delete/{groupId}")
-  public BaseResponse<Object> deleteGroup(
-          HttpServletRequest headerRequest,
-          @PathVariable("groupId") Long groupId
-  ) throws GroupNotFoundException, NotGroupMgrInGroup {
-    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-    Optional<String> socialId = jwtService.extractId(accessToken.get());
-
-    String deletedGroup = groupService.deleteGroup(socialId.get(),groupId);
-    return baseResponseService.getSuccessResponse(deletedGroup);
-  }
-
-  /**
    * 초대 코드 보기
    *
    * @param headerRequest
@@ -91,6 +72,45 @@ public class GroupController {
     }
   }
 
+  @PostMapping("/invited/{groupUrl}")
+  public BaseResponse<Object> getIntoGroupByInvitationCode(
+          HttpServletRequest headerRequest,
+          @PathVariable("groupUrl") String groupUrl
+  ) throws GroupNotFoundException, NotValidMemberException {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+    Long groupId = groupService.getGroupIdFromCode(groupUrl);
+    boolean checkIfMemberInGroup = groupService.checkGroupMembers(socialId.get(), groupId);
+    if (checkIfMemberInGroup){//이미 그룹에 등록된 경우
+      return baseResponseService.getFailureResponse(BaseResponseStatus.ALREADY_EXIST_IN_GROUP);
+    }else{//그룹에 등록되지 않은 경우
+      groupService.getIntoGroup(socialId.get(),groupId);
+      return baseResponseService.getSuccessResponse(BaseResponseStatus.SUCCESS);
+    }
+  }
+
+  /**
+   * 방장이 그룹 삭제
+   *
+   * @param headerRequest
+   * @param groupId
+   * @return
+   * @throws GroupNotFoundException
+   * @throws NotGroupMgrInGroup
+   */
+  @DeleteMapping("/delete/{groupId}")
+  public BaseResponse<Object> deleteGroup(
+          HttpServletRequest headerRequest,
+          @PathVariable("groupId") Long groupId
+  ) throws GroupNotFoundException, NotGroupMgrInGroup {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+
+    String deletedGroup = groupService.deleteGroup(socialId.get(),groupId);
+    return baseResponseService.getSuccessResponse(deletedGroup);
+  }
+
+
   /**
    * 그룹 떠나기 (방장 제외)
    *
@@ -111,6 +131,20 @@ public class GroupController {
     GroupLeaveResponseDto groupLeaveResponseDto = groupService.leaveGroup(socialId.get(),groupId);
     return baseResponseService.getSuccessResponse(groupLeaveResponseDto);
   }
+
+  @GetMapping("/groups/view")
+  public BaseResponse<Object> showGroupsWhereUserIn(
+          HttpServletRequest headerRequest
+  ) {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+
+    List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId.get());
+    //List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId);
+    return baseResponseService.getSuccessResponse(groupShowResponseDtoList);
+  }
+
+
 
 //  /**
 //   * 그룹 날짜 설정
@@ -153,34 +187,7 @@ public class GroupController {
 ////    return baseResponseService.getSuccessResponse(groupUpdateResponseDto);
 ////  }
 //
-//  @GetMapping("/invited/{groupId}")
-//  public BaseResponse<Object> getIntoGroupByInvitationCode(
-//          HttpServletRequest headerRequest,
-//          @PathVariable("groupId") Long groupId
-//  ) throws GroupNotFoundException {
-//    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-//    Optional<String> socialId = jwtService.extractId(accessToken.get());
-//    boolean checkIfMemberInGroup = groupService.checkGroupMembers(socialId.get(), groupId);
-//    if (checkIfMemberInGroup){//이미 그룹에 등록된 경우
-//      return baseResponseService.getFailureResponse(BaseResponseStatus.ALREADY_EXIST_IN_GROUP);
-//    }else{//그룹에 등록되지 않은 경우
-//      groupService.getIntoGroup(socialId.get(),groupId);
-//      return baseResponseService.getSuccessResponse(BaseResponseStatus.SUCCESS);
-//    }
-//  }
+
 //
 //
-//
-//  @GetMapping("/groups/view")
-//  public BaseResponse<Object> leaveGroup(
-//          HttpServletRequest headerRequest
-//          //@PathVariable("socialId") String socialId
-//  ) {
-//    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
-//    Optional<String> socialId = jwtService.extractId(accessToken.get());
-//
-//    List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId.get());
-//    //List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId);
-//    return baseResponseService.getSuccessResponse(groupShowResponseDtoList);
-//  }
 }
