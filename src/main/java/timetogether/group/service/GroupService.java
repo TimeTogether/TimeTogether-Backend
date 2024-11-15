@@ -1,7 +1,6 @@
 package timetogether.group.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import timetogether.global.response.BaseResponseStatus;
@@ -11,15 +10,11 @@ import timetogether.group.exception.*;
 import timetogether.group.repository.GroupQueryRepository;
 import timetogether.group.repository.GroupRepository;
 import timetogether.oauth2.entity.User;
-import timetogether.oauth2.repository.UserQueryRepository;
 import timetogether.oauth2.repository.UserRepository;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +24,6 @@ public class GroupService {
   private final GroupRepository groupRepository;
   private final GroupQueryRepository groupQueryRepository;
   private final UserRepository userRepository;
-  private final UserQueryRepository userQueryRepository;
 
   public GroupCreateResponseDto createGroup(String socialId, GroupCreateRequestDto request){
     Group newGroup = new Group(request, socialId);//Group 객체 생성
@@ -38,14 +32,13 @@ public class GroupService {
     return GroupCreateResponseDto.from(savedGroup);
   }
 
-  public String deleteGroup(String socialId, Long groupId) throws GroupNotFoundException, NotGroupMgrInGroup {
+    public String deleteGroup(String socialId, Long groupId) throws GroupNotFoundException, NotGroupMgrInGroup {
     Group foundGroup = groupRepository.findById(groupId)
             .orElseThrow(()->new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
     boolean isMgr = foundGroup.getGroupMgrId().equals(socialId); //방장인 경우 판별
     if (!isMgr){
       throw new NotGroupMgrInGroup(BaseResponseStatus.NOT_VALID_MGR);
     }
-    userQueryRepository.deleteGroupInUserEntity(foundGroup.getGroupUserList(),foundGroup);
     groupRepository.delete(foundGroup);//그룹 지우기
     return "그룹을 삭제하였습니다.";
   }
@@ -96,50 +89,7 @@ public class GroupService {
     groupRepository.save(foundGroup);
     return new GroupLeaveResponseDto(socialId,"그룹을 나가는데 성공하였습니다.");
   }
-
-  public Long getGroupIdFromCode(String groupUrl) throws GroupNotFoundException {
-    return groupQueryRepository.findGroupIdByGroupUrl(groupUrl)
-            .orElseThrow(() ->  new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
-  }
-
-  public void getIntoGroup(String socialId, Long groupId) throws GroupNotFoundException, NotValidMemberException {
-    User addingUser = userRepository.findBySocialId(socialId)
-            .orElseThrow(() -> new NotValidMemberException(BaseResponseStatus.NOT_VALID_USER));
-    Group groupFound = groupQueryRepository.findByGroupId(groupId)
-            .orElseThrow(() -> new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
-
-    groupFound.addGroupSocailId(addingUser);
-    groupRepository.save(groupFound);
-  }
-
-  public List<GroupShowResponseDto> showGroupsWhereSocialIdIn(String socialId) {
-    // UserRepository를 통해 그룹 조회
-    List<Group> groups = userQueryRepository.findGroupsBySocialId(socialId);
-
-    // GroupRepository를 통해 groupMgrId와 socialId가 같은 그룹 조회
-    List<Group> managedGroups = groupQueryRepository.findGroupsByManagerId(socialId);
-
-    // 두 결과를 합치되, 중복 제거
-    List<Group> combinedGroups = Stream.concat(groups.stream(), managedGroups.stream())
-            .distinct() // 중복 제거
-            .collect(Collectors.toList());
-
-    // Group 정보를 DTO로 변환
-    return combinedGroups.stream()
-            .map(group -> GroupShowResponseDto.builder()
-                    .groupId(group.getId())
-                    .groupName(group.getGroupName())
-                    .groupImg(group.getGroupImg())
-                    .groupMgrId(group.getGroupMgrId())
-                    .userNameResponseList(group.getGroupUserList().stream()
-                            .map(user -> new UserNameResponse(user.getUserName()))
-                            .collect(Collectors.toList()))
-                    .groupTimes(group.getGroupTimes())
-                    .build())
-            .collect(Collectors.toList());
-  }
-}
-
+//
 //  public GroupAddDatesResponseDto addDates(String socialId, GroupAddDatesRequestDto request) throws GroupNotFoundOrNotMgrException, GroupTimesLimitSevenDays {
 //    Group groupFound = groupQueryRepository.findByGroupNameAndIsMgr(socialId, request.getGroupName())
 //            .orElseThrow(() -> new GroupNotFoundOrNotMgrException(BaseResponseStatus.NOT_VALID_MGR_OR_GROUPNAME));
@@ -152,6 +102,11 @@ public class GroupService {
 //
 //
 //
+//  public void getIntoGroup(String socialId, Long groupId) throws GroupNotFoundException {
+//    Optional<Group> groupFound = groupQueryRepository.findByGroupId(groupId);
+//    Group group = groupFound.orElseThrow(() -> new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
+//    group.addGroupSocailId(socialId);
+//  }
 //
 //  private boolean validateGroupMembers(String groupMembers) {
 //    String[] memberIds = groupMembers.split(",");
@@ -178,3 +133,12 @@ public class GroupService {
 ////    return GroupUpdateResponseDto.from(savedGroup);
 ////
 ////  }
+//
+//
+//
+//
+//  public List<GroupShowResponseDto> showGroupsWhereSocialIdIn(String socialId) {
+//    List<GroupShowResponseDto> response = groupQueryRepository.findGroupsWhereSocialIdIn(socialId);
+//    return response;
+//  }
+}

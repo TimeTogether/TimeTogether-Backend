@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 public class GroupCreateRequestDto {
   private String groupName;
   private String groupImg;
-  private String groupIntro;
 
   @Builder
-  public GroupCreateRequestDto(String groupName, String groupImg,String groupIntro) {
+  public GroupCreateRequestDto(String groupName, String groupImg) {
     this.groupName = groupName;
     this.groupImg = groupImg;
-    this.groupIntro = groupIntro;
   }
 }

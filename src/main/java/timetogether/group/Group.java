@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import timetogether.GroupWhere.GroupWhere;
 import timetogether.group.dto.GroupAddDatesRequestDto;
 import timetogether.group.dto.GroupCreateRequestDto;
@@ -18,13 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
 @Entity
 @Getter
 @Table(name = "group_table")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Slf4j
 public class Group {
   @Column(name = "group_id")
   @Id
@@ -35,29 +31,26 @@ public class Group {
   private String groupImg;
   @NotNull
   private String groupMgrId;
-  private String groupTimes = "07002359";
-  private String groupIntro;
+  private String groupTimes; //빼야할 것 같음
   private String groupUrl;
 
   @ManyToMany(mappedBy = "groupList")  // User 엔티티의 필드명을 참조
-  private List<User> groupUserList = new ArrayList<>();
+  private List<User> groupUserList;
 
   @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<GroupWhere> groupWhereList = new ArrayList<>();
 
   @Builder
-  public Group(String groupName, String groupImg, String groupMgrId,String groupIntro) {
+  public Group(String groupName, String groupImg, String groupMgrId) {
     this.groupName = groupName;
     this.groupImg = groupImg;
     this.groupMgrId = groupMgrId;
-    this.groupIntro = groupIntro;
   }
 
   public Group(GroupCreateRequestDto request, String socialId) {
     this.groupName = request.getGroupName();
-    this.groupImg = request.getGroupImg();
     this.groupMgrId = socialId;
-    this.groupIntro = request.getGroupIntro();
+    this.groupImg = request.getGroupImg();
   }
 
   public Group addGroupTimes(GroupAddDatesRequestDto request) {
@@ -95,15 +88,6 @@ public class Group {
     int index = groupUserList.indexOf(user);
     groupUserList.remove(index);
     user.removeGroupFromUser(this);
-    log.info("userList : {}", groupUserList);
-  }
-
-  public void addGroupSocailId(User addingUser) {
-    if (addingUser != null) {
-      this.groupUserList.add(addingUser);
-      addingUser.addSocailIdGroup(this);
-      log.info("userList : {}", groupUserList);
-    }
   }
 
   @Override
@@ -135,4 +119,11 @@ public class Group {
 //  }
 //
 //
+//  public void addGroupSocailId(String socialId) {
+//    if (this.groupMembers == null) {
+//      this.groupMembers = socialId;
+//    } else {
+//      this.groupMembers += "," + socialId;
+//    }
+//  }
 }

@@ -13,18 +13,14 @@ public class GroupCreateResponseDto {
   private String groupName;
   private String groupImg;
   private String groupMgrId;
-  private String groupTimes;
-  private String groupIntro;
   private String groupurl;
 
   @Builder
-  public GroupCreateResponseDto(Long groupId, String groupName, String groupImg, String groupMgrId, String groupIntro,String groupTimes, String groupurl) {
+  public GroupCreateResponseDto(Long groupId, String groupName, String groupImg, String groupMgrId, String groupurl) {
     this.groupId = groupId;
     this.groupName = groupName;
     this.groupImg = groupImg;
     this.groupMgrId = groupMgrId;
-    this.groupIntro = groupIntro;
-    this.groupTimes = groupTimes;
     this.groupurl = groupurl;
   }
 
@@ -34,8 +30,6 @@ public class GroupCreateResponseDto {
             .groupName(savedGroup.getGroupName())
             .groupImg(savedGroup.getGroupImg())
             .groupMgrId(savedGroup.getGroupMgrId())
-            .groupIntro(savedGroup.getGroupIntro())
-            .groupTimes(savedGroup.getGroupTimes())
             .groupurl(savedGroup.getGroupUrl())
             .build();
   }
