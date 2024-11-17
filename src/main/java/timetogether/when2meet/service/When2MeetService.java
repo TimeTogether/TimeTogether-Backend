@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import timetogether.GroupWhere.dto.GroupWhereChooseResponse;
 import timetogether.GroupWhere.repository.GroupWhereQueryRepository;
 import timetogether.calendar.Calendar;
+import timetogether.global.response.BaseResponseStatus;
 import timetogether.group.Group;
 import timetogether.group.repository.GroupProjection;
 import timetogether.group.repository.GroupRepository;
@@ -21,6 +22,7 @@ import timetogether.ranktime.RankTime;
 import timetogether.ranktime.RankTimeRepository;
 import timetogether.when2meet.When2meet;
 import timetogether.when2meet.dto.*;
+import timetogether.when2meet.exception.Where2MeetIsNull;
 import timetogether.when2meet.repository.When2MeetRepository;
 import timetogether.where2meet.Where2meet;
 import timetogether.where2meet.repository.Where2meetRepository;
@@ -264,7 +266,7 @@ public class When2MeetService {
     }
 
     @Transactional
-    public void doneGroupMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, String meetDT) {
+    public void doneGroupMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, String meetDT) throws Where2MeetIsNull {
         Group group = groupRepository.findById(groupId).get();
         User user = userRepository.findById(socialId).get();
 
@@ -278,6 +280,10 @@ public class When2MeetService {
 
             GroupWhereChooseResponse chosenOne = groupWhereQueryRepository.findByChosenOne(groupId, groupMeeting.getGroupMeetId());
             //Where2meet에 저장될 형식으로 변환한다.
+
+            if (!chosenOne.isGroupWhereChooseThis()) { // where2meet을 먼저 done하지 않고 설정하는 경우
+                throw new Where2MeetIsNull(BaseResponseStatus.NOT_EXIST_GROUPWHERE);
+            }
             Where2meet where2meet = new Where2meet(chosenOne);
             Where2meet savedWhere2Meet = where2meetRepository.save(where2meet); //groupId와 meetingId 가 Where2meet 테이블에 없어서 여기서 저장
 
