@@ -177,7 +177,7 @@ public class When2MeetService {
         return null;
     }
 
-    
+
     public void updateUserMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, List<Days> days) {
         Group group = groupRepository.findById(groupId).get();
         User user = userRepository.findById(socialId).get();
