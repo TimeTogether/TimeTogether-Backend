@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import timetogether.GroupWhere.dto.GroupWhereChooseResponse;
 import timetogether.GroupWhere.repository.GroupWhereQueryRepository;
 import timetogether.calendar.Calendar;
+import timetogether.global.response.BaseResponseStatus;
 import timetogether.group.Group;
 import timetogether.group.repository.GroupProjection;
 import timetogether.group.repository.GroupRepository;
@@ -21,12 +22,16 @@ import timetogether.ranktime.RankTime;
 import timetogether.ranktime.RankTimeRepository;
 import timetogether.when2meet.When2meet;
 import timetogether.when2meet.dto.*;
+import timetogether.when2meet.exception.Where2MeetIsNull;
 import timetogether.when2meet.repository.When2MeetRepository;
 import timetogether.where2meet.Where2meet;
 import timetogether.where2meet.repository.Where2meetRepository;
 import timetogether.where2meet.service.Where2meetService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -66,15 +71,12 @@ public class When2MeetService {
         return new MeetTableDTO(resultList, meetingList);
     }
 
-    private List<String> dates = new ArrayList<>();
     public void addGroupMeet(String groupMeetingTitle, List<String> dates, Long groupId) {
         Group group = groupRepository.findById(groupId).get(); // 그룹 아이디로 그룹을 조회
         List<User> users = group.getGroupUserList(); // 그룹에서 사용자 리스트 조회
 
         initGroupMeeting(users, group, groupMeetingTitle);// 회의 일정 초기화, 모든 사용자에 대해 회의 일정 추가
         initWhen2Meet(users, group, groupMeetingTitle, dates); // 특정 날짜 초기화, 모든 사용자에 대해 특정 날짜 추가
-
-        this.dates = dates; // 다른 방식 찾기
     }
 
     private void initWhen2Meet(List<User> users, Group group, String groupMeetingTitile, List<String> dates) {
@@ -115,6 +117,12 @@ public class When2MeetService {
     public GroupTableDTO viewMeet(Long groupId, String groupMeetingTitle, MeetType type) {
         Group group = groupRepository.findById(groupId).get();
         String groupTimes = group.getGroupTimes();
+
+        List<When2meet> when2meets = when2MeetRepository.findByGroupAndGroupMeetingTitleAndType(group, groupMeetingTitle, type);
+        List<String> dates = when2meets.stream()
+                .map(When2meet::getDate)  // date 필드를 가져옴
+                .collect(Collectors.toList());
+
 
         List<User> members = group.getGroupUserList();
         List<Users> users = new ArrayList<>();
@@ -167,14 +175,77 @@ public class When2MeetService {
         return new GroupTableDTO(group.getGroupTimes(), type, days);
     }
 
-    public GroupTableDTO<Days> loadUserMeet(Long groupId, MeetType meetType, String socialId) {
+    public GroupTableDTO<Days> loadUserMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId) {
+        Group group = groupRepository.findById(groupId).get();
         User user = userRepository.findById(socialId).get();
+
+        List<When2meet> when2meets = when2MeetRepository.findByGroupAndGroupMeetingTitleAndType(group, groupMeetingTitle, type);
+        List<String> dates = when2meets.stream()
+                .map(When2meet::getDate)  // date 필드를 가져옴
+                .collect(Collectors.toList());
+
         Calendar calendar = user.getCalendar();
+        List<Days> days = new ArrayList<>();
 
-        meetingRepository.findByCalendarAndDate(calendar, date);
+        for(String date : dates) {
+            List<Meeting> meetingByDate = meetingRepository.findByCalendarAndDate(calendar.getCalendarId(), date);
+            String day = when2MeetRepository.findDay(date).get();
 
+            for(Meeting meeting : meetingByDate){
+                LocalDateTime meetDTstart = meeting.getMeetDTstart();
+                LocalDate startDate = meetDTstart.toLocalDate(); // 날짜 정보
+                LocalTime startTime = meetDTstart.toLocalTime(); // 시간 정보
+
+                LocalDateTime meetDTend = meeting.getMeetDTend();
+                LocalDate endDate = meetDTend.toLocalDate();
+                LocalTime endTime = meetDTend.toLocalTime();
+
+                LocalTime groupStartTime = LocalTime.parse(group.getGroupTimes().substring(0, 4), DateTimeFormatter.ofPattern("HHmm"));
+                LocalTime groupEndTime = LocalTime.parse(group.getGroupTimes().substring(4, 8), DateTimeFormatter.ofPattern("HHmm"));
+
+                String time;
+                if(startDate == endDate){ // 시간 정보를 그대로 적용 (날짜 단일)
+                    time = generateTime(groupStartTime, groupEndTime, startTime, endTime);
+
+                }else{ // start 날짜일때, 그 사이에 껴있을때, end 날짜일때 (날짜 기간)
+                    if(startDate.equals(date)){
+                        time = generateTime(groupStartTime, groupEndTime, startTime, groupEndTime);
+                    }else if(endDate.equals(date)){
+                        time = generateTime(groupStartTime, groupEndTime, groupStartTime, endTime);
+                    }else{
+                        time = generateTime(groupStartTime, groupEndTime, groupStartTime, groupEndTime);
+                    }
+                }
+                days.add(new Days(date, day, time, time));
+            }
+        }
         
-        return null;
+        return new GroupTableDTO(group.getGroupTimes(), type, days);
+    }
+
+    private String generateTime(LocalTime groupStartTime, LocalTime groupEndTime, LocalTime startTime, LocalTime endTime) {
+
+        List<LocalTime> slots = new ArrayList<>();
+        LocalTime current = groupStartTime;
+        while (!current.isAfter(groupEndTime)) {
+            slots.add(current);
+            current = current.plusMinutes(15);
+        } // 초기화
+
+        int[] timeArray = new int[slots.size()];
+
+        for (int i = 0; i < slots.size(); i++) {
+            if (startTime.isAfter(slots.get(i)) && endTime.isBefore(slots.get(i))) {
+                timeArray[i] = 1; // Mark slot as active
+            }
+        }
+
+        StringBuilder binaryString = new StringBuilder();
+        for (int value : timeArray) {
+            binaryString.append(value);
+        }
+
+        return binaryString.toString();
     }
 
 
@@ -195,17 +266,29 @@ public class When2MeetService {
     }
 
     @Transactional
-    public void doneGroupMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, String meetDT) {
+    public void doneGroupMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, String meetDT) throws Where2MeetIsNull {
         Group group = groupRepository.findById(groupId).get();
         User user = userRepository.findById(socialId).get();
 
-        // groupWhere에서 chosseThis = true 인 부분을 가져온다.
-        GroupWhereChooseResponse chosenOne = groupWhereQueryRepository.findByChosenOne(groupId, meetingId); //meetingId(그룹 내 회의 아이디) 필요
-        //Where2meet에 저장될 형식으로 변환한다.
-        Where2meet where2meet = new Where2meet(chosenOne);
-        Where2meet savedWhere2Meet = where2meetRepository.save(where2meet); //groupId와 meetingId 가 Where2meet 테이블에 없어서 여기서 저장
+        LocalDateTime finalMeet = LocalDate.parse(meetDT).atStartOfDay();
+        Meeting meeting;
+        if(type == MeetType.ONLINE) {
+            meeting = new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(), null);
+        }else{
+            // where2meet Service로 가져온다
+            GroupMeeting groupMeeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitle, user); // groupMeetId를 가져오기 위함
 
-        LocalDate finalMeet = LocalDate.parse(meetDT);
-        new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(),savedWhere2Meet);
+            GroupWhereChooseResponse chosenOne = groupWhereQueryRepository.findByChosenOne(groupId, groupMeeting.getGroupMeetId());
+            //Where2meet에 저장될 형식으로 변환한다.
+
+            if (!chosenOne.isGroupWhereChooseThis()) { // where2meet을 먼저 done하지 않고 설정하는 경우
+                throw new Where2MeetIsNull(BaseResponseStatus.NOT_EXIST_GROUPWHERE);
+            }
+            Where2meet where2meet = new Where2meet(chosenOne);
+            Where2meet savedWhere2Meet = where2meetRepository.save(where2meet); //groupId와 meetingId 가 Where2meet 테이블에 없어서 여기서 저장
+
+            meeting = new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(),savedWhere2Meet );
+        }
+        meetingRepository.save(meeting);
     }
 }
