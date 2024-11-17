@@ -3,6 +3,7 @@ package timetogether.oauth2.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import timetogether.calendar.Calendar;
 import timetogether.group.Group;
 import timetogether.groupMeeting.GroupMeeting;
@@ -12,11 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Slf4j
 public class User {
 
   @Column(name = "social_id", unique = true)
@@ -95,5 +99,13 @@ public class User {
   public void removeGroupFromUser(Group group) {
     int index = groupList.indexOf(group);
     groupList.remove(index);
+    log.info("groupList : {}" , groupList);
+  }
+  /*
+   * 유저내에서 그룹에 등록하는 내부 로직
+   */
+  public void addSocailIdGroup(Group group){
+    groupList.add(group);
+    log.info("groupList: {}", groupList);
   }
 }

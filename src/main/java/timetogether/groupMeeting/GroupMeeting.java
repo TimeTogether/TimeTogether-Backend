@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogether.GroupWhere.GroupWhere;
 import timetogether.group.Group;
 import timetogether.oauth2.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,6 +30,9 @@ public class GroupMeeting {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   private User user;
+
+  @OneToMany(mappedBy = "groupMeeting", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private List<GroupWhere> groupWhereList = new ArrayList<>();
 
   @Builder
   public GroupMeeting(String groupMeetingTitle, Group group, User user) {

@@ -4,6 +4,8 @@ package timetogether.when2meet.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import timetogether.GroupWhere.dto.GroupWhereChooseResponse;
+import timetogether.GroupWhere.repository.GroupWhereQueryRepository;
 import timetogether.calendar.Calendar;
 import timetogether.group.Group;
 import timetogether.group.repository.GroupProjection;
@@ -20,7 +22,9 @@ import timetogether.ranktime.RankTimeRepository;
 import timetogether.when2meet.When2meet;
 import timetogether.when2meet.dto.*;
 import timetogether.when2meet.repository.When2MeetRepository;
-import timetogether.where2meet.repository.GroupWhereRepository;
+import timetogether.where2meet.Where2meet;
+import timetogether.where2meet.repository.Where2meetRepository;
+import timetogether.where2meet.service.Where2meetService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,7 +44,9 @@ public class When2MeetService {
     private final RankTimeRepository rankTimeRepository;
     private final UserRepository userRepository;
     private final GroupMeetingRepository groupMeetingRepository;
-    private final GroupWhereRepository groupWhereRepository;
+    private final Where2meetService where2meetService;
+    private final GroupWhereQueryRepository groupWhereQueryRepository;
+    private final Where2meetRepository where2meetRepository;
 
     public MeetTableDTO viewMeetResult(Long groupId) {
         List<Result> resultList = new LinkedList<>();
@@ -240,6 +246,7 @@ public class When2MeetService {
         return binaryString.toString();
     }
 
+    
     public void updateUserMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, List<Days> days) {
         Group group = groupRepository.findById(groupId).get();
         User user = userRepository.findById(socialId).get();
@@ -267,7 +274,14 @@ public class When2MeetService {
             meeting = new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(), null);
         }else{
             // where2meet Service로 가져온다
-            meeting = new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(),null );
+            GroupMeeting groupMeeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitle, user); // groupMeetId를 가져오기 위함
+
+            GroupWhereChooseResponse chosenOne = groupWhereQueryRepository.findByChosenOne(groupId, groupMeeting.getGroupMeetId());
+            //Where2meet에 저장될 형식으로 변환한다.
+            Where2meet where2meet = new Where2meet(chosenOne);
+            Where2meet savedWhere2Meet = where2meetRepository.save(where2meet); //groupId와 meetingId 가 Where2meet 테이블에 없어서 여기서 저장
+
+            meeting = new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(),savedWhere2Meet );
         }
         meetingRepository.save(meeting);
     }

@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogether.GroupWhere.dto.GroupWhereChooseResponse;
 
 @Entity
 @Getter
@@ -28,5 +29,10 @@ public class Where2meet {
   public Where2meet(String locationName, String locationUrl) {
     this.locationName = locationName;
     this.locationUrl = locationUrl;
+  }
+
+  public Where2meet(GroupWhereChooseResponse chosenOne) {
+    this.locationName = chosenOne.getGroupWhereName();
+    this.locationUrl = chosenOne.getGroupWhereUrl();
   }
 }

@@ -1,4 +1,4 @@
-package timetogether.where2meet.exception;
+package timetogether.GroupWhere.exception;
 
 import timetogether.global.response.BaseException;
 import timetogether.global.response.BaseResponseStatus;

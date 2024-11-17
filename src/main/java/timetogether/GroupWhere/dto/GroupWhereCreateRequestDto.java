@@ -1,4 +1,4 @@
-package timetogether.where2meet.dto;
+package timetogether.GroupWhere.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class GroupWhereCreateRequestDto {
-  private String groupLocationName;
+  private String groupWhereName;
   private String groupWhereUrl;
 
   @Builder
-  public GroupWhereCreateRequestDto(String groupLocationName, String groupWhereUrl) {
-    this.groupLocationName = groupLocationName;
+  public GroupWhereCreateRequestDto(String groupWhereName, String groupWhereUrl) {
+    this.groupWhereName = groupWhereName;
     this.groupWhereUrl = groupWhereUrl;
   }
 }
