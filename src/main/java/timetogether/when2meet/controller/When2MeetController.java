@@ -55,15 +55,16 @@ public class When2MeetController {
         return baseResponseService.getSuccessResponse(table);
     }
 
-    @PostMapping("/{type}/load")
+    @PostMapping("/{title}/{type}/load")
     public BaseResponse<Object> loadUserMeet(HttpServletRequest request,
                                              @PathVariable("groupId") Long groupId,
-                                             @PathVariable("type") String type)
+                                             @PathVariable("type") String type,
+                                             @PathVariable("title") String groupMeetingTitle)
     {   // (그룹, 회의 제목, TYPE을 확인) -> 회의 아이디로 테이블을 조회해서 해당 date에 대해 캘린더 일정을 확인 (추출하기)
         // date로 일정 정보를 가져와서, 시간을 확인해야한다 (시간은 localTime으로 비교한다)
         String accessToken = jwtService.extractAccessToken(request).get();
         String socialId = jwtService.extractId(accessToken).get();
-        GroupTableDTO<Days> table = when2MeetService.loadUserMeet(groupId, MeetType.fromString(type), socialId);
+        GroupTableDTO<Days> table = when2MeetService.loadUserMeet(groupId, groupMeetingTitle, MeetType.fromString(type), socialId);
         return baseResponseService.getSuccessResponse(table);
     }
 
