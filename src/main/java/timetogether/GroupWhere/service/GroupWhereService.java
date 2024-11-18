@@ -16,7 +16,7 @@ import timetogether.group.exception.NotValidMemberException;
 import timetogether.group.repository.GroupRepository;
 import timetogether.group.service.GroupService;
 import timetogether.groupMeeting.GroupMeeting;
-import timetogether.groupMeeting.GroupMeetingRepository;
+import timetogether.groupMeeting.repository.GroupMeetingRepository;
 import timetogether.GroupWhere.exception.GroupWhereNotFoundException;
 import timetogether.GroupWhere.repository.GroupWhereRepository;
 
@@ -48,16 +48,16 @@ public class GroupWhereService {
             .groupMeeting(groupMeeting)
             .build();
 
-    groupWhereRepository.save(groupWhere);
+    GroupWhere save = groupWhereRepository.save(groupWhere);
 
     // GroupWhereViewResponseDto 반환
     return GroupWhereViewResponseDto.builder()
-            .groupId(groupWhere.getId())
-            .groupId(groupWhere.getGroup().getId())
-            .groupLocationName(groupWhere.getGroupWhereName())
-            .groupWhereUrl(groupWhere.getGroupWhereUrl())
-            .count(groupWhere.getCount())
-            .groupMeetingId(groupWhere.getGroupMeeting().getGroupMeetId())
+            .groupWhereId(save.getId())
+            .groupId(save.getGroup().getId())
+            .groupLocationName(save.getGroupWhereName())
+            .groupWhereUrl(save.getGroupWhereUrl())
+            .count(save.getCount())
+            .groupMeetingId(save.getGroupMeeting().getGroupMeetId())
             .build();
   }
 

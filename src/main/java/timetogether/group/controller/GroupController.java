@@ -132,6 +132,12 @@ public class GroupController {
     return baseResponseService.getSuccessResponse(groupLeaveResponseDto);
   }
 
+  /**
+   * 속한 그룹 전체 조회
+   *
+   * @param headerRequest
+   * @return
+   */
   @GetMapping("/groups/view")
   public BaseResponse<Object> showGroupsWhereUserIn(
           HttpServletRequest headerRequest
@@ -141,6 +147,8 @@ public class GroupController {
 
     List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId.get());
     //List<GroupShowResponseDto> groupShowResponseDtoList = groupService.showGroupsWhereSocialIdIn(socialId);
+    groupShowResponseDtoList.stream()
+            .forEach(e -> e.addIsMgr(socialId.get()));
     return baseResponseService.getSuccessResponse(groupShowResponseDtoList);
   }
 

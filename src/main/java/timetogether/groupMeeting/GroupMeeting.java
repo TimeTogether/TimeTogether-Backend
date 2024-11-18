@@ -23,6 +23,8 @@ public class GroupMeeting {
 
   private String groupMeetingTitle;
 
+  private String groupMeetingDays;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "group_id")
   private Group group;

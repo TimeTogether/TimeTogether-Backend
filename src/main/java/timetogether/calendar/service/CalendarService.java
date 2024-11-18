@@ -51,9 +51,10 @@ public class CalendarService {
             .where2meet(newWhere)
             .build();
 
-    meetingRepository.save(newMeeting);
+    Meeting save = meetingRepository.save(newMeeting);
 
     return CalendarCreateResponseDto.builder()
+            .meetingId(save.getMeetId())
             .meetTitle(newMeeting.getMeetTitle())
             .meetContent(newMeeting.getMeetContent())
             .meetType(newMeeting.getMeetType())
@@ -70,7 +71,7 @@ public class CalendarService {
     LocalDateTime startTime = calendarCreateRequestDto.getMeetDTstart();
     LocalDateTime endTime = calendarCreateRequestDto.getMeetDTend();
 
-    // startTimer과 endTime null값 검사
+    // startTime과 endTime null값 검사
     if (startTime == null || endTime == null) {
       throw new CalendarValidateFail(BaseResponseStatus.NOT_VALID_CALENDAR_TIME_NULL);
     }
@@ -114,9 +115,10 @@ public class CalendarService {
 
     existMeeting.update(request,newWhere);
 
-    meetingRepository.save(existMeeting);
+    Meeting save = meetingRepository.save(existMeeting);
 
     return CalendarUpdateResponseDto.builder()
+            .meetingId(save.getMeetId())
             .meetTitle(existMeeting.getMeetTitle())
             .meetContent(existMeeting.getMeetContent())
             .meetType(existMeeting.getMeetType())
