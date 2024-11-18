@@ -14,6 +14,7 @@ public class GroupShowResponseDto {
   private String groupTimes;
   private String groupIntro;
   private String groupUrl;
+  private boolean isMgr = false;
   private List<UserNameResponse> userNameResponseList;
 
   @Builder
@@ -26,5 +27,9 @@ public class GroupShowResponseDto {
     this.groupIntro = groupIntro;
     this.groupUrl = groupUrl;
     this.userNameResponseList = userNameResponseList;
+
+  }
+  public void addIsMgr(String socialId){
+    this.isMgr = (groupMgrId.equals(socialId));
   }
 }

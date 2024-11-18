@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import timetogether.calendar.repository.CalendarRepository;
 import timetogether.oauth2.entity.User;
 import timetogether.oauth2.repository.UserRepository;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
 @Slf4j
 public class JwtService {
 
+    private final CalendarRepository calendarRepository;
     @Value("${jwt.secretKey}")
     private String secretKey;
 
@@ -122,6 +124,9 @@ public class JwtService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             user.updateRefreshToken(refreshToken);
+            //calendar 생성 및 저장
+            calendarRepository.save(user.initCalendar());
+
             userRepository.save(user); // 수정
             log.info("Refresh token updated for user with social ID: {}", socialId);
         } else {

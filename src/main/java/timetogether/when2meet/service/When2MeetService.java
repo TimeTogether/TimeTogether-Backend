@@ -10,10 +10,9 @@ import timetogether.GroupWhere.repository.GroupWhereQueryRepository;
 import timetogether.calendar.Calendar;
 import timetogether.global.response.BaseResponseStatus;
 import timetogether.group.Group;
-import timetogether.group.repository.GroupProjection;
 import timetogether.group.repository.GroupRepository;
 import timetogether.groupMeeting.GroupMeeting;
-import timetogether.groupMeeting.GroupMeetingRepository;
+import timetogether.groupMeeting.repository.GroupMeetingRepository;
 import timetogether.groupMeeting.MeetType;
 import timetogether.meeting.Meeting;
 import timetogether.meeting.repository.MeetingRepository;
@@ -37,8 +36,6 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -61,7 +58,7 @@ public class When2MeetService {
         // group service에 더 적합
 
         // 그룹 이름으로 미팅 정보를 모두 가져온다
-        List<Meeting> meeting = meetingRepository.findByGroupId(groupId); // meet service에 더 적합
+        List<Meeting> meeting = meetingRepository.findByGroupName(groupName); // meet service에 더 적합
 
         //
         for (Meeting meet : meeting) {

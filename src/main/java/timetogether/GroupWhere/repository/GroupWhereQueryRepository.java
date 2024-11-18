@@ -3,7 +3,9 @@ package timetogether.GroupWhere.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
+import timetogether.GroupWhere.GroupWhere;
 import timetogether.GroupWhere.dto.GroupWhereChooseResponse;
 import timetogether.GroupWhere.dto.GroupWhereViewResponseDto;
 
@@ -13,6 +15,7 @@ import java.util.List;
 public class GroupWhereQueryRepository {
   @PersistenceContext
   private EntityManager entityManager;
+
 
   public List<GroupWhereViewResponseDto> findAllByGroupIdAndGroupMeetingId(Long groupId, Long groupMeetingId) {
     String query = "SELECT new timetogether.GroupWhere.dto.GroupWhereViewResponseDto(" +
@@ -53,6 +56,23 @@ public class GroupWhereQueryRepository {
       return entityManager.createQuery(query, GroupWhereChooseResponse.class)
               .setParameter("groupId", groupId)
               .setParameter("meetingId", meetingId)
+              .getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
+  }
+
+  public GroupWhere findGroupWhereByGroupWhere(GroupWhere groupWhere) {
+    try {
+      return entityManager.createQuery(
+                      "SELECT gw FROM GroupWhere gw " +
+                              "WHERE gw.groupWhereName = :groupWhereName " +
+                              "AND gw.group.id = :groupId " +  // group의 id로 비교
+                              "AND gw.groupMeeting.id = :groupMeetingId",  // groupMeeting의 id로 비교
+                      GroupWhere.class)
+              .setParameter("groupWhereName", groupWhere.getGroupWhereName())
+              .setParameter("groupId", groupWhere.getGroup().getId())
+              .setParameter("groupMeetingId", groupWhere.getGroupMeeting().getGroupMeetId())
               .getSingleResult();
     } catch (NoResultException e) {
       return null;

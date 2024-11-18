@@ -135,6 +135,8 @@ public class GroupService {
                             .map(user -> new UserNameResponse(user.getUserName()))
                             .collect(Collectors.toList()))
                     .groupTimes(group.getGroupTimes())
+                    .groupIntro(group.getGroupIntro())
+                    .groupUrl(group.getGroupUrl())
                     .build())
             .collect(Collectors.toList());
   }
