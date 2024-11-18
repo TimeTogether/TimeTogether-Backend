@@ -131,7 +131,7 @@ public class GroupWhereController {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
     GroupWhereChooseResponse done = groupWhereService.doneGroupWhere(socialId.get(), groupId, groupMeetingId, groupWhereId);
-    where2meetService.create(done);
+    //where2meetService.create(done);
     return baseResponseService.getSuccessResponse(done);
   }
 }
