@@ -19,7 +19,6 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
 @Slf4j
 public class User {
 
@@ -57,8 +56,8 @@ public class User {
 
   private String refreshToken; // 리프레시 토큰
 
-  @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE, orphanRemoval = true)
-  private List<When2meet> when2meetList = new ArrayList<>();
+//  @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE, orphanRemoval = true)
+//  private List<When2meet> when2meetList = new ArrayList<>();
   
   /*
    * 그룹 내에서 유저를 삭제하기 위한 equals 재정의
@@ -107,5 +106,12 @@ public class User {
   public void addSocailIdGroup(Group group){
     groupList.add(group);
     log.info("groupList: {}", groupList);
+  }
+  @Builder
+  public User(String socialId, String userName, SocialType socialType, Role role) {
+    this.socialId = socialId; // social Id 고유 식별자
+    this.userName = userName;
+    this.socialType = socialType;
+    this.role = role;
   }
 }

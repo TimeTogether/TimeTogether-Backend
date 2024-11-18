@@ -18,10 +18,10 @@ import java.util.Optional;
 @Repository
 public interface When2MeetRepository extends JpaRepository<When2meet, String> {
     Optional<When2meet> findByDate(String date);
-    Optional<When2meet> findByDateAndUserAndTypeAndGroupMeeting(String date, User user, MeetType type, GroupMeeting groupMeeting);
+    Optional<When2meet> findByDateAndTypeAndGroupMeeting(String date, MeetType type, GroupMeeting groupMeeting);
     List<When2meet> findByTypeAndGroupMeeting(MeetType type, GroupMeeting groupMeeting);
 
-    List<When2meet> findByGroupAndGroupMeetingTitleAndType(Group group, String groupMeetingTitle, MeetType type);
+    List<When2meet> findByGroupAndGroupMeetingAndType(Group group, GroupMeeting groupMeeting, MeetType type);
 
     @Query("SELECT w.day FROM When2meet w WHERE w.day = :date")
     Optional<String> findDay(@Param("date") String date);

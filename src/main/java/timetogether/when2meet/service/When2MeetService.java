@@ -117,8 +117,8 @@ public class When2MeetService {
     public GroupTableDTO viewMeet(Long groupId, String groupMeetingTitle, MeetType type) {
         Group group = groupRepository.findById(groupId).get();
         String groupTimes = group.getGroupTimes();
-
-        List<When2meet> when2meets = when2MeetRepository.findByGroupAndGroupMeetingTitleAndType(group, groupMeetingTitle, type);
+        GroupMeeting groupMeeting = groupMeetingRepository.findByGroupAndGroupMeetingTitle(group, groupMeetingTitle);
+        List<When2meet> when2meets = when2MeetRepository.findByGroupAndGroupMeetingAndType(group, groupMeeting, type);
         List<String> dates = when2meets.stream()
                 .map(When2meet::getDate)  // date 필드를 가져옴
                 .collect(Collectors.toList());
@@ -133,7 +133,7 @@ public class When2MeetService {
                 // 사용자와 회의일정 제목으로 회의 테이블을 가져온다
                 GroupMeeting meeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitle, user);
                 // 회의 테이블에서 타입을 확인한 후 when2meet(특정날짜에 대한) 테이블을 가져온다
-                When2meet when2meet = when2MeetRepository.findByDateAndUserAndTypeAndGroupMeeting(date, user, type, meeting).get();
+                When2meet when2meet = when2MeetRepository.findByDateAndTypeAndGroupMeeting(date, type, meeting).get();
                 // when2meet으로 ranktime 테이블을 가져온다
                 RankTime rankTime = rankTimeRepository.findByWhen2meet(when2meet);
 
@@ -179,7 +179,8 @@ public class When2MeetService {
         Group group = groupRepository.findById(groupId).get();
         User user = userRepository.findById(socialId).get();
 
-        List<When2meet> when2meets = when2MeetRepository.findByGroupAndGroupMeetingTitleAndType(group, groupMeetingTitle, type);
+        GroupMeeting groupMeeting = groupMeetingRepository.findByGroupAndGroupMeetingTitle(group, groupMeetingTitle);
+        List<When2meet> when2meets = when2MeetRepository.findByGroupAndGroupMeetingAndType(group, groupMeeting, type);
         List<String> dates = when2meets.stream()
                 .map(When2meet::getDate)  // date 필드를 가져옴
                 .collect(Collectors.toList());
