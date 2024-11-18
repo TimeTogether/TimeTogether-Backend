@@ -12,5 +12,6 @@ public interface GroupMeetingRepository extends JpaRepository<GroupMeeting, Long
     Optional<GroupMeeting> findById(Long groupMeetId);
 
     GroupMeeting findByGroupAndGroupMeetingTitleAndUser(Group group, String groupMeetingTitle, User user);
+    GroupMeeting findByGroupAndGroupMeetingTitle(Group group, String groupMeetingTitle);
     List<GroupMeeting> findByGroupMeetingTitle(String groupMeetingTitle);
 }

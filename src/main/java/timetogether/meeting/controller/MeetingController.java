@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import timetogether.jwt.service.JwtService;
+import timetogether.meeting.service.MeetingService;
 import timetogether.when2meet.dto.GroupTableDTO;
 import timetogether.when2meet.dto.Result;
 
@@ -14,11 +16,16 @@ import timetogether.when2meet.dto.Result;
 @RequestMapping("/meet/list")
 public class MeetingController {
 
+    private final JwtService jwtService;
+    private final MeetingService meetingService;
+
     @GetMapping("/")
     public Result getMeetByGroup(HttpServletRequest request){
         // request 정보로 사용자를 가져온다
         // 사용자가 묶여있는 그룹에 대한 정보를 넘겨준다 (그룹 아이디, 그룹 이름)
-
+        String accessToken = jwtService.extractAccessToken(request).get();
+        String socialId = jwtService.extractId(accessToken).get();
+        meetingService.getMeetByGroup(socialId);
         return null;
     }
 
