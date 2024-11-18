@@ -2,6 +2,7 @@ package timetogether.when2meet.service;
 
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import timetogether.GroupWhere.dto.GroupWhereChooseResponse;
@@ -36,8 +37,11 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @Service
 @AllArgsConstructor
+@Slf4j
 public class When2MeetService {
 
     private final GroupRepository groupRepository;
@@ -50,14 +54,14 @@ public class When2MeetService {
     private final GroupWhereQueryRepository groupWhereQueryRepository;
     private final Where2meetRepository where2meetRepository;
 
-    public MeetTableDTO viewMeetResult(Long groupId) {
+    public Optional<MeetTableDTO> viewMeetResult(Long groupId) {
         List<Result> resultList = new LinkedList<>();
         List<String> meetingList = new ArrayList<>();
         String groupName = groupRepository.findGroupNameById(groupId).getGroupName();
         // group service에 더 적합
 
         // 그룹 이름으로 미팅 정보를 모두 가져온다
-        List<Meeting> meeting = meetingRepository.findByGroupName(groupName).get(); // meet service에 더 적합
+        List<Meeting> meeting = meetingRepository.findByGroupId(groupId); // meet service에 더 적합
 
         //
         for (Meeting meet : meeting) {
@@ -68,7 +72,9 @@ public class When2MeetService {
                     meet.getWhere2meet().getLocationName(), meet.getWhere2meet().getLocationUrl()));
         }
 
-        return new MeetTableDTO(resultList, meetingList);
+        MeetTableDTO meetTableDTO = new MeetTableDTO(resultList, meetingList);
+        log.info("meetTableDTO : {}" , meetTableDTO);
+        return Optional.ofNullable(meetTableDTO);
     }
 
     public void addGroupMeet(String groupMeetingTitle, List<String> dates, Long groupId) {

@@ -6,7 +6,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import timetogether.meeting.Meeting;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +20,5 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long>{
                                             @Param("date") String date);
   Optional<Meeting> findById(Long id);
 
+  List<Meeting> findByGroupId(Long groupId);
 }

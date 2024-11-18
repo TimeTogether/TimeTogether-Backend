@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@RequestMapping("/group/{groupId}/when")
+//@RequestMapping("/group/{groupId}/when")
 @Controller
 public class When2MeetController {
 
@@ -24,10 +24,12 @@ public class When2MeetController {
     private final BaseResponseService baseResponseService;
     private final JwtService jwtService;
 
-    @GetMapping
-    public BaseResponse<Object> viewGroupMeetResult(@PathVariable("groupId") Long groupId){
-        MeetTableDTO table = when2MeetService.viewMeetResult(groupId); // 최종 회의 일정에 대한 정보를 넘겨준다
-        return baseResponseService.getSuccessResponse(table);
+    @GetMapping("/group/{groupId}/when")
+    public BaseResponse<Object> viewGroupMeetResult(
+            HttpServletRequest headerRequest,
+            @PathVariable("groupId") Long groupId){
+        Optional<MeetTableDTO> table = when2MeetService.viewMeetResult(groupId); // 최종 회의 일정에 대한 정보를 넘겨준다
+        return baseResponseService.getSuccessResponse(table.get());
     }
 
 
