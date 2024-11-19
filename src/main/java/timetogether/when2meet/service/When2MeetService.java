@@ -59,7 +59,6 @@ public class When2MeetService {
         // 그룹 이름으로 미팅 정보를 모두 가져온다
         List<Meeting> meeting = meetingRepository.findByGroupName(groupName).get(); // meet service에 더 적합
 
-        //
         for (Meeting meet : meeting) {
             meetingList.add(meet.getMeetTitle()); // title
             resultList.add(new Result(meet.getMeetId(), meet.getMeetDTstart(),
@@ -67,7 +66,6 @@ public class When2MeetService {
                     meet.getMeetTitle(), groupName,
                     meet.getWhere2meet().getLocationName(), meet.getWhere2meet().getLocationUrl()));
         }
-
         return new MeetTableDTO(resultList, meetingList);
     }
 
