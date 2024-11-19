@@ -303,10 +303,10 @@ public class When2MeetService {
 
             GroupWhereChooseResponse chosenOne = groupWhereQueryRepository.findByChosenOne(groupId, groupMeeting.getGroupMeetId());
             //Where2meet에 저장될 형식으로 변환한다.
-
-            if (!chosenOne.isGroupWhereChooseThis()) { // where2meet을 먼저 done하지 않고 설정하는 경우
+            if (chosenOne == null || !chosenOne.isGroupWhereChooseThis()) {
                 throw new Where2MeetIsNull(BaseResponseStatus.NOT_EXIST_GROUPWHERE);
             }
+
             Where2meet where2meet = new Where2meet(chosenOne);
             Where2meet savedWhere2Meet = where2meetRepository.save(where2meet); //groupId와 meetingId 가 Where2meet 테이블에 없어서 여기서 저장
 
