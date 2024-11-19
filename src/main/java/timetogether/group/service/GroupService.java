@@ -1,6 +1,7 @@
 package timetogether.group.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +22,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class GroupService {
 
   private final GroupRepository groupRepository;
@@ -34,6 +38,8 @@ public class GroupService {
   public GroupCreateResponseDto createGroup(String socialId, GroupCreateRequestDto request){
     Group newGroup = new Group(request, socialId);//Group 객체 생성
     newGroup.makeUrl();
+    Optional<User> user = userRepository.findBySocialId(socialId);
+    newGroup.addGroupSocailId(user.get());
     Group savedGroup =  groupRepository.save(newGroup);
     return GroupCreateResponseDto.from(savedGroup);
   }
@@ -91,6 +97,7 @@ public class GroupService {
     if (isMgr){
       throw new NotAllowedGroupMgrToLeave(BaseResponseStatus.NOT_VALID_MGR);
     }
+    log.info("groupUserList {} ", foundGroup.getGroupUserList()); //힝..
     //방장이 아닌 그룹 멤버인 경우
     foundGroup.removeUserFromGroup(userRepository.findBySocialId(socialId).get());
     groupRepository.save(foundGroup);
@@ -113,6 +120,7 @@ public class GroupService {
   }
 
   public List<GroupShowResponseDto> showGroupsWhereSocialIdIn(String socialId) {
+
     // UserRepository를 통해 그룹 조회
     List<Group> groups = userQueryRepository.findGroupsBySocialId(socialId);
 
@@ -123,7 +131,6 @@ public class GroupService {
     List<Group> combinedGroups = Stream.concat(groups.stream(), managedGroups.stream())
             .distinct() // 중복 제거
             .collect(Collectors.toList());
-
     // Group 정보를 DTO로 변환
     return combinedGroups.stream()
             .map(group -> GroupShowResponseDto.builder()
