@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-//@RequestMapping("/group/{groupId}/when")
+@RequestMapping("/group/{groupId}/when")
 @Controller
 public class When2MeetController {
 
@@ -24,7 +24,7 @@ public class When2MeetController {
     private final BaseResponseService baseResponseService;
     private final JwtService jwtService;
 
-    @GetMapping("/group/{groupId}/when")
+    @GetMapping
     public BaseResponse<Object> viewGroupMeetResult(
             HttpServletRequest headerRequest,
             @PathVariable("groupId") Long groupId){
