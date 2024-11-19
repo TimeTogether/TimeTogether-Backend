@@ -61,7 +61,7 @@ public class When2MeetService {
         List<Meeting> meeting = meetingRepository.findByGroupName(groupName); // meet service에 더 적합
 
         for (Meeting meet : meeting) {
-            meetingList.add(meet.getMeetTitle()); // title
+            meetingList.add(meet.getMeetTitle()); // title + id 추가하기
             resultList.add(new Result(meet.getMeetId(), meet.getMeetDTstart(),
                     meet.getMeetDTend(), meet.getMeetType(),
                     meet.getMeetTitle(), groupName,
