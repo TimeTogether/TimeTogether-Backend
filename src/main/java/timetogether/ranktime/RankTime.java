@@ -1,14 +1,13 @@
 package timetogether.ranktime;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import timetogether.when2meet.When2meet;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "rank_time")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RankTime {
