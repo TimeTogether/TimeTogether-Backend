@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import timetogether.meeting.Meeting;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface MeetingRepository extends JpaRepository<Meeting, Long>{

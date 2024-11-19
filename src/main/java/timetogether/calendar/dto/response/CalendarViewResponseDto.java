@@ -32,4 +32,8 @@ public class CalendarViewResponseDto {
                     .collect(Collectors.toList()))
             .build();
   }
+
+  public void addDate(int date) {
+    this.date = date;
+  }
 }

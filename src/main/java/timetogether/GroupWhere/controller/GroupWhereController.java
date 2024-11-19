@@ -15,6 +15,7 @@ import timetogether.group.exception.NotGroupMgrInGroup;
 import timetogether.group.exception.NotValidMemberException;
 import timetogether.jwt.service.JwtService;
 import timetogether.GroupWhere.exception.GroupWhereNotFoundException;
+import timetogether.meeting.service.MeetingService;
 import timetogether.where2meet.service.Where2meetService;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class GroupWhereController {
   private final GroupWhereService groupWhereService;
   private final JwtService jwtService;
   private final Where2meetService where2meetService;
+  private final MeetingService meetingService;
 
   /**
    * 후보 장소 전체 조회
@@ -134,4 +136,7 @@ public class GroupWhereController {
     //where2meetService.create(done);
     return baseResponseService.getSuccessResponse(done);
   }
+
+
+
 }
