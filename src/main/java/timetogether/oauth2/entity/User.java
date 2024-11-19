@@ -88,6 +88,13 @@ public class User {
     this.calendar = calendar;
   }
 
+  public Calendar initCalendar() {
+    if (this.calendar == null) {
+      this.calendar = new Calendar();
+    }
+    return this.calendar;
+  }
+
   public void initGroupMeeting(GroupMeeting groupMeeting) {
     groupMeetingList.add(groupMeeting);
     groupMeeting.setUser(this);

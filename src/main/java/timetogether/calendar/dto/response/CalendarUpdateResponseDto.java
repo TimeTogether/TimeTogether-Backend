@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CalendarUpdateResponseDto {
 
+  private Long meetingId;
   private String meetTitle;
   private String meetContent;
   private MeetType meetType;
@@ -21,7 +22,8 @@ public class CalendarUpdateResponseDto {
   private String locationUrl;
 
   @Builder
-  public CalendarUpdateResponseDto(String meetTitle, String meetContent, MeetType meetType, LocalDateTime meetDTstart, LocalDateTime meetDTend, String groupName, String locationName, String locationUrl) {
+  public CalendarUpdateResponseDto(Long meetingId, String meetTitle, String meetContent, MeetType meetType, LocalDateTime meetDTstart, LocalDateTime meetDTend, String groupName, String locationName, String locationUrl) {
+    this.meetingId = meetingId;
     this.meetTitle = meetTitle;
     this.meetContent = meetContent;
     this.meetType = meetType;

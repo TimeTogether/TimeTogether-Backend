@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CalendarCreateResponseDto {
 
+  private Long meetingId;
   private String meetTitle;
   private String meetContent;
   private MeetType meetType;
@@ -22,7 +23,8 @@ public class CalendarCreateResponseDto {
   private String locationUrl;
 
   @Builder
-  public CalendarCreateResponseDto(String meetTitle, String meetContent, MeetType meetType, LocalDateTime meetDTstart, LocalDateTime meetDTend, String groupName, String locationName, String locationUrl) throws CalendarValidateFail {
+  public CalendarCreateResponseDto(Long meetingId, String meetTitle, String meetContent, MeetType meetType, LocalDateTime meetDTstart, LocalDateTime meetDTend, String groupName, String locationName, String locationUrl) throws CalendarValidateFail {
+    this.meetingId = meetingId;
     this.meetTitle = meetTitle;
     this.meetContent = meetContent;
     this.meetType = meetType;
