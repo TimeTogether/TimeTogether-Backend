@@ -69,11 +69,12 @@ public class When2MeetService {
         }
 
         MeetTableDTO meetTableDTO = new MeetTableDTO(resultList, meetingList);
-        log.info("meetTableDTO : {}" , meetTableDTO);
+
         return Optional.ofNullable(meetTableDTO);
     }
 
     public void addGroupMeet(String groupMeetingTitle, List<String> dates, Long groupId) {
+        log.info("hello");
         Group group = groupRepository.findById(groupId).get(); // 그룹 아이디로 그룹을 조회
         List<User> users = group.getGroupUserList(); // 그룹에서 사용자 리스트 조회
 

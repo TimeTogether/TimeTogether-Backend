@@ -1,7 +1,9 @@
 package timetogether.when2meet.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import timetogether.global.response.BaseResponse;
@@ -16,37 +18,40 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-//@RequestMapping("/group/{groupId}/when")
+@RequestMapping("/group/{groupId}")
 @Controller
+@ResponseBody
+@Slf4j
 public class When2MeetController {
 
     private final When2MeetService when2MeetService;
     private final BaseResponseService baseResponseService;
     private final JwtService jwtService;
 
-    @GetMapping("/group/{groupId}/when")
+    @GetMapping("/meet")
     public BaseResponse<Object> viewGroupMeetResult(
-            HttpServletRequest headerRequest,
             @PathVariable("groupId") Long groupId){
         Optional<MeetTableDTO> table = when2MeetService.viewMeetResult(groupId); // 최종 회의 일정에 대한 정보를 넘겨준다
         return baseResponseService.getSuccessResponse(table.get());
     }
 
 
-    @PostMapping("/meet/add")
-    public BaseResponse<Object> addGroupMeet(@RequestBody String groupMeetingTitle, @RequestBody List<String> dates, @PathVariable("groupId") Long groupId){
+    @PostMapping("meet/{title}/add")
+    public BaseResponse<Object> addGroupMeet(@PathVariable("groupId") Long groupId, @PathVariable("title") String groupMeetingTitle, @RequestBody List<String> dates){
+        log.info("Received dates: " + dates); // 왜 object로 밖에 못받는거지?
+        log.info("title = {}",groupMeetingTitle);
         when2MeetService.addGroupMeet(groupMeetingTitle, dates, groupId); // 회의를 하나 더 만든다 = group meeting table을 생성한다
         return baseResponseService.getSuccessResponse();
     }
 
-    @GetMapping("/{title}/{type}")
+    @GetMapping("when/{title}/{type}")
     public BaseResponse<Object> viewGroupMeet(@PathVariable("groupId") Long groupId, @PathVariable("title") String groupMeetingTitle, @PathVariable("type") String type) // group table을 위한 정보
     {   // (그룹, 회의 제목, TYPE을 확인)
         GroupTableDTO<Users> table = when2MeetService.viewMeet(groupId, groupMeetingTitle, MeetType.fromString(type)); // 해당 type, group, meet에 대한 모든 사용자의 정보를 넘긴다
         return baseResponseService.getSuccessResponse(table);
     }
 
-    @PostMapping("/{title}/{type}/add")
+    @PostMapping("when/{title}/{type}/add")
     public BaseResponse<Object> addUserMeet(HttpServletRequest request,
                                             @PathVariable("groupId") Long groupId,
                                             @PathVariable("title") String groupMeetingTitle,
@@ -58,7 +63,7 @@ public class When2MeetController {
         return baseResponseService.getSuccessResponse(table);
     }
 
-    @PostMapping("/{title}/{type}/load")
+    @PostMapping("when/{title}/{type}/load")
     public BaseResponse<Object> loadUserMeet(HttpServletRequest request,
                                              @PathVariable("groupId") Long groupId,
                                              @PathVariable("type") String type,
@@ -71,7 +76,7 @@ public class When2MeetController {
         return baseResponseService.getSuccessResponse(table);
     }
 
-    @PostMapping("/{title}/{type}/update")
+    @PostMapping("when/{title}/{type}/update")
     public BaseResponse<Object> updateUserMeet(HttpServletRequest request,
                                                @PathVariable("groupId") Long groupId,
                                                @PathVariable("type") String type,
@@ -85,7 +90,7 @@ public class When2MeetController {
         return baseResponseService.getSuccessResponse();
     }
 
-    @PostMapping("/{title}/{type}/done")
+    @PostMapping("when/{title}/{type}/done")
     public BaseResponse<Object> doneGroupMeet(HttpServletRequest request,
                                               @PathVariable("groupId") Long groupId,
                                               @PathVariable("title") String groupMeetingTitle,
