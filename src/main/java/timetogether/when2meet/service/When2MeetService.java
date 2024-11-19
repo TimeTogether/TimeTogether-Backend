@@ -1,6 +1,9 @@
 package timetogether.when2meet.service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -73,6 +76,7 @@ public class When2MeetService {
         return Optional.ofNullable(meetTableDTO);
     }
 
+    @Transactional
     public void addGroupMeet(String groupMeetingTitle, List<String> dates, Long groupId) {
         log.info("hello");
         Group group = groupRepository.findById(groupId).get(); // 그룹 아이디로 그룹을 조회
@@ -84,7 +88,9 @@ public class When2MeetService {
 
     private void initWhen2Meet(List<User> users, Group group, String groupMeetingTitile, List<String> dates) {
         for(int i=0; i<users.size(); i++) {
+            log.info("groupMeeting 진입");
             GroupMeeting groupMeeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitile, users.get(i));
+            log.info("groupMeeting = {}", groupMeeting.getGroupMeetingTitle());
             for(String date : dates){
                 String day = LocalDate.parse(date).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN); // 요일
                 /**
@@ -117,7 +123,7 @@ public class When2MeetService {
         groupMeetingRepository.saveAll(meetings); // 사용자에 대한 회의 일정을 모두 저장한다
     }
 
-    public GroupTableDTO viewMeet(Long groupId, String groupMeetingTitle, MeetType type) {
+    public GroupTableDTO<Users> viewMeet(Long groupId, String groupMeetingTitle, MeetType type) {
         Group group = groupRepository.findById(groupId).get();
         String groupTimes = group.getGroupTimes();
         GroupMeeting groupMeeting = groupMeetingRepository.findByGroupAndGroupMeetingTitle(group, groupMeetingTitle);
@@ -151,10 +157,11 @@ public class When2MeetService {
             users.add(new Users(user.getUserName(), days));
         }
 
-        return new GroupTableDTO(groupTimes, type, users);
+        return new GroupTableDTO<Users>(groupTimes, type, users);
     }
 
-    public GroupTableDTO addUserMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId) {
+    @Transactional
+    public GroupTableDTO<Days> addUserMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId) {
         // 사용자는 (그룹, 회의 ID, TYPE을 확인한 후) when2meet 틀을 만든다 즉, 초기화
         Group group = groupRepository.findById(groupId).get();
         User user = userRepository.findById(socialId).get();
@@ -175,7 +182,7 @@ public class When2MeetService {
             days.add(new Days(date, day, time, rank));
         }
 
-        return new GroupTableDTO(group.getGroupTimes(), type, days);
+        return new GroupTableDTO<Days>(group.getGroupTimes(), type, days);
     }
 
     public GroupTableDTO<Days> loadUserMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId) {
@@ -193,7 +200,7 @@ public class When2MeetService {
 
         for(String date : dates) {
             List<Meeting> meetingByDate = meetingRepository.findByCalendarAndDate(calendar.getCalendarId(), date);
-            String day = when2MeetRepository.findDay(date).get();
+            String day = when2MeetRepository.findDaysByDate(date).get(0);
 
             for(Meeting meeting : meetingByDate){
                 LocalDateTime meetDTstart = meeting.getMeetDTstart();
@@ -224,7 +231,7 @@ public class When2MeetService {
             }
         }
         
-        return new GroupTableDTO(group.getGroupTimes(), type, days);
+        return new GroupTableDTO<Days>(group.getGroupTimes(), type, days);
     }
 
     private String generateTime(LocalTime groupStartTime, LocalTime groupEndTime, LocalTime startTime, LocalTime endTime) {
@@ -253,6 +260,7 @@ public class When2MeetService {
     }
 
 
+    @Transactional
     public void updateUserMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, List<Days> days) {
         Group group = groupRepository.findById(groupId).get();
         User user = userRepository.findById(socialId).get();
@@ -260,21 +268,32 @@ public class When2MeetService {
         GroupMeeting meeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitle, user);
         List<When2meet> when2meets = when2MeetRepository.findByTypeAndGroupMeeting(type, meeting);
 
-        for(int i=0; i<when2meets.size(); i++){
+        for(int i=0; i<days.size(); i++){ // 넘어온 날짜 사이즈로 하기 (기존 : when2meet size)
             When2meet when2meet = when2meets.get(i); // 해당 when2meet날짜와 같은 day정보를 가져와서 적용
             Days day = days.stream().filter(date -> date.getDate().equals(when2meet.getDate())).findFirst().get();
 
-            RankTime rankTime = new RankTime(day.getRank(), day.getTime(), when2meets.get(i));
+            RankTime rankTime = rankTimeRepository.findByWhen2meet(when2meet);
+            rankTime.setRank(day.getRank());
+            rankTime.setTime(day.getTime());
+            rankTime.setWhen2meet(when2meets.get(i));
             rankTimeRepository.save(rankTime);
         }
     }
 
     @Transactional
-    public void doneGroupMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, String meetDT) throws Where2MeetIsNull {
+    public void doneGroupMeet(Long groupId, String groupMeetingTitle, MeetType type, String socialId, String meetDTJson) throws Where2MeetIsNull, JsonProcessingException {
         Group group = groupRepository.findById(groupId).get();
         User user = userRepository.findById(socialId).get();
 
-        LocalDateTime finalMeet = LocalDate.parse(meetDT).atStartOfDay();
+        // ObjectMapper 생성
+        ObjectMapper objectMapper = new ObjectMapper();
+        // JSON 문자열을 JsonNode 객체로 변환
+        JsonNode jsonNode = objectMapper.readTree(meetDTJson);
+        // "meetDT" 값을 추출
+        String meetDT = jsonNode.get("meetDT").asText();
+        log.info(meetDT);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime finalMeet = LocalDateTime.parse(meetDT, formatter);
         Meeting meeting;
         if(type == MeetType.ONLINE) {
             meeting = new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(), null);

@@ -1,5 +1,6 @@
 package timetogether.when2meet.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -95,7 +96,7 @@ public class When2MeetController {
                                               @PathVariable("groupId") Long groupId,
                                               @PathVariable("title") String groupMeetingTitle,
                                               @PathVariable("type") String type,
-                                              @RequestBody String meetDT) throws Where2MeetIsNull {   // (그룹, 회의 제목, TYPE을 확인) -> 해당 회의 아이디에 대해서 회의 일정을 생성한다
+                                              @RequestBody String meetDT) throws Where2MeetIsNull, JsonProcessingException {   // (그룹, 회의 제목, TYPE을 확인) -> 해당 회의 아이디에 대해서 회의 일정을 생성한다
         // 사용자 아이디는 request에서 얻어오고, 캘린더 아이디를 접근한다
         // done을 누르는 순간 '일정 테이블'을 생성한다 (더이상 수정할 수 없음)
 

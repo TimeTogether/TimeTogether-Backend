@@ -23,6 +23,6 @@ public interface When2MeetRepository extends JpaRepository<When2meet, String> {
 
     List<When2meet> findByGroupAndGroupMeetingAndType(Group group, GroupMeeting groupMeeting, MeetType type);
 
-    @Query("SELECT w.day FROM When2meet w WHERE w.day = :date")
-    Optional<String> findDay(@Param("date") String date);
+    @Query("SELECT w.day FROM When2meet w WHERE w.date = :date")
+    List<String> findDaysByDate(@Param("date") String date);
 }
