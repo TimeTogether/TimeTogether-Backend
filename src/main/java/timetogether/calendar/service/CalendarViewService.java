@@ -25,7 +25,9 @@ public class CalendarViewService {
     return calendarRepository.findMeetings(calendarId,year, month);
   }
   public CalendarViewResponseDto getMeetingsYearMonthDate(Long calendarId, int year, int month, int date) {
-    return calendarRepository.findMeetings(calendarId,year, month,date);
+    CalendarViewResponseDto result =  calendarRepository.findMeetings(calendarId,year, month,date);
+    result.addDate(date);
+    return result;
   }
 
   @Transactional
@@ -43,6 +45,8 @@ public class CalendarViewService {
 
 
   public CalendarViewResponseDto getMeeting(Long calendarId, Long meetingId) {
-    return calendarRepository.findMeetings(calendarId,meetingId);
+    CalendarViewResponseDto result =  calendarRepository.findMeetings(calendarId,meetingId);
+    result.addDate(result.getDate());
+    return result;
   }
 }

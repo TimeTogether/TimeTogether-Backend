@@ -46,7 +46,7 @@ public class User {
           joinColumns = @JoinColumn(name = "social_id"),  // User 쪽 외래키
           inverseJoinColumns = @JoinColumn(name = "group_id")  // Group 쪽 외래키
   )
-  private List<Group> groupList;
+  private List<Group> groupList = new ArrayList<>();
 
   @Enumerated(EnumType.STRING)
   private Role role;

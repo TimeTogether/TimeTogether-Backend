@@ -3,8 +3,11 @@ package timetogether.meeting.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import timetogether.group.Group;
+<<<<<<< HEAD
 import timetogether.group.repository.GroupRepository;
 import timetogether.meeting.Meeting;
+=======
+>>>>>>> master
 import timetogether.meeting.repository.MeetingRepository;
 import timetogether.oauth2.entity.User;
 import timetogether.oauth2.repository.UserRepository;
@@ -19,6 +22,7 @@ public class MeetingService {
 
     private final UserRepository userRepository;
     private final MeetingRepository meetingRepository;
+<<<<<<< HEAD
     private final GroupRepository groupRepository;
 
     public List<Result> getMeetByGroup(String socialId, Long groupId) {
@@ -35,6 +39,9 @@ public class MeetingService {
     }
 
     public List<Result> getMeet(String socialId) {
+=======
+    public void getMeetByGroup(String socialId) {
+>>>>>>> master
         User user = userRepository.findBySocialId(socialId).get();
         List<Group> groupList = user.getGroupList();
         List<Result> resultList = new LinkedList<>();
@@ -67,4 +74,5 @@ public class MeetingService {
         }
         return resultList;
     }
+
 }
