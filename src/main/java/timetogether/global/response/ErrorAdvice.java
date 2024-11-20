@@ -7,6 +7,7 @@ import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.exception.CalendarValidateFail;
 import timetogether.group.exception.*;
 import timetogether.GroupWhere.exception.GroupWhereNotFoundException;
+import timetogether.when2meet.exception.Where2MeetIsNull;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -79,6 +80,13 @@ public class ErrorAdvice {
 
   @ExceptionHandler(GroupWhereNotFoundException.class)
   public BaseResponse<Object> handleGroupWhereNotFoundException(){
+    return baseResponseService.getFailureResponse(
+            BaseResponseStatus.NOT_EXIST_GROUPWHERE
+    );
+  }
+
+  @ExceptionHandler(Where2MeetIsNull.class)
+  public BaseResponse<Object> handleWhere2meetIsNull(){
     return baseResponseService.getFailureResponse(
             BaseResponseStatus.NOT_EXIST_GROUPWHERE
     );
