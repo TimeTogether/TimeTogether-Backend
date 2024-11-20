@@ -140,6 +140,19 @@ public class GroupWhereController {
     return baseResponseService.getSuccessResponse(done);
   }
 
+  //잠시 보류
+  @GetMapping("/{groupId}/{groupMeetingId}/where/vote/view")
+  public BaseResponse<Object> viewAllCandidateInGroupMeetingId(
+          HttpServletRequest headerRequest,
+          @PathVariable("groupId") Long groupId,
+          @PathVariable("groupMeetingId") Long groupMeetingId
+  ) throws GroupNotFoundException, NotValidMemberException {
+    Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
+    Optional<String> socialId = jwtService.extractId(accessToken.get());
+    Optional<List<GroupWhereViewResponseDto>> groupViewResponseList = groupWhereService.getAllCandidates(socialId.get(), groupId, groupMeetingId);
+    return baseResponseService.getSuccessResponse(groupViewResponseList);
+  }
+
 
 
 }
