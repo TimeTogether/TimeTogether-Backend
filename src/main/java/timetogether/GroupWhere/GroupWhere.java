@@ -39,8 +39,16 @@ public class GroupWhere {
     this.groupMeeting = groupMeeting;
   }
 
-  public void addCount(){
-    this.count++;
+  public void changeCount(Long upAndDown){
+    if (upAndDown == 1 ){
+      this.count++;
+    }else if (upAndDown == 0){
+      if (this.count == 0){
+        return;
+      }else if (this.count > 0){
+        this.count--;
+      }
+    }
   }
   public void doneChooseThis(){
     this.chooseThis = true;
