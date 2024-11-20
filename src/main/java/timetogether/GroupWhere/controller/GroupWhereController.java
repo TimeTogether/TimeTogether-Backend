@@ -87,16 +87,17 @@ public class GroupWhereController {
    * @throws GroupNotFoundException
    * @throws NotValidMemberException
    */
-  @PostMapping("/{groupId}/{groupMeetingId}/where/vote/{groupWhereId}")
+  @PostMapping("/{groupId}/{groupMeetingId}/where/vote/{groupWhereId}/{upAndDown}")
   public BaseResponse<Object> voteCandidate(
           HttpServletRequest headerRequest,
           @PathVariable("groupId") Long groupId,
           @PathVariable("groupWhereId") Long groupWhereId,
-          @PathVariable("groupMeetingId") Long groupMeetingId
+          @PathVariable("groupMeetingId") Long groupMeetingId,
+          @PathVariable("upAndDown") Long upAndDown
   ) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
-    GroupWhereViewResponseDto groupViewResponse = groupWhereService.voteCandidate(socialId.get(), groupId, groupMeetingId, groupWhereId);
+    GroupWhereViewResponseDto groupViewResponse = groupWhereService.voteCandidate(socialId.get(), groupId, groupMeetingId, groupWhereId,upAndDown);
     return baseResponseService.getSuccessResponse(groupViewResponse);
   }
 

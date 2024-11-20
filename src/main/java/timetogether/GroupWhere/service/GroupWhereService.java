@@ -24,8 +24,6 @@ import timetogether.GroupWhere.repository.GroupWhereRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -75,7 +73,7 @@ public class GroupWhereService {
     return Optional.ofNullable(candidates);
   }
 
-  public GroupWhereViewResponseDto voteCandidate(String socialId, Long groupId, Long groupMeetingId, Long groupWhereId) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
+  public GroupWhereViewResponseDto voteCandidate(String socialId, Long groupId, Long groupMeetingId, Long groupWhereId, Long upAndDown) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
     Group groupFound = groupRepository.findById(groupId)
             .orElseThrow(() -> new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
     boolean isValidatedMember = groupService.checkGroupMembers(socialId, groupId);
@@ -85,7 +83,7 @@ public class GroupWhereService {
     GroupWhere groupWhereFound = groupWhereRepository.findById(groupWhereId)
             .orElseThrow(() -> new GroupWhereNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPWHERE));
 
-    groupWhereFound.addCount(); //투표
+    groupWhereFound.changeCount(upAndDown); //투표
 
     return GroupWhereViewResponseDto.builder()
             .groupWhereId(groupWhereFound.getId())
