@@ -119,7 +119,9 @@ public class GroupWhereController {
   ) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
+    log.info("그룹 소셜 아이디 socialId = {}" ,socialId);
     String response = groupWhereService.delete(socialId.get(), groupId, groupMeetingId, groupWhereId);
+    log.info("삭제응답성공!");
     return baseResponseService.getSuccessResponse(response);
   }
 

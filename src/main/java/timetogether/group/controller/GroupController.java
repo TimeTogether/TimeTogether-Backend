@@ -79,11 +79,16 @@ public class GroupController {
   ) throws GroupNotFoundException, NotValidMemberException {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
+    log.info("소셜 아이디 : {}",socialId);
     Long groupId = groupService.getGroupIdFromCode(groupUrl);
+    log.info("그룹 아이디 : {}",groupId);
     boolean checkIfMemberInGroup = groupService.checkGroupMembers(socialId.get(), groupId);
+    log.info("checkIfMemberInGroup = {}" , checkIfMemberInGroup);
     if (checkIfMemberInGroup){//이미 그룹에 등록된 경우
+      log.info("그룹에 이미 등록된 경우입니다. ");
       return baseResponseService.getFailureResponse(BaseResponseStatus.ALREADY_EXIST_IN_GROUP);
     }else{//그룹에 등록되지 않은 경우
+      log.info("그룹에 등록되지 않은 경우 입니다.");
       groupService.getIntoGroup(socialId.get(),groupId);
       return baseResponseService.getSuccessResponse(BaseResponseStatus.SUCCESS);
     }
@@ -105,7 +110,8 @@ public class GroupController {
   ) throws GroupNotFoundException, NotGroupMgrInGroup {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
-
+    log.info("그룹 방장이 삭제 socialId : {}",socialId);
+    log.info("그룹 방장이 삭제 시작");
     String deletedGroup = groupService.deleteGroup(socialId.get(),groupId);
     return baseResponseService.getSuccessResponse(deletedGroup);
   }
@@ -120,15 +126,18 @@ public class GroupController {
    * @throws GroupNotFoundException
    * @throws NotValidMemberException
    */
-  @DeleteMapping("/leave/{groupId}")
+  @DeleteMapping("/{groupId}/leave")
   public BaseResponse<Object> leaveGroup(
           HttpServletRequest headerRequest,
           @PathVariable("groupId") Long groupId
   ) throws GroupNotFoundException, NotValidMemberException, NotAllowedGroupMgrToLeave {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
+    log.info("<<<그룹 나가기>>> socialId = {} ", socialId);
 
     GroupLeaveResponseDto groupLeaveResponseDto = groupService.leaveGroup(socialId.get(),groupId);
+    log.info("<<<그룹 나가기>>> 완성!");
+
     return baseResponseService.getSuccessResponse(groupLeaveResponseDto);
   }
 
