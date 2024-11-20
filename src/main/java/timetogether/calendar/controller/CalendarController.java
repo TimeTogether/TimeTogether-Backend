@@ -30,20 +30,17 @@ public class CalendarController {
    * 캘린더 개인 일정 생성
    *
    * @param headerRequest
-   * @param year
-   * @param month
-   * @param date
    * @param request
    * @return
    * @throws CalendarNotExist
    * @throws CalendarValidateFail
    */
-  @PostMapping("/create/{year}/{month}/{date}")
+  @PostMapping("/create")
   public BaseResponse<Object> createCalendarMeeting(
           HttpServletRequest headerRequest,
-          @PathVariable(value = "year") int year,
-          @PathVariable(value = "month") int month,
-          @PathVariable(value = "date") int date,
+//          @PathVariable(value = "year") int year,
+//          @PathVariable(value = "month") int month,
+//          @PathVariable(value = "date") int date,
           @RequestBody CalendarCreateRequestDto request
   ) throws CalendarNotExist, CalendarValidateFail {
     String accessToken = jwtService.extractAccessToken(headerRequest).get();
