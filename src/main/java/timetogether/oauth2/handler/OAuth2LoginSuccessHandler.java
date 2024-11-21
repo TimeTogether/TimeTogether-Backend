@@ -83,8 +83,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         //String redirectUrl = "http://172.20.10.4:3000/oauth2/redirect?access_token=" + accessToken;
 
         //프론트랑 통신할 때 여기 설정
-//        String redirectUrl = "http://localhost/login/oauth2/redirect?access_token=" + accessToken + "&refresh_token=" + refreshToken;//Front ip 로 설정
-//        response.sendRedirect(redirectUrl);
+        String redirectUrl = "http://192.168.233.242:3000/login/oauth2/redirect?access_token=" + accessToken + "&refresh_token=" + refreshToken;//Front ip 로 설정
+        response.sendRedirect(redirectUrl);
 
 //        HttpSession session = request.getSession();
 //        log.info("Session ID in loginSuccess: {}", session.getId());

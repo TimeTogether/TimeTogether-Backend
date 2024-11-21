@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import timetogether.calendar.dto.response.CalendarMergeResponseDto;
 import timetogether.calendar.dto.response.CalendarViewResponseDto;
+import timetogether.calendar.dto.response.CalendarWhere2meetDto;
 import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.service.CalendarViewService;
 import timetogether.global.response.BaseResponse;
@@ -14,6 +16,7 @@ import timetogether.global.response.BaseResponseService;
 import timetogether.jwt.service.JwtService;
 
 import java.net.http.HttpHeaders;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
@@ -43,7 +46,9 @@ public class CalendarViewController {
     String socialId = jwtService.extractId(accessToken).get();
     Long calendarId = calendarViewService.putandGetCalendarId(socialId);
     CalendarViewResponseDto calendarViewResponseDto = calendarViewService.getMeetingsYearMonth(calendarId,year,month);
-    return baseResponseService.getSuccessResponse(calendarViewResponseDto);
+    List<CalendarWhere2meetDto> calendarWhere2meetDto = calendarViewService.getWhere2meetInMeetings(calendarViewResponseDto);
+    CalendarMergeResponseDto merged = calendarViewService.merge(calendarViewResponseDto, calendarWhere2meetDto);
+    return baseResponseService.getSuccessResponse(merged);
 
   }
   /**
