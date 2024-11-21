@@ -11,10 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import timetogether.global.response.BaseResponse;
+import timetogether.global.response.BaseResponseService;
 import timetogether.jwt.service.JwtService;
 
 import java.io.IOException;
@@ -27,8 +26,16 @@ import java.util.Optional;
 @Slf4j
 public class Controller {
 
-    JwtService jwtService;
+    private final JwtService jwtService;
+    //private final LoginService loginService;
+    private final BaseResponseService baseResponseService;
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 변환용 ObjectMapper
+
+    @PostMapping(value = "/logout")
+    public BaseResponse<Object> logout(HttpServletRequest servletRequest) {
+        //loginService.logout();
+        return baseResponseService.getSuccessResponse();
+    }
 
     @GetMapping("/header-info")
     @ResponseBody
