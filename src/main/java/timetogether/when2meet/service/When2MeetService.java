@@ -69,10 +69,17 @@ public class When2MeetService {
         Set<String> confirmedTitles = new HashSet<>();
         for (Meeting meet : meeting) {
             confirmedTitles.add(meet.getMeetTitle()); // 확정된 제목을 다 넣는다
-            resultList.add(new Result(meet.getMeetId(), meet.getMeetDTstart(),
-                    meet.getMeetDTend(), meet.getMeetType(),
-                    meet.getMeetTitle(), groupName,
-                    meet.getWhere2meet().getLocationName(), meet.getWhere2meet().getLocationUrl()));
+
+            if(meet.getWhere2meet() == null) { // ONLINE
+                resultList.add(new Result(meet.getMeetId(), meet.getMeetDTstart(),
+                        meet.getMeetDTend(), meet.getMeetType(),
+                        meet.getMeetTitle(), groupName));
+            }else{ // OFLINE
+                resultList.add(new Result(meet.getMeetId(), meet.getMeetDTstart(),
+                        meet.getMeetDTend(), meet.getMeetType(),
+                        meet.getMeetTitle(), groupName,
+                        meet.getWhere2meet().getLocationName(), meet.getWhere2meet().getLocationUrl()));
+            }
         }
 
         //TODO: 확정된 프로세스 이름은 반환하지 않도록 처리
@@ -238,9 +245,9 @@ public class When2MeetService {
                     time = generateTime(groupStartTime, groupEndTime, startTime, endTime);
 
                 }else{ // start 날짜일때, 그 사이에 껴있을때, end 날짜일때 (날짜 기간)
-                    if(startDate.equals(date)){
+                    if(startDate.equals(LocalDate.parse(date))){
                         time = generateTime(groupStartTime, groupEndTime, startTime, groupEndTime);
-                    }else if(endDate.equals(date)){
+                    }else if(endDate.equals(LocalDate.parse(date))){
                         time = generateTime(groupStartTime, groupEndTime, groupStartTime, endTime);
                         log.info("time = {}", time);
                     }else{
@@ -267,7 +274,8 @@ public class When2MeetService {
 
         if(startTime != null && endTime != null) {
             for (int i = 0; i < slots.size(); i++) {
-                if (slots.get(i).isAfter(startTime) && slots.get(i).isBefore(endTime)) {
+                if ((slots.get(i).isAfter(startTime) || slots.get(i).equals(startTime)) &&
+                        (slots.get(i).isBefore(endTime))) {
                     timeArray[i] = 1; // Mark slot as active
                 }
             }
@@ -314,9 +322,7 @@ public class When2MeetService {
         JsonNode jsonNode = objectMapper.readTree(meetDTJson);
         // "meetDT" 값을 추출
         String meetDT = jsonNode.get("meetDT").asText();
-        log.info(meetDT);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime finalMeet = LocalDateTime.parse(meetDT, formatter);
+        LocalDateTime finalMeet = LocalDateTime.parse(meetDT);
         Meeting meeting;
         if(type == MeetType.ONLINE) {
             meeting = new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(), null);
