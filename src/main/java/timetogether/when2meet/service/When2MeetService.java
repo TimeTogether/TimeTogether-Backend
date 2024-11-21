@@ -238,7 +238,7 @@ public class When2MeetService {
 
         List<LocalTime> slots = new ArrayList<>();
         LocalTime current = groupStartTime;
-        while (!current.isAfter(groupEndTime)) {
+        while (current != groupEndTime) {
             slots.add(current);
             current = current.plusMinutes(15);
         } // 초기화
