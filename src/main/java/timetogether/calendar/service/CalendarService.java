@@ -21,6 +21,8 @@ import timetogether.oauth2.repository.UserRepository;
 
 import java.time.LocalDateTime;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -37,10 +39,10 @@ public class CalendarService {
 
     //유효성 검증
     validateCalendarCreateInput(request);
-
+    log.info("유효성 검증 통과");
     Where2meet newWhere = new Where2meet(request.getLocationName(), request.getLocationUrl());
     where2meetRepository.save(newWhere);
-
+    log.info("새로운 장소 추가 완료");
     //새로운 Meeting 클래스 만들기h = {JdkDynamicAopProxy@14269}
     Meeting newMeeting = Meeting.builder()
             .meetTitle(request.getMeetTitle())
@@ -54,7 +56,7 @@ public class CalendarService {
             .build();
 
     Meeting save = meetingRepository.save(newMeeting);
-
+    log.info("새로운 일정 추가 완료");
     return CalendarCreateResponseDto.builder()
             .meetingId(save.getMeetId())
             .meetTitle(newMeeting.getMeetTitle())

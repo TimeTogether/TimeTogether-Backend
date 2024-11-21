@@ -17,6 +17,8 @@ import timetogether.global.response.BaseResponseService;
 import timetogether.global.response.BaseResponseStatus;
 import timetogether.jwt.service.JwtService;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @RestController
 @RequestMapping("/calendar")
 @RequiredArgsConstructor
@@ -45,6 +47,7 @@ public class CalendarController {
   ) throws CalendarNotExist, CalendarValidateFail {
     String accessToken = jwtService.extractAccessToken(headerRequest).get();
     String socialId = jwtService.extractId(accessToken).get();
+    log.info("[일정생성 시작]");
     CalendarCreateResponseDto calendarCreateResponseDto = calendarService.createMeeting(socialId, request);
     return baseResponseService.getSuccessResponse(calendarCreateResponseDto);
   }
