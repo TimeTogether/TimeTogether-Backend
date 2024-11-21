@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import timetogether.global.response.BaseResponse;
 import timetogether.global.response.BaseResponseService;
 import timetogether.jwt.service.JwtService;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
+@ResponseBody
 @RequestMapping("/meet/list")
 public class MeetingController {
 

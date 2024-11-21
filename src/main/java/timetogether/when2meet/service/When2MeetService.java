@@ -25,6 +25,7 @@ import timetogether.ranktime.RankTime;
 import timetogether.ranktime.RankTimeRepository;
 import timetogether.when2meet.When2meet;
 import timetogether.when2meet.dto.*;
+import timetogether.when2meet.dto.Process;
 import timetogether.when2meet.exception.Where2MeetIsNull;
 import timetogether.when2meet.repository.When2MeetRepository;
 import timetogether.where2meet.Where2meet;
@@ -56,19 +57,36 @@ public class When2MeetService {
 
     public Optional<MeetTableDTO> viewMeetResult(Long groupId) {
         List<Result> resultList = new LinkedList<>();
-        List<String> meetingList = new ArrayList<>();
+        List<Process> meetingList = new ArrayList<>();
         String groupName = groupRepository.findGroupNameById(groupId).getGroupName();
         // group service에 더 적합
 
-        // 그룹 이름으로 미팅 정보를 모두 가져온다
+        // 그룹 이름으로 확정된 미팅 정보를 모두 가져온다
         List<Meeting> meeting = meetingRepository.findByGroupName(groupName); // meet service에 더 적합
+        // 그룹 이름으로 생성된 그룹 미팅에 대한 정보를 저장한다
+        List<GroupMeeting> groupMeetings = groupMeetingRepository.findByGroupId(groupId);
 
+        Set<String> confirmedTitles = new HashSet<>();
         for (Meeting meet : meeting) {
-            meetingList.add(meet.getMeetTitle()); // title + id 추가하기
-            resultList.add(new Result(meet.getMeetId(), meet.getMeetDTstart(),
-                    meet.getMeetDTend(), meet.getMeetType(),
-                    meet.getMeetTitle(), groupName,
-                    meet.getWhere2meet().getLocationName(), meet.getWhere2meet().getLocationUrl()));
+            confirmedTitles.add(meet.getMeetTitle()); // 확정된 제목을 다 넣는다
+
+            if(meet.getWhere2meet() == null) { // ONLINE
+                resultList.add(new Result(meet.getMeetId(), meet.getMeetDTstart(),
+                        meet.getMeetDTend(), meet.getMeetType(),
+                        meet.getMeetTitle(), groupName));
+            }else{ // OFLINE
+                resultList.add(new Result(meet.getMeetId(), meet.getMeetDTstart(),
+                        meet.getMeetDTend(), meet.getMeetType(),
+                        meet.getMeetTitle(), groupName,
+                        meet.getWhere2meet().getLocationName(), meet.getWhere2meet().getLocationUrl()));
+            }
+        }
+
+        //TODO: 확정된 프로세스 이름은 반환하지 않도록 처리
+        for(GroupMeeting groupMeeting : groupMeetings){
+            if(!confirmedTitles.contains(groupMeeting.getGroupMeetingTitle())) {
+                meetingList.add(new Process(groupMeeting.getGroupMeetId(), groupMeeting.getGroupMeetingTitle())); // title + id 추가하기
+            }
         }
 
         MeetTableDTO meetTableDTO = new MeetTableDTO(resultList, meetingList);
@@ -147,16 +165,24 @@ public class When2MeetService {
                 RankTime rankTime = rankTimeRepository.findByWhen2meet(when2meet);
 
                 // ranktime이 null일 경우 (아무것도 설정하지 않은 경우)
-                if(rankTime == null) break;
+                if(rankTime == null){
+                    LocalTime groupStartTime = LocalTime.parse(group.getGroupTimes().substring(0, 4), DateTimeFormatter.ofPattern("HHmm"));
+                    LocalTime groupEndTime = LocalTime.parse(group.getGroupTimes().substring(4, 8), DateTimeFormatter.ofPattern("HHmm"));
 
-                String day = when2meet.getDay();
-                String time = rankTime.getTime();
-                String rank = rankTime.getRank();
-                days.add(new Days(date, day, time, rank));
+                    String day = when2meet.getDay();
+                    String time = generateTime(groupStartTime, groupEndTime, null, null);
+                    String rank = generateTime(groupStartTime, groupEndTime, null, null);
+                    days.add(new Days(date, day, time, rank));
+
+                }else {
+                    String day = when2meet.getDay();
+                    String time = rankTime.getTime();
+                    String rank = rankTime.getRank();
+                    days.add(new Days(date, day, time, rank));
+                }
             }
             users.add(new Users(user.getUserName(), days));
         }
-
         return new GroupTableDTO<Users>(groupTimes, type, users);
     }
 
@@ -219,10 +245,11 @@ public class When2MeetService {
                     time = generateTime(groupStartTime, groupEndTime, startTime, endTime);
 
                 }else{ // start 날짜일때, 그 사이에 껴있을때, end 날짜일때 (날짜 기간)
-                    if(startDate.equals(date)){
+                    if(startDate.equals(LocalDate.parse(date))){
                         time = generateTime(groupStartTime, groupEndTime, startTime, groupEndTime);
-                    }else if(endDate.equals(date)){
+                    }else if(endDate.equals(LocalDate.parse(date))){
                         time = generateTime(groupStartTime, groupEndTime, groupStartTime, endTime);
+                        log.info("time = {}", time);
                     }else{
                         time = generateTime(groupStartTime, groupEndTime, groupStartTime, groupEndTime);
                     }
@@ -238,16 +265,19 @@ public class When2MeetService {
 
         List<LocalTime> slots = new ArrayList<>();
         LocalTime current = groupStartTime;
-        while (!current.isAfter(groupEndTime)) {
+        while (groupEndTime.isAfter(current)) {
             slots.add(current);
-            current = current.plusMinutes(15);
+            current = current.plusMinutes(30);
         } // 초기화
 
         int[] timeArray = new int[slots.size()];
 
-        for (int i = 0; i < slots.size(); i++) {
-            if (startTime.isAfter(slots.get(i)) && endTime.isBefore(slots.get(i))) {
-                timeArray[i] = 1; // Mark slot as active
+        if(startTime != null && endTime != null) {
+            for (int i = 0; i < slots.size(); i++) {
+                if ((slots.get(i).isAfter(startTime) || slots.get(i).equals(startTime)) &&
+                        (slots.get(i).isBefore(endTime))) {
+                    timeArray[i] = 1; // Mark slot as active
+                }
             }
         }
 
@@ -269,13 +299,14 @@ public class When2MeetService {
         List<When2meet> when2meets = when2MeetRepository.findByTypeAndGroupMeeting(type, meeting);
 
         for(int i=0; i<days.size(); i++){ // 넘어온 날짜 사이즈로 하기 (기존 : when2meet size)
-            When2meet when2meet = when2meets.get(i); // 해당 when2meet날짜와 같은 day정보를 가져와서 적용
-            Days day = days.stream().filter(date -> date.getDate().equals(when2meet.getDate())).findFirst().get();
+            // 해당 when2meet날짜와 같은 day정보를 가져와서 적용
+            Days day = days.get(i);
+            When2meet when2meet = when2meets.stream().filter(date -> date.getDate().equals(day.getDate())).findFirst().get();
 
             RankTime rankTime = rankTimeRepository.findByWhen2meet(when2meet);
             rankTime.setRank(day.getRank());
             rankTime.setTime(day.getTime());
-            rankTime.setWhen2meet(when2meets.get(i));
+            rankTime.setWhen2meet(when2meet);
             rankTimeRepository.save(rankTime);
         }
     }
@@ -291,9 +322,7 @@ public class When2MeetService {
         JsonNode jsonNode = objectMapper.readTree(meetDTJson);
         // "meetDT" 값을 추출
         String meetDT = jsonNode.get("meetDT").asText();
-        log.info(meetDT);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime finalMeet = LocalDateTime.parse(meetDT, formatter);
+        LocalDateTime finalMeet = LocalDateTime.parse(meetDT);
         Meeting meeting;
         if(type == MeetType.ONLINE) {
             meeting = new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(), null);

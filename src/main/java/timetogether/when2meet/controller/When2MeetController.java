@@ -49,6 +49,7 @@ public class When2MeetController {
     public BaseResponse<Object> viewGroupMeet(@PathVariable("groupId") Long groupId, @PathVariable("title") String groupMeetingTitle, @PathVariable("type") String type) // group table을 위한 정보
     {   // (그룹, 회의 제목, TYPE을 확인)
         GroupTableDTO<Users> table = when2MeetService.viewMeet(groupId, groupMeetingTitle, MeetType.fromString(type)); // 해당 type, group, meet에 대한 모든 사용자의 정보를 넘긴다
+        log.info(table.getUsers().get(0).getUserName());
         return baseResponseService.getSuccessResponse(table);
     }
 

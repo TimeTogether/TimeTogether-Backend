@@ -1,5 +1,6 @@
 package timetogether.meeting;
 
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import timetogether.calendar.dto.request.CalendarUpdateRequestDto;
-import timetogether.group.Group;
 import timetogether.groupMeeting.MeetType;
 import timetogether.where2meet.Where2meet;
 import timetogether.calendar.Calendar;
