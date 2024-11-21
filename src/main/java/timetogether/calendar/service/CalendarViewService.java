@@ -10,6 +10,7 @@ import timetogether.calendar.dto.response.CalendarViewResponseDto;
 import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.calendar.repository.CalendarRepository;
 import timetogether.global.response.BaseResponseStatus;
+import timetogether.groupMeeting.MeetType;
 import timetogether.meeting.Meeting;
 import timetogether.meeting.dto.response.MeetingResponseDto;
 import timetogether.meeting.repository.MeetingRepository;
@@ -76,14 +77,23 @@ public class CalendarViewService {
 
     for (MeetingResponseDto meetingResponseDto : meetingList) {
       Meeting foundMeeting = meetingRepository.findById(meetingResponseDto.getId()).get();
-      Long foundWhere2meetId = foundMeeting.getWhere2meet().getLocationId();
-      Where2meet foudnWhere2meet = where2meetQueryRepository.findById(foundWhere2meetId);
+      if (foundMeeting.getMeetType().equals(MeetType.ONLINE)){//온라인인 경우
+        where2meetList.add(new CalendarWhere2meetDto(
+                meetingResponseDto.getId(),
+                null,
+                null
+        ));
+      }else{//오프라인인 경우
+        Long foundWhere2meetId = foundMeeting.getWhere2meet().getLocationId();
+        Where2meet foudnWhere2meet = where2meetQueryRepository.findById(foundWhere2meetId);
 
-      where2meetList.add(new CalendarWhere2meetDto(
-              meetingResponseDto.getId(),
-              foudnWhere2meet.getLocationName(),
-              foudnWhere2meet.getLocationUrl()
-      ));
+        where2meetList.add(new CalendarWhere2meetDto(
+                meetingResponseDto.getId(),
+                foudnWhere2meet.getLocationName(),
+                foudnWhere2meet.getLocationUrl()
+        ));
+      }
+
     }
 
     return where2meetList;
