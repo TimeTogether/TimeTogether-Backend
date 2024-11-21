@@ -17,6 +17,8 @@ import timetogether.global.response.BaseResponseService;
 import timetogether.global.response.BaseResponseStatus;
 import timetogether.jwt.service.JwtService;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @RestController
 @RequestMapping("/calendar")
 @RequiredArgsConstructor
@@ -30,24 +32,22 @@ public class CalendarController {
    * 캘린더 개인 일정 생성
    *
    * @param headerRequest
-   * @param year
-   * @param month
-   * @param date
    * @param request
    * @return
    * @throws CalendarNotExist
    * @throws CalendarValidateFail
    */
-  @PostMapping("/create/{year}/{month}/{date}")
+  @PostMapping("/create")
   public BaseResponse<Object> createCalendarMeeting(
           HttpServletRequest headerRequest,
-          @PathVariable(value = "year") int year,
-          @PathVariable(value = "month") int month,
-          @PathVariable(value = "date") int date,
+//          @PathVariable(value = "year") int year,
+//          @PathVariable(value = "month") int month,
+//          @PathVariable(value = "date") int date,
           @RequestBody CalendarCreateRequestDto request
   ) throws CalendarNotExist, CalendarValidateFail {
     String accessToken = jwtService.extractAccessToken(headerRequest).get();
     String socialId = jwtService.extractId(accessToken).get();
+    log.info("[일정생성 시작]");
     CalendarCreateResponseDto calendarCreateResponseDto = calendarService.createMeeting(socialId, request);
     return baseResponseService.getSuccessResponse(calendarCreateResponseDto);
   }

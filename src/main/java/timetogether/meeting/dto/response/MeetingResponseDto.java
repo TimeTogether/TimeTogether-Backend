@@ -5,6 +5,7 @@ import lombok.Getter;
 import timetogether.groupMeeting.MeetType;
 import timetogether.calendar.dto.response.CalendarSimpleDto;
 import timetogether.meeting.Meeting;
+import timetogether.where2meet.Where2meet;
 
 import java.time.LocalDateTime;
 
@@ -32,4 +33,5 @@ public class MeetingResponseDto {
             .calendar(CalendarSimpleDto.from(meeting.getCalendar()))
             .build();
   }
+
 }

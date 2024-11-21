@@ -1,6 +1,7 @@
 package timetogether.GroupWhere.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import timetogether.GroupWhere.GroupWhere;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class GroupWhereService {
   private final GroupRepository groupRepository;
   private final GroupService groupService;
@@ -71,7 +73,7 @@ public class GroupWhereService {
     return Optional.ofNullable(candidates);
   }
 
-  public GroupWhereViewResponseDto voteCandidate(String socialId, Long groupId, Long groupMeetingId, Long groupWhereId) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
+  public GroupWhereViewResponseDto voteCandidate(String socialId, Long groupId, Long groupMeetingId, Long groupWhereId, Long upAndDown) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
     Group groupFound = groupRepository.findById(groupId)
             .orElseThrow(() -> new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
     boolean isValidatedMember = groupService.checkGroupMembers(socialId, groupId);
@@ -81,7 +83,7 @@ public class GroupWhereService {
     GroupWhere groupWhereFound = groupWhereRepository.findById(groupWhereId)
             .orElseThrow(() -> new GroupWhereNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPWHERE));
 
-    groupWhereFound.addCount(); //투표
+    groupWhereFound.changeCount(upAndDown); //투표
 
     return GroupWhereViewResponseDto.builder()
             .groupWhereId(groupWhereFound.getId())
@@ -93,17 +95,21 @@ public class GroupWhereService {
             .build();
   }
 
-  public String delete(String socialId, Long groupId, Long groupWhereId, Long groupMeetingId) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
+  public String delete(String socialId, Long groupId, Long groupMeetingId , Long groupWhereId) throws GroupNotFoundException, NotValidMemberException, GroupWhereNotFoundException {
     Group groupFound = groupRepository.findById(groupId)
             .orElseThrow(() -> new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
     boolean isValidatedMember = groupService.checkGroupMembers(socialId, groupId);
+    log.info("validated");
     if (!isValidatedMember) {
       throw new NotValidMemberException(BaseResponseStatus.NOT_VALID_USER);
     }
+    log.info("validated success");
+    log.info("groupWhereId = {}", groupWhereId);
     GroupWhere groupWhereFound = groupWhereRepository.findById(groupWhereId)
             .orElseThrow(() -> new GroupWhereNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPWHERE));
 
     groupWhereRepository.delete(groupWhereFound);
+    log.info("delete success!");
     return "삭제가 완료되었습니다.";
   }
 

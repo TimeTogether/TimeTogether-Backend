@@ -13,12 +13,15 @@ import timetogether.calendar.dto.response.CalendarUpdateResponseDto;
 import timetogether.calendar.exception.CalendarNotExist;
 import timetogether.meeting.Meeting;
 import timetogether.meeting.repository.MeetingRepository;
+import timetogether.where2meet.repository.Where2meetQueryRepository;
 import timetogether.where2meet.repository.Where2meetRepository;
 import timetogether.global.response.BaseResponseStatus;
 import timetogether.oauth2.entity.User;
 import timetogether.oauth2.repository.UserRepository;
 
 import java.time.LocalDateTime;
+
+import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class CalendarService {
   private final MeetingRepository meetingRepository;
   private final Where2meetRepository where2meetRepository;
   private final UserRepository userRepository;
+  private final Where2meetQueryRepository where2meetQueryRepository;
 
 
   public CalendarCreateResponseDto createMeeting(String socialId,CalendarCreateRequestDto request) throws CalendarNotExist, CalendarValidateFail {
@@ -35,10 +39,10 @@ public class CalendarService {
 
     //유효성 검증
     validateCalendarCreateInput(request);
-
+    log.info("유효성 검증 통과");
     Where2meet newWhere = new Where2meet(request.getLocationName(), request.getLocationUrl());
     where2meetRepository.save(newWhere);
-
+    log.info("새로운 장소 추가 완료");
     //새로운 Meeting 클래스 만들기h = {JdkDynamicAopProxy@14269}
     Meeting newMeeting = Meeting.builder()
             .meetTitle(request.getMeetTitle())
@@ -52,7 +56,7 @@ public class CalendarService {
             .build();
 
     Meeting save = meetingRepository.save(newMeeting);
-
+    log.info("새로운 일정 추가 완료");
     return CalendarCreateResponseDto.builder()
             .meetingId(save.getMeetId())
             .meetTitle(newMeeting.getMeetTitle())
@@ -106,6 +110,13 @@ public class CalendarService {
     //유효성 검증
     validateCalendarCreateInput2(request);
 
+    //기존 meeting 객체 Where2meet null로 바꾸기
+
+
+    //기존 location 가져오기
+    Long locationId = where2meetQueryRepository.deleteByLocationIdInMeetingId(meetingId);
+
+    //새로운 location 저장
     Where2meet newWhere = new Where2meet(request.getLocationName(), request.getLocationUrl());
     where2meetRepository.save(newWhere);
 
@@ -113,9 +124,14 @@ public class CalendarService {
     Meeting existMeeting = meetingRepository.findById(meetingId)
             .orElseThrow(() -> new InCalendarMeetingIdNotExist(BaseResponseStatus.NOT_EXIST_MEETINGID));
 
+    // 기존 meeting 객체 업데이트
     existMeeting.update(request,newWhere);
 
+    // 새로운 meeting 객체로 바꾸기
     Meeting save = meetingRepository.save(existMeeting);
+
+    // 기존 location 삭제
+    where2meetRepository.deleteById(locationId);
 
     return CalendarUpdateResponseDto.builder()
             .meetingId(save.getMeetId())

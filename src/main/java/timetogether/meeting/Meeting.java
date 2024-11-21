@@ -1,6 +1,7 @@
 package timetogether.meeting;
 
-import jakarta.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -8,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import timetogether.calendar.dto.request.CalendarUpdateRequestDto;
-import timetogether.group.Group;
 import timetogether.groupMeeting.MeetType;
 import timetogether.where2meet.Where2meet;
 import timetogether.calendar.Calendar;
@@ -27,9 +27,11 @@ public class Meeting {
   private Long meetId;
 
   @NotNull
+  @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
   private LocalDateTime meetDTstart;
 
   @NotNull
+  @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
   private LocalDateTime meetDTend;
 
   private MeetType meetType;

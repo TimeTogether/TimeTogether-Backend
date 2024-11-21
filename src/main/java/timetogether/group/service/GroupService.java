@@ -48,11 +48,17 @@ public class GroupService {
     Group foundGroup = groupRepository.findById(groupId)
             .orElseThrow(()->new GroupNotFoundException(BaseResponseStatus.NOT_EXIST_GROUPID));
     boolean isMgr = foundGroup.getGroupMgrId().equals(socialId); //방장인 경우 판별
+    log.info("그룹 방장인거 여부 판별 시작");
     if (!isMgr){
+      log.info("그룹 방장이 아닙니다.");
       throw new NotGroupMgrInGroup(BaseResponseStatus.NOT_VALID_MGR);
     }
+    log.info("그룹 방장 찾기 시작");
     userQueryRepository.deleteGroupInUserEntity(foundGroup.getGroupUserList(),foundGroup);
+    log.info("그룹 지우기 시작");
     groupRepository.delete(foundGroup);//그룹 지우기
+    log.info("그룹 지우기 종료");
+
     return "그룹을 삭제하였습니다.";
   }
 
@@ -97,10 +103,12 @@ public class GroupService {
     if (isMgr){
       throw new NotAllowedGroupMgrToLeave(BaseResponseStatus.NOT_VALID_MGR);
     }
-    log.info("groupUserList {} ", foundGroup.getGroupUserList()); //힝..
+    log.info("<<그룹 나가기>> 수정전 groupUserList {} ", foundGroup.getGroupUserList());
     //방장이 아닌 그룹 멤버인 경우
     foundGroup.removeUserFromGroup(userRepository.findBySocialId(socialId).get());
     groupRepository.save(foundGroup);
+    log.info("<<그룹 나가기>> 수정후 groupUserList {} ", foundGroup.getGroupUserList());
+
     return new GroupLeaveResponseDto(socialId,"그룹을 나가는데 성공하였습니다.");
   }
 
