@@ -10,5 +10,5 @@ import java.util.List;
 @Getter
 public class MeetTableDTO {
     private final List<Result> result;
-    private final List<String> meeting;
+    private final List<Process> meeting;
 }
