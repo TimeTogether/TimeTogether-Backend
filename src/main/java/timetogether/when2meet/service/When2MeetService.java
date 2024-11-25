@@ -174,7 +174,7 @@ public class When2MeetService {
                     String rank = generateTime(groupStartTime, groupEndTime, null, null);
                     days.add(new Days(date, day, time, rank));
 
-                }else {
+                }else { //
                     String day = when2meet.getDay();
                     String time = rankTime.getTime();
                     String rank = rankTime.getRank();
