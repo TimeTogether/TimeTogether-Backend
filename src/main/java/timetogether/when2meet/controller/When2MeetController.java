@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import timetogether.GroupWhere.service.GroupWhereService;
 import timetogether.global.response.BaseResponse;
 import timetogether.global.response.BaseResponseService;
 import timetogether.jwt.service.JwtService;
@@ -14,7 +15,10 @@ import timetogether.groupMeeting.MeetType;
 import timetogether.when2meet.dto.*;
 import timetogether.when2meet.exception.Where2MeetIsNull;
 import timetogether.when2meet.service.When2MeetService;
+import timetogether.where2meet.service.Where2meetService;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +32,8 @@ public class When2MeetController {
     private final When2MeetService when2MeetService;
     private final BaseResponseService baseResponseService;
     private final JwtService jwtService;
+    private final Where2meetService where2meetService;
+    private final GroupWhereService groupWhereService;
 
     @GetMapping("/meet")
     public BaseResponse<Object> viewGroupMeetResult(
@@ -38,10 +44,11 @@ public class When2MeetController {
 
 
     @PostMapping("meet/{title}/add")
-    public BaseResponse<Object> addGroupMeet(@PathVariable("groupId") Long groupId, @PathVariable("title") String groupMeetingTitle, @RequestBody List<String> dates){
+    public BaseResponse<Object> addGroupMeet(@PathVariable("groupId") Long groupId, @PathVariable("title") String groupMeetingTitle, @RequestBody List<String> dates) throws IOException, URISyntaxException {
         log.info("Received dates: " + dates); // 왜 object로 밖에 못받는거지?
         log.info("title = {}",groupMeetingTitle);
         when2MeetService.addGroupMeet(groupMeetingTitle, dates, groupId); // 회의를 하나 더 만든다 = group meeting table을 생성한다
+        groupWhereService.getRandomGroupWhereCandidates(groupId,groupMeetingTitle); //자동 회의 장소 후보 추가 5개
         return baseResponseService.getSuccessResponse();
     }
 

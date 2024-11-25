@@ -35,7 +35,7 @@ public class Group {
   private String groupImg;
   @NotNull
   private String groupMgrId;
-  private String groupTimes = "07001200";
+  private String groupTimes = "07002330";
   private String groupIntro;
   private String groupUrl;
 

@@ -32,6 +32,8 @@ import timetogether.where2meet.Where2meet;
 import timetogether.where2meet.repository.Where2meetRepository;
 import timetogether.where2meet.service.Where2meetService;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -343,4 +345,5 @@ public class When2MeetService {
         }
         meetingRepository.save(meeting);
     }
+
 }
