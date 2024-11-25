@@ -1,5 +1,6 @@
 package timetogether.config.kakaoapi;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -7,6 +8,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import timetogether.GroupWhere.GroupWhere;
 
 import java.io.BufferedReader;
@@ -16,8 +19,11 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
+@Component
 public class KakaoAPI {
-  private static final String API_KEY = "967533de3fc3839252ee41386fe0bd95";
+  @Value("${kakao.rest-api}")
+  private String apiKey = "KakaoAK 967533de3fc3839252ee41386fe0bd95";
   private static final String KEYWORD_URL = "https://dapi.kakao.com/v2/local/search/keyword";
   private static final String CATEGORY_URL = "https://dapi.kakao.com/v2/local/search/category";
   private double x;
@@ -66,9 +72,10 @@ public class KakaoAPI {
   private JSONObject getJson(String apiUrl) { //requestURL 설정 후 Kakao-API의 response 값 인 json 을 받아오는 메서드
     String json = "";
     try {
+      log.info("에이피아이키 apikey : {} ", apiKey);
       HttpClient client = HttpClientBuilder.create().build();
       HttpGet getRequest = new HttpGet(apiUrl); //Get 메소드 URL 생성
-      getRequest.addHeader("Authorization","KakaoAK "+ KakaoAPI.API_KEY); //API KEY 입력
+      getRequest.addHeader("Authorization",apiKey); //apikey 입력
       HttpResponse getResponse = client.execute(getRequest); // 위에 보낸 request에 대한 response 내용(json)
 
       BufferedReader br = new BufferedReader(new InputStreamReader(getResponse.getEntity().getContent(), "UTF-8"));
