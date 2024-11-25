@@ -53,10 +53,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/", "/login/**", "/home/", "/css/**","/images/**","/js/**","/favicon.ico", "/header", "header-info","https://dapi.kakao.com/v2/local/search/keyword.json/**", "https://dapi.kakao.com/v2/local/search/category.json/**").permitAll()
-//                        .anyRequest().authenticated() // 그 외의 요청은 인증 필요
-//                )
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/", "/login/**", "/home/", "/css/**","/images/**","/js/**","/favicon.ico", "/header", "header-info","https://dapi.kakao.com").permitAll()
+                        .anyRequest().authenticated() // 그 외의 요청은 인증 필요
+                )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oAuth2LoginSuccessHandler) // 소셜 로그인 성공 핸들러
                         .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 핸들러

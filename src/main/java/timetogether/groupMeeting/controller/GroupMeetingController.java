@@ -18,7 +18,6 @@ import timetogether.jwt.service.JwtService;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static timetogether.groupMeeting.service.GroupMeetingService.getRandomGroupWhereCandidates;
 
 @RestController
 @RequestMapping("/group/groupmeeting")
@@ -46,7 +45,6 @@ public class GroupMeetingController {
     String accessToken = jwtService.extractAccessToken(headerRequest).get();
     String socialId = jwtService.extractId(accessToken).get();
     GroupMeetingCreateResponse calendarCreateResponseDto = groupMeetingService.createMeeting(socialId, request);
-    getRandomGroupWhereCandidates();
     return baseResponseService.getSuccessResponse(calendarCreateResponseDto);
   }
 

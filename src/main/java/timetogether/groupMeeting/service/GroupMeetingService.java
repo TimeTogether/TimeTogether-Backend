@@ -22,14 +22,4 @@ public class GroupMeetingService {
     return null;
 
   }
-  public static void getRandomGroupWhereCandidates() throws IOException, URISyntaxException {
-    try {
-      kakaoApi.keywordSearch("건국대학교");
-      kakaoApi.setRadius(1000);
-      kakaoApi.categorySearch();
-    } catch (Exception e) {
-      log.error("장소 검색 중 오류 발생: {}", e.getMessage());
-      throw e;
-    }
-  }
 }

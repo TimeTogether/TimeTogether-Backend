@@ -59,4 +59,12 @@ public class GroupWhere {
   public void doneChooseThis(){
     this.chooseThis = true;
   }
+
+  public void settingGroup(Group group) {
+    this.group = group;
+  }
+
+  public void settingGroupMeeting(GroupMeeting groupMeeting) {
+    this.groupMeeting = groupMeeting;
+  }
 }

@@ -7,11 +7,13 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import timetogether.GroupWhere.GroupWhere;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 public class KakaoAPI {
@@ -37,12 +39,28 @@ public class KakaoAPI {
     this.y = Double.parseDouble(String.valueOf(mylocation.get("y")));
     return mylocation; // 키워드 검색 결과 중 가장 앞에 있는 객체 선택
   }
-  public void categorySearch() throws JSONException {
+  public List<GroupWhere> categorySearch() throws JSONException {
     String url = CATEGORY_URL + "?x=" + x + "&y=" + y + "&category_group_code="
-            +"CE7" + "&radius=" + radius;
+            + "CE7" + "&radius=" + radius;
     JSONObject json = getJson(url);
     JSONArray documents = json.getJSONArray("documents");
-    printResult(documents);
+    List<GroupWhere> groupWhereList = new ArrayList<>();
+
+    // 최대 5개까지만 처리
+    int count = Math.min(documents.length(), 5);
+
+    for (int i = 0; i < count; i++) {
+      JSONObject location = documents.getJSONObject(i);
+
+      GroupWhere groupWhere = GroupWhere.builder()
+              .groupWhereName(location.getString("place_name"))
+              .groupWhereUrl(location.getString("place_url"))
+              .build();
+
+      groupWhereList.add(groupWhere);
+      //printResult(documents);
+    }
+    return groupWhereList;
   }
   // REST API 이용 메서드
   private JSONObject getJson(String apiUrl) { //requestURL 설정 후 Kakao-API의 response 값 인 json 을 받아오는 메서드

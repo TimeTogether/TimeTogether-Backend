@@ -22,9 +22,7 @@ import timetogether.groupMeeting.repository.GroupMeetingRepository;
 import timetogether.GroupWhere.exception.GroupWhereNotFoundException;
 import timetogether.GroupWhere.repository.GroupWhereRepository;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +32,7 @@ import java.util.Optional;
 @Transactional
 @Slf4j
 public class GroupWhereService {
+  private static KakaoAPI kakaoApi = new KakaoAPI();
   private final GroupRepository groupRepository;
   private final GroupService groupService;
   private final GroupWhereQueryRepository groupWhereQueryRepository;
@@ -144,4 +143,23 @@ public class GroupWhereService {
 
   }
 
+  public void getRandomGroupWhereCandidates(Long groupId, String groupMeetingTitle) throws IOException, URISyntaxException {
+    try {
+      kakaoApi.keywordSearch("건국대학교");
+      kakaoApi.setRadius(1000);
+      List<GroupWhere> locations = kakaoApi.categorySearch();
+      //주변 장소 후보 데이터베이스에 저장
+      for (GroupWhere candidate : locations){
+        Group groupFound = groupRepository.findById(groupId).get();
+        GroupMeeting groupMeetingFound = groupMeetingRepository.findByGroupAndGroupMeetingTitle(groupFound,groupMeetingTitle);
+
+        candidate.settingGroup(groupFound);
+        candidate.settingGroupMeeting(groupMeetingFound);
+        groupWhereRepository.save(candidate);
+      }
+    } catch (Exception e) {
+      log.error("장소 검색 중 오류 발생: {}", e.getMessage());
+      throw e;
+    }
+  }
 }
