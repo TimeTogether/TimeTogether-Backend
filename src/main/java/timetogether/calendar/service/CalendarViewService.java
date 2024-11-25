@@ -77,22 +77,35 @@ public class CalendarViewService {
 
     for (MeetingResponseDto meetingResponseDto : meetingList) {
       Meeting foundMeeting = meetingRepository.findById(meetingResponseDto.getId()).get();
-      if (foundMeeting.getMeetType().equals(MeetType.ONLINE)){//온라인인 경우
-        where2meetList.add(new CalendarWhere2meetDto(
-                meetingResponseDto.getId(),
-                null,
-                null
-        ));
-      }else{//오프라인인 경우
-        Long foundWhere2meetId = foundMeeting.getWhere2meet().getLocationId();
-        Where2meet foudnWhere2meet = where2meetQueryRepository.findById(foundWhere2meetId);
+      if (foundMeeting.getMeetType() != null) {
 
-        where2meetList.add(new CalendarWhere2meetDto(
-                meetingResponseDto.getId(),
-                foudnWhere2meet.getLocationName(),
-                foudnWhere2meet.getLocationUrl()
-        ));
+
+        if (foundMeeting.getMeetType().equals(MeetType.ONLINE)) {//온라인인 경우
+          where2meetList.add(new CalendarWhere2meetDto(
+                  meetingResponseDto.getId(),
+                  null,
+                  null
+          ));
+        } else {//오프라인인 경우
+          Long foundWhere2meetId = foundMeeting.getWhere2meet().getLocationId();
+          Where2meet foudnWhere2meet = where2meetQueryRepository.findById(foundWhere2meetId);
+
+          where2meetList.add(new CalendarWhere2meetDto(
+                  meetingResponseDto.getId(),
+                  foudnWhere2meet.getLocationName(),
+                  foudnWhere2meet.getLocationUrl()
+          ));
+        }
       }
+      //meetType 이 null 인 경우
+      Long foundWhere2meetId = foundMeeting.getWhere2meet().getLocationId();
+      Where2meet foudnWhere2meet = where2meetQueryRepository.findById(foundWhere2meetId);
+
+      where2meetList.add(new CalendarWhere2meetDto(
+              meetingResponseDto.getId(),
+              foudnWhere2meet.getLocationName(),
+              foudnWhere2meet.getLocationUrl()
+      ));
 
     }
 

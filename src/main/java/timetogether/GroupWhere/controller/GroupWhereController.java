@@ -18,6 +18,8 @@ import timetogether.GroupWhere.exception.GroupWhereNotFoundException;
 import timetogether.meeting.service.MeetingService;
 import timetogether.where2meet.service.Where2meetService;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,7 +72,7 @@ public class GroupWhereController {
           @PathVariable("groupId") Long groupId,
           @PathVariable("groupMeetingId") Long groupMeetingId,
           @RequestBody GroupWhereCreateRequestDto request
-  ) throws GroupNotFoundException, NotValidMemberException {
+  ) throws GroupNotFoundException, NotValidMemberException, IOException, URISyntaxException {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
     GroupWhereViewResponseDto groupViewResponse = groupWhereService.createCandidate(request, socialId.get(), groupId, groupMeetingId);

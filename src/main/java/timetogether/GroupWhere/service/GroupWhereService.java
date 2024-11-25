@@ -9,6 +9,7 @@ import timetogether.GroupWhere.dto.GroupWhereChooseResponse;
 import timetogether.GroupWhere.dto.GroupWhereCreateRequestDto;
 import timetogether.GroupWhere.dto.GroupWhereViewResponseDto;
 import timetogether.GroupWhere.repository.GroupWhereQueryRepository;
+import timetogether.config.kakaoapi.KakaoAPI;
 import timetogether.global.response.BaseResponseStatus;
 import timetogether.group.Group;
 import timetogether.group.exception.GroupNotFoundException;
@@ -21,6 +22,10 @@ import timetogether.groupMeeting.repository.GroupMeetingRepository;
 import timetogether.GroupWhere.exception.GroupWhereNotFoundException;
 import timetogether.GroupWhere.repository.GroupWhereRepository;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,6 +90,8 @@ public class GroupWhereService {
 
     groupWhereFound.changeCount(upAndDown); //투표
 
+    groupWhereRepository.save(groupWhereFound);
+
     return GroupWhereViewResponseDto.builder()
             .groupWhereId(groupWhereFound.getId())
             .groupId(groupWhereFound.getGroup().getId())
@@ -136,4 +143,5 @@ public class GroupWhereService {
             .build();
 
   }
+
 }

@@ -18,6 +18,8 @@ import timetogether.group.exception.NotValidMemberException;
 import timetogether.group.service.GroupService;
 import timetogether.jwt.service.JwtService;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +43,7 @@ public class GroupController {
   public BaseResponse<Object> createGroup(
           HttpServletRequest headerRequest,
           @RequestBody GroupCreateRequestDto request
-  ) {
+  ) throws IOException, URISyntaxException {
     Optional<String> accessToken = jwtService.extractAccessToken(headerRequest);
     Optional<String> socialId = jwtService.extractId(accessToken.get());
     GroupCreateResponseDto groupCreateResponseDto = groupService.createGroup(socialId.get(), request);

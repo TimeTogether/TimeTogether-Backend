@@ -39,6 +39,12 @@ public class GroupWhere {
     this.groupMeeting = groupMeeting;
   }
 
+  @Builder
+  public GroupWhere(String groupWhereName,String groupWhereUrl) {
+    this.groupWhereName = groupWhereName;
+    this.groupWhereUrl = groupWhereUrl;
+  }
+
   public void changeCount(Long upAndDown){
     if (upAndDown == 1 ){
       this.count++;

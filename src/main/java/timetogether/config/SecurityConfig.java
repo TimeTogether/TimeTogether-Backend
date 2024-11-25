@@ -35,7 +35,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://192.168.233.242:3000"); // 프론트 ip 3000 URL
+        configuration.addAllowedOrigin("http://192.168.170.55:3000"); // 프론트 ip 3000 URL
         configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
         configuration.addExposedHeader("Authorization"); // 클라이언트에서 Authorization 헤더를 읽을 수 있게 노출
@@ -53,10 +53,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/login/**", "/home/", "/css/**","/images/**","/js/**","/favicon.ico", "/header", "header-info").permitAll()
-                        .anyRequest().authenticated() // 그 외의 요청은 인증 필요
-                )
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("/", "/login/**", "/home/", "/css/**","/images/**","/js/**","/favicon.ico", "/header", "header-info","https://dapi.kakao.com/v2/local/search/keyword.json/**", "https://dapi.kakao.com/v2/local/search/category.json/**").permitAll()
+//                        .anyRequest().authenticated() // 그 외의 요청은 인증 필요
+//                )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oAuth2LoginSuccessHandler) // 소셜 로그인 성공 핸들러
                         .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 핸들러

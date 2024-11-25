@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import timetogether.config.kakaoapi.KakaoAPI;
 import timetogether.global.response.BaseResponseStatus;
 import timetogether.group.Group;
 import timetogether.group.dto.*;
@@ -15,6 +16,10 @@ import timetogether.oauth2.entity.User;
 import timetogether.oauth2.repository.UserQueryRepository;
 import timetogether.oauth2.repository.UserRepository;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -155,7 +160,10 @@ public class GroupService {
                     .build())
             .collect(Collectors.toList());
   }
+
+
 }
+
 
 //  public GroupAddDatesResponseDto addDates(String socialId, GroupAddDatesRequestDto request) throws GroupNotFoundOrNotMgrException, GroupTimesLimitSevenDays {
 //    Group groupFound = groupQueryRepository.findByGroupNameAndIsMgr(socialId, request.getGroupName())
