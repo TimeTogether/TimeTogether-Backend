@@ -67,6 +67,7 @@ public class When2MeetController {
                                             @PathVariable("title") String groupMeetingTitle,
                                             @PathVariable("type") String type)
     {   // (그룹, 회의 제목, TYPE을 확인) -> 회의 아이디로 테이블을 조회해서 해당 날짜에 대한 RankTime(off or on) 테이블 생성 및 저장
+        log.info("Hello addUserMeet");
         String accessToken = jwtService.extractAccessToken(request).get();
         String socialId = jwtService.extractId(accessToken).get();
         GroupTableDTO<Days> table = when2MeetService.addUserMeet(groupId, groupMeetingTitle, MeetType.fromString(type), socialId);

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import timetogether.jwt.service.JwtService;
 import timetogether.oauth2.CustomOAuth2User;
 import timetogether.oauth2.entity.SocialType;
+import timetogether.oauth2.repository.UserRepository;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.Map;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
+    private final UserRepository userRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -82,8 +84,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         jwtService.updateRefreshToken(socialId, refreshToken); // 사용자의(소셜아이디) 리프레시 토큰를 db에 저장
         //String redirectUrl = "http://172.20.10.4:3000/oauth2/redirect?access_token=" + accessToken;
 
+        String userName = userRepository.findBySocialId(socialId).get().getUserName();
         //프론트랑 통신할 때 여기 설정
-        String redirectUrl = "http://192.168.12.91:3000/login/oauth2/redirect?access_token=" + accessToken + "&refresh_token=" + refreshToken;//Front ip 로 설정
+        String redirectUrl = "http://192.168.12.91:3000/login/oauth2/redirect?access_token=" + accessToken + "&refresh_token=" + refreshToken + "&userName="+userName;//Front ip 로 설정
         response.sendRedirect(redirectUrl);
 
 //        HttpSession session = request.getSession();

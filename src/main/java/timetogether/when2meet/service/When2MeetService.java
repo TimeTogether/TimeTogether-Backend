@@ -174,7 +174,7 @@ public class When2MeetService {
                     String rank = generateTime(groupStartTime, groupEndTime, null, null);
                     days.add(new Days(date, day, time, rank));
 
-                }else {
+                }else { //
                     String day = when2meet.getDay();
                     String time = rankTime.getTime();
                     String rank = rankTime.getRank();
@@ -323,6 +323,7 @@ public class When2MeetService {
         // "meetDT" 값을 추출
         String meetDT = jsonNode.get("meetDT").asText();
         LocalDateTime finalMeet = LocalDateTime.parse(meetDT);
+        log.info(finalMeet.toString());
         Meeting meeting;
         if(type == MeetType.ONLINE) {
             meeting = new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(), null);
