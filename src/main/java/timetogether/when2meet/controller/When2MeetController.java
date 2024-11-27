@@ -117,5 +117,4 @@ public class When2MeetController {
         return baseResponseService.getSuccessResponse();
     }
 
-
 }
