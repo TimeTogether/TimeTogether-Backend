@@ -48,6 +48,7 @@ public class When2MeetController {
         log.info("Received dates: " + dates); // 왜 object로 밖에 못받는거지?
         log.info("title = {}",groupMeetingTitle);
         when2MeetService.addGroupMeet(groupMeetingTitle, dates, groupId); // 회의를 하나 더 만든다 = group meeting table을 생성한다
+
         groupWhereService.getRandomGroupWhereCandidates(groupId,groupMeetingTitle); //자동 회의 장소 후보 추가 5개
         return baseResponseService.getSuccessResponse();
     }
@@ -110,7 +111,8 @@ public class When2MeetController {
 
         String accessToken = jwtService.extractAccessToken(request).get();
         String socialId = jwtService.extractId(accessToken).get();
-        when2MeetService.doneGroupMeet(groupId, groupMeetingTitle, MeetType.fromString(type), socialId, meetDT);
+        if (type.equals(MeetType.OFFLINE))
+            when2MeetService.doneGroupMeet(groupId, groupMeetingTitle, MeetType.fromString(type), socialId, meetDT);
         return baseResponseService.getSuccessResponse();
     }
 

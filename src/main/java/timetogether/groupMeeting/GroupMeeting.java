@@ -47,4 +47,5 @@ public class GroupMeeting {
   public void setUser(User user) {
     this.user = user;
   }
+
 }

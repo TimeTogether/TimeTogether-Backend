@@ -39,6 +39,7 @@ public class KakaoAPI {
   public JSONObject keywordSearch(String keyword) throws UnsupportedEncodingException {
     String url = KEYWORD_URL + "?query=" + URLEncoder.encode(keyword, "UTF-8"); // 이게 있어야 url keyword에서 띄어쓰기까지 인식 가능
     JSONObject json = getJson(url); // json = {documents : [{객체A},{객체B}....] , meta : [배열2]}
+    log.info("json :{}" ,json);
     JSONArray documents = json.getJSONArray("documents"); // documents = [{객체A},{객체B}....] // documents 키값에 대응하는 value.
     JSONObject mylocation = documents.getJSONObject(0); //base = {객체A}
     this.x = Double.parseDouble(String.valueOf(mylocation.get("x")));
