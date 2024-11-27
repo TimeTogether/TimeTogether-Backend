@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class KakaoAPI {
-  @Value("${kakao.rest-api}")
+  //@Value("${kakao.rest-api}")
   private String apiKey = "KakaoAK 967533de3fc3839252ee41386fe0bd95";
   private static final String KEYWORD_URL = "https://dapi.kakao.com/v2/local/search/keyword";
   private static final String CATEGORY_URL = "https://dapi.kakao.com/v2/local/search/category";

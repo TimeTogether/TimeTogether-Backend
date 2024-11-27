@@ -1,6 +1,7 @@
 package timetogether.when2meet.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -92,9 +93,22 @@ public class When2MeetController {
                                                @PathVariable("groupId") Long groupId,
                                                @PathVariable("type") String type,
                                                @PathVariable("title") String groupMeetingTitle,
-                                               @RequestBody List<Days> days)
+                                               @RequestBody String rawJson)
     {   // (그룹, 회의 제목, TYPE을 확인) -> 회의 아이디, Type, 사용자로 테이블을 조회해서 when2meet을 가져온 후 ranktime을 업데이트한다
         // ranktime을 set한다 (time, rank)
+
+        System.out.println("Received JSON: " + rawJson);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Days> days;
+        try {
+            days = objectMapper.readValue(rawJson, new TypeReference<List<Days>>() {});
+            System.out.println("Parsed Days: " + days);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("JSON parsing error", e);
+        }
+
         String accessToken = jwtService.extractAccessToken(request).get();
         String socialId = jwtService.extractId(accessToken).get();
         when2MeetService.updateUserMeet(groupId, groupMeetingTitle, MeetType.fromString(type), socialId, days);
