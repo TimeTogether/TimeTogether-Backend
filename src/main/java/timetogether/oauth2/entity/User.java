@@ -29,15 +29,15 @@ public class User {
   @NotNull
   private String userName;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "calendar_id")
   private Calendar calendar;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "groupMeet_id")
   private GroupMeeting groupMeeting;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<GroupMeeting> groupMeetingList = new ArrayList<>();
 
   @ManyToMany

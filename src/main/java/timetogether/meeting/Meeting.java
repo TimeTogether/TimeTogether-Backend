@@ -40,15 +40,14 @@ public class Meeting {
 
   private String meetContent;
 
-  @NotNull
   private String groupName;
 
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   @JoinColumn(name = "calendar_id")
   private Calendar calendar;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private Where2meet where2meet;
 
   @Builder
