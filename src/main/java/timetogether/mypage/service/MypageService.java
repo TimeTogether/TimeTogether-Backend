@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import timetogether.calendar.Calendar;
 import timetogether.meeting.Meeting;
 import timetogether.meeting.repository.MeetingRepository;
+import timetogether.mypage.UserNameDTO;
 import timetogether.oauth2.entity.User;
 import timetogether.oauth2.repository.UserRepository;
 import timetogether.when2meet.dto.Result;
@@ -64,5 +65,11 @@ public class MypageService {
             }
         }
         return resultList;
+    }
+
+    public String getByUser(String socialId) {
+        User user = userRepository.findBySocialId(socialId).get();
+
+        return user.getUserName();
     }
 }

@@ -198,7 +198,7 @@ public class When2MeetService {
 
         List<Days> days = new ArrayList<>();
         for(int i=0; i<when2meets.size(); i++){
-            RankTime rankTime = new RankTime(group.getGroupTimes().length(), group.getGroupTimes().length(), when2meets.get(i));
+            RankTime rankTime = new RankTime(33, 33, when2meets.get(i));
             rankTimeRepository.save(rankTime);
 
             String date = rankTime.getWhen2meet().getDate();

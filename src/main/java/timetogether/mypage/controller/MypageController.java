@@ -8,6 +8,7 @@ import timetogether.global.response.BaseResponse;
 import timetogether.global.response.BaseResponseService;
 import timetogether.jwt.service.JwtService;
 import timetogether.meeting.service.MeetingService;
+import timetogether.mypage.UserNameDTO;
 import timetogether.mypage.service.MypageService;
 import timetogether.when2meet.dto.Result;
 
@@ -31,6 +32,15 @@ public class MypageController {
         resultList = mypageService.findMeetByUser(socialId);         // TODO: 그룹별로 보게할 건가?
 
         return baseResponseService.getSuccessResponse(resultList);
+    }
+
+    @GetMapping("/name")
+    public BaseResponse<Object> getByUser(HttpServletRequest request){
+        String accessToken = jwtService.extractAccessToken(request).get();
+        String socialId = jwtService.extractId(accessToken).get();
+        String userName = mypageService.getByUser(socialId);         // TODO: 그룹별로 보게할 건가?
+
+        return baseResponseService.getSuccessResponse(userName);
     }
 
 
