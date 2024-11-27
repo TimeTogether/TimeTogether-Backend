@@ -323,6 +323,7 @@ public class When2MeetService {
         // "meetDT" 값을 추출
         String meetDT = jsonNode.get("meetDT").asText();
         LocalDateTime finalMeet = LocalDateTime.parse(meetDT);
+        log.info(finalMeet.toString());
         Meeting meeting;
         if(type == MeetType.ONLINE) {
             meeting = new Meeting(finalMeet, finalMeet, type, groupMeetingTitle, "", group.getGroupName(), user.getCalendar(), null);
