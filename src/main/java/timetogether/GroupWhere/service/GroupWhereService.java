@@ -145,6 +145,7 @@ public class GroupWhereService {
 
   public void getRandomGroupWhereCandidates(Long groupId, String groupMeetingTitle) throws IOException, URISyntaxException {
     try {
+
       kakaoApi.keywordSearch("건국대학교");
       kakaoApi.setRadius(1000);
       List<GroupWhere> locations = kakaoApi.categorySearch();
