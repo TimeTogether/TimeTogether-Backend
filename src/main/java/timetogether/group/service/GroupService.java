@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import timetogether.GroupWhere.repository.GroupWhereRepository;
 import timetogether.config.kakaoapi.KakaoAPI;
 import timetogether.global.response.BaseResponseStatus;
 import timetogether.group.Group;
@@ -39,6 +40,7 @@ public class GroupService {
   private final GroupQueryRepository groupQueryRepository;
   private final UserRepository userRepository;
   private final UserQueryRepository userQueryRepository;
+  private final GroupWhereRepository groupWhereRepository;
 
   public GroupCreateResponseDto createGroup(String socialId, GroupCreateRequestDto request){
     Group newGroup = new Group(request, socialId);//Group 객체 생성
@@ -61,7 +63,10 @@ public class GroupService {
     log.info("그룹 방장 찾기 시작");
     userQueryRepository.deleteGroupInUserEntity(foundGroup.getGroupUserList(),foundGroup);
     log.info("그룹 지우기 시작");
-    groupRepository.delete(foundGroup);//그룹 지우기
+
+    groupQueryRepository.delete(groupId);
+    //groupRepository.delete(foundGroup);//그룹 지우기
+    //
     log.info("그룹 지우기 종료");
 
     return "그룹을 삭제하였습니다.";

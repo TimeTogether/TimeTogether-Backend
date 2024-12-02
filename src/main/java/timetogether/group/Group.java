@@ -39,10 +39,10 @@ public class Group {
   private String groupIntro;
   private String groupUrl;
 
-  @ManyToMany(mappedBy = "groupList")  // User 엔티티의 필드명을 참조
+  @ManyToMany(mappedBy = "groupList", cascade = CascadeType.ALL)  // User 엔티티의 필드명을 참조
   private List<User> groupUserList = new ArrayList<>();
 
-  @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
   private List<GroupWhere> groupWhereList = new ArrayList<>();
 
   @Builder

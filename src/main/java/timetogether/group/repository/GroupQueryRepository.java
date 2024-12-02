@@ -105,4 +105,19 @@ public class GroupQueryRepository {
             .setParameter("socialId", socialId)
             .getResultList();
   }
+
+  public void delete(Long groupId) {
+    try {
+      // Disable foreign key checks safely using JPA
+      entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+
+      // Use parameterized query to prevent SQL injection
+      entityManager.createQuery("DELETE FROM Group g WHERE g.id = :groupId")
+              .setParameter("groupId", groupId)
+              .executeUpdate();
+    } finally {
+      // Ensure foreign key checks are re-enabled even if an exception occurs
+      entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+    }
+  }
 }
