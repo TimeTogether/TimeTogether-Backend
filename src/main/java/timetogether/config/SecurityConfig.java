@@ -35,7 +35,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://192.168.12.91:3000"); // 프론트 ip 3000 URL
+        configuration.addAllowedOrigin("http://192.168.12.140:3000"); // 프론트 ip 3000 URL
         configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
         configuration.addExposedHeader("Authorization"); // 클라이언트에서 Authorization 헤더를 읽을 수 있게 노출

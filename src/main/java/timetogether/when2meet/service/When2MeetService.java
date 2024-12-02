@@ -89,7 +89,7 @@ public class When2MeetService {
             }
         }
 
-        MeetTableDTO meetTableDTO = new MeetTableDTO(resultList, meetingList);
+        MeetTableDTO meetTableDTO = new MeetTableDTO(meetingList, resultList);
 
         return Optional.ofNullable(meetTableDTO);
     }
@@ -100,6 +100,10 @@ public class When2MeetService {
         Group group = groupRepository.findById(groupId).get(); // 그룹 아이디로 그룹을 조회
         List<User> users = group.getGroupUserList(); // 그룹에서 사용자 리스트 조회
 
+        GroupMeeting groupMeeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitle, users.get(0));
+        log.info("groupMeeting = {}", groupMeeting);
+        if(groupMeeting != null) return; // groupMeeting이 존재하면 리턴한다
+
         initGroupMeeting(users, group, groupMeetingTitle);// 회의 일정 초기화, 모든 사용자에 대해 회의 일정 추가
         initWhen2Meet(users, group, groupMeetingTitle, dates); // 특정 날짜 초기화, 모든 사용자에 대해 특정 날짜 추가
     }
@@ -107,6 +111,7 @@ public class When2MeetService {
     private void initWhen2Meet(List<User> users, Group group, String groupMeetingTitile, List<String> dates) {
         for(int i=0; i<users.size(); i++) {
             log.info("groupMeeting 진입");
+            log.info("{}, {}, {}", group, groupMeetingTitile, users.get(i));
             GroupMeeting groupMeeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitile, users.get(i));
             log.info("groupMeeting = {}", groupMeeting.getGroupMeetingTitle());
             for(String date : dates){
@@ -195,7 +200,11 @@ public class When2MeetService {
         GroupMeeting meeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitle, user);
         List<When2meet> when2meets = when2MeetRepository.findByTypeAndGroupMeeting(type, meeting);
         // 여러 날짜가 넘어옵니다
+        RankTime byWhen2meet = rankTimeRepository.findByWhen2meet(when2meets.get(0));
+        if(byWhen2meet!= null)
+            return new GroupTableDTO<Days>(group.getGroupTimes(), type, null); // 이미 존재한 경우
 
+        log.info("byWhen2meet = {}", byWhen2meet);
         List<Days> days = new ArrayList<>();
         for(int i=0; i<when2meets.size(); i++){
             RankTime rankTime = new RankTime(33, 33, when2meets.get(i));

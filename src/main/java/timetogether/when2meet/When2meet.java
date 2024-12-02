@@ -29,11 +29,11 @@ public class When2meet {
 //  @JoinColumn(name = "social_id")
 //  private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "group_id")
   private Group group;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name ="groupMeet_id")
   private GroupMeeting groupMeeting;
 

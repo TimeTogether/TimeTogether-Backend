@@ -9,6 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class MeetTableDTO {
-    private final List<Result> result;
     private final List<Process> meeting;
+    private final List<Result> result;
 }

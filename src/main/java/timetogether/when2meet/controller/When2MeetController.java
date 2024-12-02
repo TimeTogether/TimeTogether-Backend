@@ -126,8 +126,7 @@ public class When2MeetController {
 
         String accessToken = jwtService.extractAccessToken(request).get();
         String socialId = jwtService.extractId(accessToken).get();
-        if (type.equals(MeetType.OFFLINE))
-            when2MeetService.doneGroupMeet(groupId, groupMeetingTitle, MeetType.fromString(type), socialId, meetDT);
+        when2MeetService.doneGroupMeet(groupId, groupMeetingTitle, MeetType.fromString(type), socialId, meetDT);
         return baseResponseService.getSuccessResponse();
     }
 
