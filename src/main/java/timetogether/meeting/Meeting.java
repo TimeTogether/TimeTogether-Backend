@@ -43,11 +43,11 @@ public class Meeting {
   private String groupName;
 
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "calendar_id")
   private Calendar calendar;
 
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @OneToOne(fetch = FetchType.LAZY)
   private Where2meet where2meet;
 
   @Builder

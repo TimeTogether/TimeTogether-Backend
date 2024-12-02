@@ -111,6 +111,7 @@ public class When2MeetService {
     private void initWhen2Meet(List<User> users, Group group, String groupMeetingTitile, List<String> dates) {
         for(int i=0; i<users.size(); i++) {
             log.info("groupMeeting 진입");
+            log.info("{}, {}, {}", group, groupMeetingTitile, users.get(i));
             GroupMeeting groupMeeting = groupMeetingRepository.findByGroupAndGroupMeetingTitleAndUser(group, groupMeetingTitile, users.get(i));
             log.info("groupMeeting = {}", groupMeeting.getGroupMeetingTitle());
             for(String date : dates){

@@ -25,15 +25,15 @@ public class GroupMeeting {
 
   private String groupMeetingDays;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "group_id")
   private Group group;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   private User user;
 
-  @OneToMany(mappedBy = "groupMeeting", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "groupMeeting", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<GroupWhere> groupWhereList = new ArrayList<>();
 
   @Builder
